@@ -1,0 +1,69 @@
+@model List<CarServiceTracking.UI.Web.ViewModels.CustomerCars.CustomerCarVM>
+
+@{
+    ViewData["Title"] = "Şahsi Araçlarım";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/CustomerCarsIndex.css" />
+
+<div class="container-fluid py-4">
+
+    <!-- BAŞLIK + AÇIKLAMA -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-2">Şahsi Araçlarım</h2>
+
+        <p class="text-soft cars-index-subtitle">
+            Aşağıda listelenen araçlar, sisteme kayıtlı
+            <strong>kendi araçlarınızdır</strong>.
+            <br />
+            <span class="text-muted small">
+                Araçlarınızı servis için kaydedebilir ve takip edebilirsiniz.
+            </span>
+        </p>
+    </div>
+
+    <div class="mb-3">
+        <a href="/Customer/Cars/Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Yeni Araç Ekle
+        </a>
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-warning">
+            Henüz kayıtlı aracınız bulunmamaktadır.
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var car in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card p-3 h-100">
+
+                        <div class="fw-bold">
+                            @car.BrandModel
+                        </div>
+
+                        <div class="text-muted small mt-1">
+                            @car.PlateNumber � @car.Year
+                        </div>
+
+                        <div class="mt-3 d-flex justify-content-end">
+                            <a class="btn btn-sm btn-primary"
+                               href="/Customer/Cars/Detail/@car.Id">
+                                Detay
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+</div>
+
+

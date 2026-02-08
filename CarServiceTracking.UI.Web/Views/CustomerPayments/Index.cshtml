@@ -1,0 +1,202 @@
+@model List<CarServiceTracking.UI.Web.ViewModels.Payments.PaymentListVM>
+@using System.Globalization
+@{
+    ViewData["Title"] = "Ödemelerim";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+    var trCulture = new CultureInfo("tr-TR");
+    
+    // Özet hesaplamaları
+    var totalPayments = Model.Count;
+    var totalAmount = Model.Sum(p => p.Amount);
+    var thisMonthPayments = Model.Where(p => p.PaymentDate.Month == DateTime.Now.Month && p.PaymentDate.Year == DateTime.Now.Year).ToList();
+    var thisMonthAmount = thisMonthPayments.Sum(p => p.Amount);
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-money-bill-wave text-success mr-2"></i>
+                    Ödemelerim
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Customer/Home/Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active">Ödemelerim</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- Başarı/Hata Mesajları -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <i class="fas fa-check-circle mr-2"></i>@TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <i class="fas fa-exclamation-circle mr-2"></i>@TempData["Error"]
+            </div>
+        }
+
+        <!-- Özet Kartları -->
+        <div class="row">
+            <div class="col-lg-4 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>@totalPayments</h3>
+                        <p>Toplam Ödeme</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@totalAmount.ToString("C2", trCulture)</h3>
+                        <p>Toplam Ödenen Tutar</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>@thisMonthAmount.ToString("C2", trCulture)</h3>
+                        <p>Bu Ay Ödenen</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ödeme Listesi -->
+        <div class="card card-outline card-success">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-list mr-2"></i>
+                    Ödeme Geçmişi
+                </h3>
+                <div class="card-tools">
+                    <a href="/Customer/Payments/Create" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus mr-1"></i> Yeni Ödeme
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="bg-dark">
+                                <tr>
+                                    <th style="width: 50px">#</th>
+                                    <th>Fatura No</th>
+                                    <th>Ödeme Tarihi</th>
+                                    <th>Tutar</th>
+                                    <th>Ödeme Yöntemi</th>
+                                    <th>Referans No</th>
+                                    <th style="width: 100px">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{var index = 1;}
+                                @foreach (var payment in Model.OrderByDescending(p => p.PaymentDate))
+                                {
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>
+                                            <a href="/Customer/Invoices/Details/@payment.InvoiceId" class="text-primary">
+                                                <i class="fas fa-file-invoice mr-1"></i>
+                                                @payment.InvoiceNumber
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-calendar-alt text-muted mr-1"></i>
+                                            @payment.PaymentDate.ToString("dd.MM.yyyy HH:mm", trCulture)
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-success" style="font-size: 1rem;">
+                                                @payment.Amount.ToString("C2", trCulture)
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @{
+                                                var methodIcon = payment.PaymentMethod switch
+                                                {
+                                                    "Cash" => "fas fa-money-bill-wave",
+                                                    "CreditCard" => "fas fa-credit-card",
+                                                    "DebitCard" => "fas fa-credit-card",
+                                                    "BankTransfer" => "fas fa-university",
+                                                    _ => "fas fa-money-check"
+                                                };
+                                                var methodText = payment.PaymentMethod switch
+                                                {
+                                                    "Cash" => "Nakit",
+                                                    "CreditCard" => "Kredi Kartı",
+                                                    "DebitCard" => "Banka Kartı",
+                                                    "BankTransfer" => "Havale/EFT",
+                                                    _ => payment.PaymentMethod
+                                                };
+                                            }
+                                            <i class="@methodIcon mr-1"></i>@methodText
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(payment.TransactionId))
+                                            {
+                                                <code>@payment.TransactionId</code>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a href="/Customer/Payments/Details/@payment.Id" class="btn btn-info btn-sm" title="Detaylar">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    index++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-info-circle fa-3x mb-3"></i>
+                        <h4>Henüz ödeme kaydınız bulunmuyor.</h4>
+                        <p class="mb-3">Faturalarınız için ödeme yapabilirsiniz.</p>
+                        <a href="/Customer/Payments/Create" class="btn btn-success">
+                            <i class="fas fa-plus mr-1"></i> Ödeme Yap
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</section>

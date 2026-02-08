@@ -1,0 +1,114 @@
+@model List<CarServiceTracking.UI.Web.ViewModels.Payments.PaymentListVM>
+
+@{
+    ViewData["Title"] = "Ödeme Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-money-bill-wave"></i> Ödeme Yönetimi
+        </h3>
+        <div class="card-tools">
+            <a asp-controller="AdminPayments" asp-action="Create" class="btn btn-sm btn-success">
+                <i class="fa fa-plus"></i> Yeni Ödeme Kaydet
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-info m-3">
+                <i class="fas fa-info-circle"></i> Henüz kayıtlı ödeme bulunmamaktadır.
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Fatura No</th>
+                        <th>Müşteri</th>
+                        <th>Ödeme Tarihi</th>
+                        <th class="text-right">Tutar</th>
+                        <th>Ödeme Yöntemi</th>
+                        <th>İşlem No</th>
+                        <th class="text-center">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var payment in Model.OrderByDescending(x => x.PaymentDate))
+                    {
+                        <tr>
+                            <td><strong>@payment.InvoiceNumber</strong></td>
+                            <td><i class="fas fa-user"></i> @payment.CustomerName</td>
+                            <td>@payment.PaymentDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td class="text-right"><strong class="text-success">@payment.Amount.ToString("C2")</strong></td>
+                            <td>
+                                @switch (payment.PaymentMethod)
+                                {
+                                    case "Cash":
+                                        <span class="badge badge-success"><i class="fas fa-money-bill"></i> Nakit</span>
+                                        break;
+                                    case "CreditCard":
+                                        <span class="badge badge-primary"><i class="fas fa-credit-card"></i> Kredi Kartı</span>
+                                        break;
+                                    case "BankTransfer":
+                                        <span class="badge badge-info"><i class="fas fa-university"></i> Banka Transferi</span>
+                                        break;
+                                    case "Check":
+                                        <span class="badge badge-warning"><i class="fas fa-money-check"></i> Çek</span>
+                                        break;
+                                    default:
+                                        <span class="badge badge-secondary">@payment.PaymentMethod</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(payment.TransactionId))
+                                {
+                                    <code>@payment.TransactionId</code>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <a asp-controller="AdminPayments" asp-action="Details" asp-route-id="@payment.Id" class="btn btn-sm btn-info" title="Detay">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a asp-controller="AdminPayments" asp-action="Edit" asp-route-id="@payment.Id" class="btn btn-sm btn-warning" title="Düzenle">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form asp-controller="AdminPayments" asp-action="Delete" asp-route-id="@payment.Id" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Sil" onclick="return confirm('Bu ödemeyi silmek istediğinize emin misiniz?');">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

@@ -1,0 +1,136 @@
+@model CarServiceTracking.UI.Web.ViewModels.Appointments.AppointmentEditVM
+
+@{
+    ViewData["Title"] = "Randevu Detayı";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-info text-white">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-calendar-check"></i> Randevu Detayı
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-user"></i> Müşteri ve Araç Bilgileri</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5">Müşteri</dt>
+                            <dd class="col-sm-7"><strong>@Model.CustomerName</strong></dd>
+
+                            <dt class="col-sm-5">Araç</dt>
+                            <dd class="col-sm-7">@Model.CarInfo</dd>
+
+                            <dt class="col-sm-5">Durum</dt>
+                            <dd class="col-sm-7">
+                                @switch (Model.Status)
+                                {
+                                    case "Pending":
+                                        <span class="badge badge-warning badge-lg">Bekliyor</span>
+                                        break;
+                                    case "Confirmed":
+                                        <span class="badge badge-info badge-lg">Onaylandı</span>
+                                        break;
+                                    case "Completed":
+                                        <span class="badge badge-success badge-lg">Tamamlandı</span>
+                                        break;
+                                    case "Cancelled":
+                                        <span class="badge badge-secondary badge-lg">İptal</span>
+                                        break;
+                                    default:
+                                        <span class="badge badge-light badge-lg">@Model.Status</span>
+                                        break;
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-clock"></i> Tarih ve Saat</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5">Randevu Tarihi</dt>
+                            <dd class="col-sm-7"><strong>@Model.AppointmentDate.ToString("dd.MM.yyyy")</strong></dd>
+
+                            <dt class="col-sm-5">Saat Aralığı</dt>
+                            <dd class="col-sm-7"><strong>@Model.TimeSlot</strong></dd>
+
+                            <dt class="col-sm-5">Talep Edilen Hizmet</dt>
+                            <dd class="col-sm-7"><span class="badge badge-primary">@Model.RequestedService</span></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-file-alt"></i> Açıklama</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">@Model.Description</p>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.CustomerNotes))
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-comment"></i> Müşteri Notları</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">@Model.CustomerNotes</p>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.AdminNotes))
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-user-shield"></i> Admin Notları</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">@Model.AdminNotes</p>
+                </div>
+            </div>
+        }
+
+        <div class="mt-3">
+            <a asp-controller="AdminAppointments" asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Geri Dön
+            </a>
+            <a asp-controller="AdminAppointments" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Düzenle
+            </a>
+            @if (Model.Status == "Pending")
+            {
+                <form asp-controller="AdminAppointments" asp-action="Confirm" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check"></i> Onayla
+                    </button>
+                </form>
+                <form asp-controller="AdminAppointments" asp-action="Cancel" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?');">
+                        <i class="fas fa-times"></i> İptal Et
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

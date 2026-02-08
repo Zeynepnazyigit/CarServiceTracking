@@ -1,0 +1,128 @@
+@model List<CarServiceTracking.UI.Web.ViewModels.Parts.PartListVM>
+
+@{
+    ViewData["Title"] = "Parça Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-cogs"></i> Parça Yönetimi
+        </h3>
+        <div class="card-tools">
+            <a asp-controller="AdminParts" asp-action="LowStock" class="btn btn-sm btn-warning">
+                <i class="fas fa-exclamation-triangle"></i> Düşük Stok
+            </a>
+            <a asp-controller="AdminParts" asp-action="Create" class="btn btn-sm btn-success">
+                <i class="fa fa-plus"></i> Yeni Parça Ekle
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (!string.IsNullOrEmpty(ViewBag.Category))
+        {
+            <div class="mb-3">
+                <a asp-controller="AdminParts" asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-times"></i> Filtreyi Temizle
+                </a>
+                <span class="ml-2 text-muted">
+                    <i class="fas fa-filter"></i> Kategori: <strong>@ViewBag.Category</strong>
+                </span>
+            </div>
+        }
+    </div>
+    <div class="card-body p-0">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-info m-3">
+                <i class="fas fa-info-circle"></i> Henüz kayıtlı parça bulunmamaktadır.
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Parça Adı</th>
+                        <th>Parça Kodu</th>
+                        <th>Kategori</th>
+                        <th class="text-right">Birim Fiyat</th>
+                        <th class="text-center">Stok</th>
+                        <th class="text-center">Min. Stok</th>
+                        <th>Tedarikçi</th>
+                        <th>Durum</th>
+                        <th class="text-center">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var part in Model)
+                    {
+                        <tr class="@(part.StockQuantity <= part.MinStockLevel ? "table-warning" : "")">
+                            <td><strong>@part.Name</strong></td>
+                            <td><code>@part.PartCode</code></td>
+                            <td>
+                                <a asp-controller="AdminParts" asp-action="Index" asp-route-category="@part.Category" class="badge badge-info">
+                                    @part.Category
+                                </a>
+                            </td>
+                            <td class="text-right">@part.UnitPrice.ToString("C2")</td>
+                            <td class="text-center">
+                                @if (part.StockQuantity <= part.MinStockLevel)
+                                {
+                                    <span class="badge badge-danger">@part.StockQuantity</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-success">@part.StockQuantity</span>
+                                }
+                            </td>
+                            <td class="text-center">@part.MinStockLevel</td>
+                            <td>@(part.Supplier ?? "-")</td>
+                            <td>
+                                @if (part.IsActive)
+                                {
+                                    <span class="badge badge-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-secondary">Pasif</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <a asp-controller="AdminParts" asp-action="Details" asp-route-id="@part.Id" class="btn btn-sm btn-info" title="Detay">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a asp-controller="AdminParts" asp-action="Edit" asp-route-id="@part.Id" class="btn btn-sm btn-warning" title="Düzenle">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form asp-controller="AdminParts" asp-action="Delete" asp-route-id="@part.Id" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Sil" onclick="return confirm('Bu parçayı silmek istediğinize emin misiniz?');">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

@@ -1,0 +1,181 @@
+@model CarServiceTracking.UI.Web.ViewModels.Rentals.RentalCreateVM
+
+@{
+    ViewData["Title"] = "Araç Kirala";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<section class="py-4">
+    <div class="container-fluid">
+
+        <!-- BAŞLIK -->
+        <div class="mb-4">
+            <h2 class="fw-bold mb-1">
+                <i class="fa-solid fa-car-side text-primary me-2"></i>
+                Araç Kiralama
+            </h2>
+            <p class="text-muted mb-0">Geçici araç kiralama işleminizi tamamlayın</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fa-solid fa-edit me-2"></i>
+                            Kiralama Bilgileri
+                        </h5>
+                    </div>
+                    <div class="card-body">
+
+                        <form asp-action="Create" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <!-- Hata Mesajları -->
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                            <!-- GİZLİ ALANLAR -->
+                            <input type="hidden" asp-for="CustomerId" />
+                            <input type="hidden" asp-for="VehicleId" />
+                            <input type="hidden" asp-for="VehicleName" />
+                            <input type="hidden" asp-for="DailyRate" />
+
+                            <!-- ARAÇ BİLGİSİ -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fa-solid fa-car text-primary me-1"></i>
+                                    Seçilen Araç
+                                </label>
+                                <div class="form-control bg-dark text-white" style="pointer-events:none;">
+                                    <strong>@Model.VehicleName</strong>
+                                    <span class="float-end">
+                                        <i class="fa-solid fa-tag me-1"></i>@Model.DailyRate.ToString("N2") ₺ / gün
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- BAŞLANGIÇ TARİHİ -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="StartDate" class="form-label">
+                                        <i class="fa-solid fa-calendar text-primary me-1"></i>
+                                        Teslim Tarihi <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="StartDate"
+                                           type="date"
+                                           class="form-control"
+                                           min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                                </div>
+
+                                <!-- BİTİŞ TARİHİ -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="EndDate" class="form-label">
+                                        <i class="fa-solid fa-calendar-check text-primary me-1"></i>
+                                        İade Tarihi <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="EndDate"
+                                           type="date"
+                                           class="form-control"
+                                           min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
+                                    <span asp-validation-for="EndDate" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- DEPOZİTO -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="DepositAmount" class="form-label">
+                                        <i class="fa-solid fa-money-bill text-primary me-1"></i>
+                                        Depozito Tutarı (₺) <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="DepositAmount"
+                                           type="number"
+                                           step="0.01"
+                                           class="form-control"
+                                           placeholder="0.00" />
+                                    <span asp-validation-for="DepositAmount" class="text-danger small"></span>
+                                </div>
+
+                                <!-- BAŞLANGIÇ KM -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="StartMileage" class="form-label">
+                                        <i class="fa-solid fa-tachometer-alt text-primary me-1"></i>
+                                        Başlangıç KM
+                                    </label>
+                                    <input asp-for="StartMileage"
+                                           type="number"
+                                           class="form-control"
+                                           placeholder="Opsiyonel" />
+                                    <span asp-validation-for="StartMileage" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- NOTLAR -->
+                            <div class="mb-4">
+                                <label asp-for="Notes" class="form-label">
+                                    <i class="fa-solid fa-sticky-note text-primary me-1"></i>
+                                    Notlar
+                                </label>
+                                <textarea asp-for="Notes"
+                                          class="form-control"
+                                          rows="2"
+                                          placeholder="Varsa ek notlarınızı yazabilirsiniz..."></textarea>
+                                <span asp-validation-for="Notes" class="text-danger small"></span>
+                            </div>
+
+                            <!-- BUTONLAR -->
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-check me-1"></i> Kiralama Oluştur
+                                </button>
+                                <a href="/Customer/CarsList/Index" class="btn btn-outline-secondary">
+                                    <i class="fa-solid fa-arrow-left me-1"></i> Geri Dön
+                                </a>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- BİLGİ KARTI -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fa-solid fa-info-circle me-2"></i>
+                            Kiralama Bilgileri
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-3">
+                                <i class="fa-solid fa-check-circle text-success me-2"></i>
+                                Kiralama talebiniz oluşturulduktan sonra <strong>onay bekleyecektir</strong>.
+                            </li>
+                            <li class="mb-3">
+                                <i class="fa-solid fa-check-circle text-success me-2"></i>
+                                Günlük ücret: <strong>@Model.DailyRate.ToString("N2") ₺</strong>
+                            </li>
+                            <li class="mb-3">
+                                <i class="fa-solid fa-check-circle text-success me-2"></i>
+                                Depozito tutarı iade sırasında <strong>geri ödenir</strong>.
+                            </li>
+                            <li class="mb-0">
+                                <i class="fa-solid fa-exclamation-triangle text-warning me-2"></i>
+                                Aracı zamanında iade etmeniz gerekmektedir.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

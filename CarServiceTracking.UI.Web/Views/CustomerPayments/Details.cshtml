@@ -1,0 +1,184 @@
+@model CarServiceTracking.UI.Web.ViewModels.Payments.PaymentEditVM
+@using System.Globalization
+@{
+    ViewData["Title"] = "Ödeme Detayları";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+    var trCulture = new CultureInfo("tr-TR");
+
+    var methodIcon = Model.PaymentMethod switch
+    {
+        "Cash" => "fas fa-money-bill-wave text-success",
+        "CreditCard" => "fas fa-credit-card text-primary",
+        "DebitCard" => "fas fa-credit-card text-info",
+        "BankTransfer" => "fas fa-university text-secondary",
+        _ => "fas fa-money-check"
+    };
+    var methodText = Model.PaymentMethod switch
+    {
+        "Cash" => "Nakit",
+        "CreditCard" => "Kredi Kartı",
+        "DebitCard" => "Banka Kartı",
+        "BankTransfer" => "Havale/EFT",
+        _ => Model.PaymentMethod
+    };
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-receipt text-success mr-2"></i>
+                    Ödeme Detayları
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Customer/Home/Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item"><a href="/Customer/Payments/Index">Ödemelerim</a></li>
+                    <li class="breadcrumb-item active">Detay</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <!-- Sol Kolon - Ödeme Bilgileri -->
+            <div class="col-lg-8">
+                <div class="card card-outline card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Ödeme Bilgileri
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl>
+                                    <dt><i class="fas fa-hashtag mr-1"></i> Ödeme ID</dt>
+                                    <dd class="mb-3"><code>#@Model.Id</code></dd>
+
+                                    <dt><i class="fas fa-file-invoice mr-1"></i> Fatura</dt>
+                                    <dd class="mb-3">
+                                        <a href="/Customer/Invoices/Details/@Model.InvoiceId" class="text-primary">
+                                            @Model.InvoiceNumber
+                                        </a>
+                                    </dd>
+
+                                    <dt><i class="fas fa-calendar-alt mr-1"></i> Ödeme Tarihi</dt>
+                                    <dd class="mb-3">@Model.PaymentDate.ToString("dd MMMM yyyy, HH:mm", trCulture)</dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl>
+                                    <dt><i class="@methodIcon mr-1"></i> Ödeme Yöntemi</dt>
+                                    <dd class="mb-3">@methodText</dd>
+
+                                    <dt><i class="fas fa-barcode mr-1"></i> Referans/İşlem No</dt>
+                                    <dd class="mb-3">
+                                        @if (!string.IsNullOrEmpty(Model.TransactionId))
+                                        {
+                                            <code>@Model.TransactionId</code>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </dd>
+
+                                    <dt><i class="fas fa-sticky-note mr-1"></i> Notlar</dt>
+                                    <dd class="mb-3">
+                                        @if (!string.IsNullOrEmpty(Model.Notes))
+                                        {
+                                            @Model.Notes
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ Kolon - Tutar Özeti -->
+            <div class="col-lg-4">
+                <div class="card card-outline card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-lira-sign mr-2"></i>
+                            Ödeme Tutarı
+                        </h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="display-4 text-success font-weight-bold">
+                            @Model.Amount.ToString("C2", trCulture)
+                        </div>
+                        <p class="text-muted mt-3">
+                            <i class="@methodIcon fa-2x"></i>
+                        </p>
+                        <p class="text-muted">@methodText ile ödendi</p>
+                    </div>
+                </div>
+
+                <!-- Hızlı Linkler -->
+                <div class="card card-outline card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-link mr-2"></i>
+                            Hızlı Linkler
+                        </h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="nav nav-pills flex-column">
+                            <li class="nav-item">
+                                <a href="/Customer/Invoices/Details/@Model.InvoiceId" class="nav-link">
+                                    <i class="fas fa-file-invoice mr-2"></i>
+                                    Faturayı Görüntüle
+                                    <i class="fas fa-chevron-right float-right mt-1"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/Customer/Payments/Index" class="nav-link">
+                                    <i class="fas fa-list mr-2"></i>
+                                    Tüm Ödemelerim
+                                    <i class="fas fa-chevron-right float-right mt-1"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/Customer/Invoices/Index" class="nav-link">
+                                    <i class="fas fa-file-invoice-dollar mr-2"></i>
+                                    Faturalarım
+                                    <i class="fas fa-chevron-right float-right mt-1"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geri Dön -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <a href="/Customer/Payments/DownloadPdf/@Model.Id" class="btn btn-danger mr-2">
+                    <i class="fas fa-file-pdf mr-1"></i> Makbuz PDF İndir
+                </a>
+                <a href="/Customer/Payments/Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left mr-1"></i> Ödemelerime Dön
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>

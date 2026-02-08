@@ -1,0 +1,231 @@
+@model CarServiceTracking.UI.Web.ViewModels.Appointments.AppointmentCreateVM
+
+@{
+    ViewData["Title"] = "Yeni Randevu";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<section class="py-4">
+    <div class="container-fluid">
+
+        <!-- BAŞLIK -->
+        <div class="mb-4">
+            <h2 class="fw-bold mb-1">
+                <i class="fa-solid fa-calendar-plus text-primary me-2"></i>
+                Yeni Randevu Oluştur
+            </h2>
+            <p class="text-muted mb-0">Servis randevunuzu oluşturun</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fa-solid fa-edit me-2"></i>
+                            Randevu Bilgileri
+                        </h5>
+                    </div>
+                    <div class="card-body">
+
+                        <form asp-action="Create" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <!-- Hata Mesajları -->
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                            <!-- GİZLİ ALAN: CustomerId Session'dan alınır -->
+                            <input type="hidden" asp-for="CustomerId" />
+
+                            <div class="row">
+                                <!-- ARAÇ SEÇİMİ -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="CarId" class="form-label">
+                                        <i class="fa-solid fa-car text-primary me-1"></i>
+                                        Araç Seçin <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="CarId" class="form-select">
+                                        <option value="">-- Araç Seçiniz --</option>
+                                        @if (ViewBag.Cars != null)
+                                        {
+                                            foreach (var car in ViewBag.Cars)
+                                            {
+                                                <option value="@car.Id">@car.BrandModel - @car.PlateNumber</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="CarId" class="text-danger small"></span>
+                                    @if (ViewBag.Cars == null || ((IEnumerable<dynamic>)ViewBag.Cars).Count() == 0)
+                                    {
+                                        <small class="text-warning">
+                                            <i class="fa-solid fa-exclamation-triangle me-1"></i>
+                                            Önce araç eklemeniz gerekiyor.
+                                            <a href="/Customer/Cars/Create">Araç Ekle</a>
+                                        </small>
+                                    }
+                                </div>
+
+                                <!-- RANDEVU TARİHİ -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="AppointmentDate" class="form-label">
+                                        <i class="fa-solid fa-calendar text-primary me-1"></i>
+                                        Randevu Tarihi <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="AppointmentDate" 
+                                           type="date" 
+                                           class="form-control"
+                                           min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")"
+                                           max="@DateTime.Today.AddMonths(2).ToString("yyyy-MM-dd")" />
+                                    <span asp-validation-for="AppointmentDate" class="text-danger small"></span>
+                                    <small class="text-muted">En az 1 gün sonrası seçilebilir</small>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- SAAT DİLİMİ -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="TimeSlot" class="form-label">
+                                        <i class="fa-solid fa-clock text-primary me-1"></i>
+                                        Saat Dilimi <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="TimeSlot" class="form-select">
+                                        <option value="">-- Saat Seçiniz --</option>
+                                        <option value="09:00-10:00">09:00 - 10:00</option>
+                                        <option value="10:00-11:00">10:00 - 11:00</option>
+                                        <option value="11:00-12:00">11:00 - 12:00</option>
+                                        <option value="13:00-14:00">13:00 - 14:00</option>
+                                        <option value="14:00-15:00">14:00 - 15:00</option>
+                                        <option value="15:00-16:00">15:00 - 16:00</option>
+                                        <option value="16:00-17:00">16:00 - 17:00</option>
+                                    </select>
+                                    <span asp-validation-for="TimeSlot" class="text-danger small"></span>
+                                </div>
+
+                                <!-- SERVİS TÜRÜ -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="RequestedService" class="form-label">
+                                        <i class="fa-solid fa-wrench text-primary me-1"></i>
+                                        Servis Türü <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="RequestedService" class="form-select">
+                                        <option value="">-- Servis Türü Seçiniz --</option>
+                                        <option value="Periyodik Bakım">Periyodik Bakım</option>
+                                        <option value="Arıza/Tamir">Arıza / Tamir</option>
+                                        <option value="Muayene Hazırlık">Muayene Hazırlık</option>
+                                        <option value="Lastik Değişimi">Lastik Değişimi</option>
+                                        <option value="Fren Sistemi">Fren Sistemi</option>
+                                        <option value="Elektrik/Akü">Elektrik / Akü</option>
+                                        <option value="Klima Bakımı">Klima Bakımı</option>
+                                        <option value="Diğer">Diğer</option>
+                                    </select>
+                                    <span asp-validation-for="RequestedService" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- AÇIKLAMA -->
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label">
+                                    <i class="fa-solid fa-align-left text-primary me-1"></i>
+                                    Açıklama
+                                </label>
+                                <textarea asp-for="Description" 
+                                          class="form-control" 
+                                          rows="3"
+                                          placeholder="Aracınızla ilgili sorun veya isteğinizi detaylı yazın..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+
+                            <!-- MÜŞTERİ NOTLARI -->
+                            <div class="mb-4">
+                                <label asp-for="CustomerNotes" class="form-label">
+                                    <i class="fa-solid fa-sticky-note text-primary me-1"></i>
+                                    Ek Notlar
+                                </label>
+                                <textarea asp-for="CustomerNotes" 
+                                          class="form-control" 
+                                          rows="2"
+                                          placeholder="Varsa ek notlarınızı yazabilirsiniz..."></textarea>
+                                <span asp-validation-for="CustomerNotes" class="text-danger small"></span>
+                            </div>
+
+                            <!-- BUTONLAR -->
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-check me-1"></i> Randevu Oluştur
+                                </button>
+                                <a href="/Customer/Appointments" class="btn btn-outline-secondary">
+                                    <i class="fa-solid fa-arrow-left me-1"></i> Geri Dön
+                                </a>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- BİLGİ KARTI -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fa-solid fa-info-circle me-2"></i>
+                            Bilgilendirme
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-3">
+                                <i class="fa-solid fa-check-circle text-success me-2"></i>
+                                Randevunuz oluşturulduktan sonra <strong>onay bekleyecektir</strong>.
+                            </li>
+                            <li class="mb-3">
+                                <i class="fa-solid fa-check-circle text-success me-2"></i>
+                                Onaylanan randevular için <strong>SMS/E-posta</strong> ile bilgilendirileceksiniz.
+                            </li>
+                            <li class="mb-3">
+                                <i class="fa-solid fa-check-circle text-success me-2"></i>
+                                Bekleyen randevularınızı <strong>iptal edebilirsiniz</strong>.
+                            </li>
+                            <li class="mb-0">
+                                <i class="fa-solid fa-exclamation-triangle text-warning me-2"></i>
+                                Randevu saatinden <strong>en az 24 saat önce</strong> iptal yapılmalıdır.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ÇALIŞMA SAATLERİ -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fa-solid fa-clock me-2"></i>
+                            Çalışma Saatleri
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr>
+                                <td>Pazartesi - Cuma</td>
+                                <td class="text-end"><strong>09:00 - 18:00</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Cumartesi</td>
+                                <td class="text-end"><strong>09:00 - 14:00</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Pazar</td>
+                                <td class="text-end text-danger"><strong>Kapalı</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

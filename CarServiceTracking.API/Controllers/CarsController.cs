@@ -1,5 +1,6 @@
 ﻿using CarServiceTracking.Business.Abstract;
 using CarServiceTracking.Core.DTOs.CarDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -18,9 +19,12 @@ namespace CarServiceTracking.API.Controllers
 
         // GET: api/cars
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? search)
         {
-            var result = await _carService.GetAllAsync();
+            var result = string.IsNullOrWhiteSpace(search)
+                ? await _carService.GetAllAsync()
+                : await _carService.SearchCarsAsync(search);
+
             if (!result.Success)
                 return BadRequest(result);
 

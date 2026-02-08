@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="auth-page auth-wrapper" id="authWrapper">
+
+    <div class="auth-left">
+        <h1>JOIN<br />US!</h1>
+    </div>
+
+    <div class="auth-right">
+        <h2>Register</h2>
+
+        <form method="post" action="/Auth/Register">
+            @Html.AntiForgeryToken()
+            <input type="text" name="Name" placeholder="Full Name" required />
+            <input type="email" name="Email" placeholder="Email" required />
+            <input type="password" name="Password" placeholder="Password" required />
+
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <div class="auth-link">
+            Already have an account?
+            <a href="#" id="goLogin">Login</a>
+        </div>
+    </div>
+
+</div>

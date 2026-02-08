@@ -1,0 +1,127 @@
+@model List<CarServiceTracking.UI.Web.ViewModels.Appointments.AppointmentListVM>
+
+@{
+    ViewData["Title"] = "Randevu Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-calendar-alt"></i> Randevu Yönetimi
+        </h3>
+        <div class="card-tools">
+            <a asp-controller="AdminAppointments" asp-action="Create" class="btn btn-sm btn-success">
+                <i class="fa fa-plus"></i> Yeni Randevu
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (!string.IsNullOrEmpty(ViewBag.Status))
+        {
+            <div class="mb-3">
+                <a asp-controller="AdminAppointments" asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-times"></i> Filtreyi Temizle
+                </a>
+                <span class="ml-2 text-muted">
+                    <i class="fas fa-filter"></i> Durum: <strong>@ViewBag.Status</strong>
+                </span>
+            </div>
+        }
+    </div>
+    <div class="card-body p-0">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-info m-3">
+                <i class="fas fa-info-circle"></i> Henüz kayıtlı randevu bulunmamaktadır.
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Müşteri</th>
+                        <th>Araç</th>
+                        <th>Tarih</th>
+                        <th>Saat</th>
+                        <th>Hizmet</th>
+                        <th>Durum</th>
+                        <th class="text-center">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appointment in Model.OrderBy(x => x.AppointmentDate))
+                    {
+                        <tr>
+                            <td><i class="fas fa-user"></i> @appointment.CustomerName</td>
+                            <td>@appointment.CarInfo</td>
+                            <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy")</td>
+                            <td><strong>@appointment.TimeSlot</strong></td>
+                            <td>@appointment.RequestedService</td>
+                            <td>
+                                @switch (appointment.Status)
+                                {
+                                    case "Pending":
+                                        <span class="badge badge-warning">Bekliyor</span>
+                                        break;
+                                    case "Confirmed":
+                                        <span class="badge badge-info">Onaylandı</span>
+                                        break;
+                                    case "Completed":
+                                        <span class="badge badge-success">Tamamlandı</span>
+                                        break;
+                                    case "Cancelled":
+                                        <span class="badge badge-secondary">İptal</span>
+                                        break;
+                                    default:
+                                        <span class="badge badge-light">@appointment.Status</span>
+                                        break;
+                                }
+                            </td>
+                            <td class="text-center">
+                                <a asp-controller="AdminAppointments" asp-action="Details" asp-route-id="@appointment.Id" class="btn btn-sm btn-info" title="Detay">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @if (appointment.Status == "Pending")
+                                {
+                                    <form asp-controller="AdminAppointments" asp-action="Confirm" asp-route-id="@appointment.Id" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-success" title="Onayla">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                }
+                                <a asp-controller="AdminAppointments" asp-action="Edit" asp-route-id="@appointment.Id" class="btn btn-sm btn-warning" title="Düzenle">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form asp-controller="AdminAppointments" asp-action="Delete" asp-route-id="@appointment.Id" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Sil" onclick="return confirm('Bu randevuyu silmek istediğinize emin misiniz?');">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

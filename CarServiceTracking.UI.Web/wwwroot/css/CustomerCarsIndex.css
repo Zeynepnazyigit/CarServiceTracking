@@ -1,0 +1,27 @@
+/* ============================= */
+/* CUSTOMER CARS INDEX PAGE */
+/* ============================= */
+
+/* Page Subtitle */
+.cars-index-subtitle {
+    max-width: 720px;
+}
+
+    .cars-index-subtitle strong {
+        font-weight: 600;
+    }
+
+    .cars-index-subtitle .text-muted {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.875rem;
+    }
+
+/* Car Grid */
+.car-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+    .car-grid .car-card {
+        position: relative;
+    }

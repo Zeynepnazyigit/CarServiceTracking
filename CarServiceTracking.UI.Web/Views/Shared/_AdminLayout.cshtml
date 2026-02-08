@@ -1,0 +1,258 @@
+@{
+    Layout = null;
+    var title = ViewData["Title"] ?? "Admin Panel";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@title - CarServiceTracking Admin</title>
+
+    <!-- AdminLTE 3 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayScrollbars/css/OverlayScrollbars.min.css" />
+
+    <link rel="stylesheet" href="~/css/admin-layout.css" />
+    <link rel="stylesheet" href="~/css/AdminDashboard.css" />
+</head>
+
+<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed">
+    <div class="wrapper">
+
+        <!-- NAVBAR -->
+        <nav class="main-header navbar navbar-expand navbar-dark navbar-navy">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                        <i class="fas fa-bars"></i>
+                    </a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="/AdminDashboard/Index" class="nav-link">Dashboard</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+
+                <li class="nav-item">
+                    <span class="nav-link">
+                        <span class="badge-soft"><i class="fa-solid fa-shield-halved"></i> Admin</span>
+                    </span>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/Auth/Logout"
+                       title="Çıkış">
+                        <i class="fas fa-right-from-bracket"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- SIDEBAR -->
+        <aside class="main-sidebar sidebar-dark-navy elevation-4">
+            <a href="/AdminDashboard/Index" class="brand-link">
+                <span class="brand-text">CarServiceTracking</span>
+            </a>
+
+            <div class="sidebar">
+
+                <!-- User -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="https://i.pravatar.cc/80?img=12" class="img-circle elevation-2" alt="Admin">
+                    </div>
+                    <div class="info">
+                        <a href="#" class="d-block">Admin Yönetim</a>
+                        <small class="text-muted">Panel erişimi açık</small>
+                    </div>
+                </div>
+
+                <!-- Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+
+                        <li class="nav-item">
+                            <a href="/AdminDashboard/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminDashboard" ? "active" : "")">
+                                <i class="nav-icon fas fa-chart-line"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-header">YÖNETİM</li>
+
+                        <li class="nav-item">
+                            <a href="/AdminCars/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminCars" ? "active" : "")">
+                                <i class="nav-icon fas fa-car"></i>
+                                <p>Araçlar</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/AdminCustomers/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminCustomers" ? "active" : "")">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>Müşteriler</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/AdminServiceRequests/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminServiceRequests" ? "active" : "")">
+                                <i class="nav-icon fas fa-screwdriver-wrench"></i>
+                                <p>Servis Talepleri</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/AdminAppointments/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminAppointments" ? "active" : "")">
+                                <i class="nav-icon fas fa-calendar-check"></i>
+                                <p>Randevular</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-header">ENVANTER</li>
+
+                        <li class="nav-item">
+                            <a href="/AdminParts/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminParts" ? "active" : "")">
+                                <i class="nav-icon fas fa-cog"></i>
+                                <p>Parçalar</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/AdminMechanics/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminMechanics" ? "active" : "")">
+                                <i class="nav-icon fas fa-user-gear"></i>
+                                <p>Teknisyenler</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-header">FİNANS</li>
+
+                        <li class="nav-item">
+                            <a href="/AdminInvoices/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminInvoices" ? "active" : "")">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+                                <p>Faturalar</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/AdminPayments/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminPayments" ? "active" : "")">
+                                <i class="nav-icon fas fa-credit-card"></i>
+                                <p>Ödemeler</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-header">KİRALAMA</li>
+
+                        <li class="nav-item">
+                            <a href="/AdminRentalVehicles/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminRentalVehicles" ? "active" : "")">
+                                <i class="nav-icon fas fa-car-side"></i>
+                                <p>Kiralık Araçlar</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/AdminRentalAgreements/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminRentalAgreements" ? "active" : "")">
+                                <i class="nav-icon fas fa-file-contract"></i>
+                                <p>Kiralama Sözleşmeleri</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-header">DİĞER</li>
+
+                        <li class="nav-item">
+                            <a href="/AdminListItems/Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminListItems" ? "active" : "")">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>Liste Öğeleri</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-header">SİSTEM</li>
+
+                        <li class="nav-item">
+                            <a href="/AdminSettings/Index" class="nav-link">
+                                <i class="nav-icon fas fa-gear"></i>
+                                <p>Ayarlar</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/auth/logout"
+                               class="nav-link text-danger">
+                                <i class="nav-icon fas fa-right-from-bracket"></i>
+                                <p>Çıkış</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- CONTENT -->
+        <div class="content-wrapper">
+
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2 align-items-center">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">@ViewData["Title"]</h1>
+                        </div>
+                        <div class="col-sm-6 text-sm-right mt-2 mt-sm-0">
+                            <span class="text-muted">
+                                <i class="fa-regular fa-calendar"></i> @DateTime.Now.ToString("dd MMMM yyyy")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </section>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-inline">
+                v1.0
+            </div>
+            <strong>CarServiceTracking</strong> � Admin Panel
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+

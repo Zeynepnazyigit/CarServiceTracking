@@ -1,0 +1,194 @@
+@model List<CarServiceTracking.UI.Web.ViewModels.Invoices.InvoiceListVM>
+
+@{
+    ViewData["Title"] = "Faturalarım";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<section class="py-4">
+    <div class="container-fluid">
+
+        <!-- BAŞLIK -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">
+                    <i class="fa-solid fa-file-invoice text-primary me-2"></i>
+                    Faturalarım
+                </h2>
+                <p class="text-muted mb-0">Servis işlemlerinize ait faturaları görüntüleyin</p>
+            </div>
+        </div>
+
+        <!-- BAŞARI/HATA MESAJLARI -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="fa-solid fa-exclamation-circle me-2"></i>
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- ÖZET KARTLAR -->
+        @if (Model != null && Model.Any())
+        {
+            var totalAmount = Model.Sum(x => x.TotalAmount);
+            var paidAmount = Model.Sum(x => x.PaidAmount);
+            var remainingAmount = Model.Sum(x => x.RemainingAmount);
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fa-solid fa-file-invoice fa-2x mb-2 text-primary"></i>
+                            <div class="text-muted small">Toplam Fatura</div>
+                            <h4 class="fw-bold mt-1">@Model.Count</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fa-solid fa-check-circle fa-2x mb-2 text-success"></i>
+                            <div class="text-muted small">Ödenen</div>
+                            <h4 class="fw-bold mt-1 text-success">@paidAmount.ToString("C2", new System.Globalization.CultureInfo("tr-TR"))</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fa-solid fa-clock fa-2x mb-2 text-warning"></i>
+                            <div class="text-muted small">Kalan Borç</div>
+                            <h4 class="fw-bold mt-1 text-warning">@remainingAmount.ToString("C2", new System.Globalization.CultureInfo("tr-TR"))</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- FATURA LİSTESİ -->
+        @if (Model == null || !Model.Any())
+        {
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fa-solid fa-file-circle-xmark fa-4x text-muted mb-3"></i>
+                    <h5>Henüz faturanız bulunmamaktadır</h5>
+                    <p class="text-muted">Servis işlemleriniz tamamlandığında faturalarınız burada görünecektir.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fa-solid fa-list me-2"></i>
+                        Fatura Listesi
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Fatura No</th>
+                                    <th>Tarih</th>
+                                    <th class="text-end">Toplam</th>
+                                    <th class="text-end">Ödenen</th>
+                                    <th class="text-end">Kalan</th>
+                                    <th>Durum</th>
+                                    <th class="text-center">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderByDescending(x => x.InvoiceDate))
+                                {
+                                    <tr>
+                                        <td>
+                                            <i class="fa-solid fa-hashtag text-muted me-1"></i>
+                                            <strong>@item.InvoiceNumber</strong>
+                                        </td>
+                                        <td>
+                                            <i class="fa-solid fa-calendar text-muted me-1"></i>
+                                            @item.FormattedDate
+                                        </td>
+                                        <td class="text-end">
+                                            <strong>@item.TotalAmount.ToString("C2", new System.Globalization.CultureInfo("tr-TR"))</strong>
+                                        </td>
+                                        <td class="text-end text-success">
+                                            @item.PaidAmount.ToString("C2", new System.Globalization.CultureInfo("tr-TR"))
+                                        </td>
+                                        <td class="text-end">
+                                            @if (item.RemainingAmount > 0)
+                                            {
+                                                <span class="text-danger fw-bold">
+                                                    @item.RemainingAmount.ToString("C2", new System.Globalization.CultureInfo("tr-TR"))
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-success">
+                                                    @item.RemainingAmount.ToString("C2", new System.Globalization.CultureInfo("tr-TR"))
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="@item.StatusBadgeClass">
+                                                @switch (item.PaymentStatus)
+                                                {
+                                                    case "Paid":
+                                                        <i class="fa-solid fa-check me-1"></i>
+                                                        @:Ödendi
+                                                        break;
+                                                    case "PartiallyPaid":
+                                                        <i class="fa-solid fa-hourglass-half me-1"></i>
+                                                        @:Kısmi Ödendi
+                                                        break;
+                                                    case "Pending":
+                                                        <i class="fa-solid fa-clock me-1"></i>
+                                                        @:Bekliyor
+                                                        break;
+                                                    case "Overdue":
+                                                        <i class="fa-solid fa-exclamation-triangle me-1"></i>
+                                                        @:Vadesi Geçti
+                                                        break;
+                                                    default:
+                                                        @item.PaymentStatus
+                                                        break;
+                                                }
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="/Customer/Invoices/Details/@item.Id" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fa-solid fa-eye me-1"></i> Detay
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- GERİ BUTONU -->
+        <div class="mt-4">
+            <a href="/Customer/Home/Index" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left me-1"></i> Ana Sayfaya Dön
+            </a>
+        </div>
+
+    </div>
+</section>

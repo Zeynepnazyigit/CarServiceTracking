@@ -1,49 +1,107 @@
-﻿using CarServiceTracking.Data.Contexts;
-using CarServiceTracking.Core.Entities;
+﻿using CarServiceTracking.API.Authorization;
+using CarServiceTracking.Business.Abstract;
+using CarServiceTracking.Core.DTOs.ListItemDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarServiceTracking.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ListItemsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IListItemService _listItemService;
 
-        public ListItemsController(AppDbContext context)
+        public ListItemsController(IListItemService listItemService)
         {
-            _context = context;
+            _listItemService = listItemService;
         }
 
-        [HttpPost("seed")]
-        public async Task<IActionResult> Seed()
+        // GET: api/listitems
+        [HttpGet]
+        [AdminOnly]
+        public async Task<IActionResult> GetAll()
         {
-            if (_context.Set<ListItem>().Any())
-                return Ok("ListItem zaten dolu.");
+            var result = await _listItemService.GetAllAsync();
+            
+            if (!result.Success)
+                return BadRequest(result);
 
-            var items = new List<ListItem>
-            {
-                // Fuel Types
-                new ListItem { Name="Benzin", ListType="FuelType", SortOrder=1, IsActive=true, IsDeleted=false },
-                new ListItem { Name="Dizel", ListType="FuelType", SortOrder=2, IsActive=true, IsDeleted=false },
-                new ListItem { Name="Elektrik", ListType="FuelType", SortOrder=3, IsActive=true, IsDeleted=false },
-                new ListItem { Name="Hybrid", ListType="FuelType", SortOrder=4, IsActive=true, IsDeleted=false },
+            return Ok(result);
+        }
 
-                // Transmission Types
-                new ListItem { Name="Manuel", ListType="TransmissionType", SortOrder=1, IsActive=true, IsDeleted=false },
-                new ListItem { Name="Otomatik", ListType="TransmissionType", SortOrder=2, IsActive=true, IsDeleted=false },
+        // GET: api/listitems/type/{listType}
+        [HttpGet("type/{listType}")]
+        public async Task<IActionResult> GetByType(string listType)
+        {
+            var result = await _listItemService.GetByTypeAsync(listType);
+            
+            if (!result.Success)
+                return BadRequest(result);
 
-                // Car Types
-                new ListItem { Name="Sedan", ListType="CarType", SortOrder=1, IsActive=true, IsDeleted=false },
-                new ListItem { Name="Hatchback", ListType="CarType", SortOrder=2, IsActive=true, IsDeleted=false },
-                new ListItem { Name="SUV", ListType="CarType", SortOrder=3, IsActive=true, IsDeleted=false },
-                new ListItem { Name="Pickup", ListType="CarType", SortOrder=4, IsActive=true, IsDeleted=false },
-            };
+            return Ok(result);
+        }
 
-            await _context.Set<ListItem>().AddRangeAsync(items);
-            await _context.SaveChangesAsync();
+        // GET: api/listitems/{id}
+        [HttpGet("{id}")]
+        [AdminOnly]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await _listItemService.GetByIdAsync(id);
+            
+            if (!result.Success)
+                return NotFound(result);
 
-            return Ok("ListItem seed tamamlandı ✅");
+            return Ok(result);
+        }
+
+        // POST: api/listitems
+        [HttpPost]
+        [AdminOnly]
+        public async Task<IActionResult> Create([FromBody] ListItemCreateDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _listItemService.CreateAsync(dto);
+            
+            if (!result.Success)
+                return BadRequest(result);
+
+            return CreatedAtAction(nameof(GetById), new { id = result.Data?.Id }, result);
+        }
+
+        // PUT: api/listitems/{id}
+        [HttpPut("{id}")]
+        [AdminOnly]
+        public async Task<IActionResult> Update(int id, [FromBody] ListItemUpdateDTO dto)
+        {
+            if (id != dto.Id)
+                return BadRequest("ID mismatch");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _listItemService.UpdateAsync(dto);
+            
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        // DELETE: api/listitems/{id}
+        [HttpDelete("{id}")]
+        [AdminOnly]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _listItemService.DeleteAsync(id);
+            
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
     }
 }

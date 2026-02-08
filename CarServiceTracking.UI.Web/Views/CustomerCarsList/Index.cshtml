@@ -1,0 +1,222 @@
+@model List<CarServiceTracking.UI.Web.ViewModels.Rentals.RentalVehicleListVM>
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Kiralık Araçlar";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+    var trCulture = new CultureInfo("tr-TR");
+    
+    var availableCount = Model?.Count(v => v.IsAvailable) ?? 0;
+    var totalCount = Model?.Count ?? 0;
+}
+
+<style>
+    .vehicle-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .vehicle-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.3) !important;
+    }
+    .vehicle-image {
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+    }
+    .vehicle-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 0.9rem;
+        padding: 8px 15px;
+        border-radius: 20px;
+    }
+    .vehicle-price {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        background: rgba(0,0,0,0.8);
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+    .vehicle-specs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .spec-badge {
+        background: #2d3238;
+        color: #adb5bd;
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .spec-badge i {
+        color: #17a2b8;
+    }
+    .card-img-overlay-custom {
+        position: relative;
+    }
+    .ribbon {
+        position: absolute;
+        top: 20px;
+        left: -5px;
+        background: #dc3545;
+        color: white;
+        padding: 5px 15px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+    .ribbon.available {
+        background: #28a745;
+    }
+</style>
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-car-side text-info mr-2"></i>
+                    Kiralık Araçlar
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Customer/Home/Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active">Kiralık Araçlar</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- Bilgilendirme -->
+        <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h5><i class="icon fas fa-info"></i> Bilgilendirme</h5>
+            Aracınızın bakımı uzun sürdüğünde size geçici olarak bu araçlardan birini kiralayabilirsiniz.
+            Toplam <strong>@totalCount</strong> araç mevcut, <strong>@availableCount</strong> tanesi şu an müsait.
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-car-crash fa-3x mb-3"></i>
+                <h4>Şu anda kiralık araç bulunmamaktadır.</h4>
+                <p>Lütfen daha sonra tekrar kontrol ediniz.</p>
+            </div>
+        }
+        else
+        {
+            <!-- Araç Kartları Grid -->
+            <div class="row">
+                @foreach (var vehicle in Model.OrderByDescending(v => v.IsAvailable).ThenBy(v => v.DailyRate))
+                {
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="card vehicle-card shadow-lg h-100">
+                            <!-- Araç Resmi -->
+                            <div class="card-img-overlay-custom">
+                                <img src="@vehicle.ImageUrlOrDefault" 
+                                     alt="@vehicle.Brand @vehicle.Model" 
+                                     class="vehicle-image card-img-top"
+                                     onerror="this.src='https://via.placeholder.com/400x200/343a40/ffffff?text=@vehicle.Brand+@vehicle.Model'">
+                                
+                                <!-- Müsaitlik Ribbon -->
+                                @if (vehicle.IsAvailable)
+                                {
+                                    <div class="ribbon available">
+                                        <i class="fas fa-check-circle mr-1"></i> MÜSAİT
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="ribbon">
+                                        <i class="fas fa-clock mr-1"></i> KİRADA
+                                    </div>
+                                }
+                                
+                                <!-- Fiyat Badge -->
+                                <div class="vehicle-price">
+                                    <i class="fas fa-tag mr-1"></i>
+                                    @vehicle.DailyRate.ToString("C0", trCulture)/gün
+                                </div>
+                            </div>
+
+                            <!-- Araç Bilgileri -->
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h4 class="card-title mb-0 font-weight-bold">
+                                        @vehicle.Brand @vehicle.Model
+                                    </h4>
+                                    <span class="badge badge-secondary">@vehicle.Year</span>
+                                </div>
+                                
+                                <p class="text-muted mb-2">
+                                    <i class="fas fa-id-card mr-1"></i>
+                                    <code>@vehicle.PlateNumber</code>
+                                </p>
+
+                                <!-- Özellikler -->
+                                <div class="vehicle-specs">
+                                    <span class="spec-badge">
+                                        <i class="fas fa-gas-pump"></i>
+                                        @vehicle.FuelType
+                                    </span>
+                                    <span class="spec-badge">
+                                        <i class="fas fa-cogs"></i>
+                                        @vehicle.TransmissionType
+                                    </span>
+                                    @if (!string.IsNullOrEmpty(vehicle.Color))
+                                    {
+                                        <span class="spec-badge">
+                                            <i class="fas fa-palette"></i>
+                                            @vehicle.Color
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Aksiyon Butonları -->
+                            <div class="card-footer bg-transparent border-0 pb-3">
+                                <div class="d-flex gap-2">
+                                    <a href="/Customer/CarsList/Detail/@vehicle.Id" class="btn btn-info flex-grow-1">
+                                        <i class="fas fa-eye mr-1"></i> Detaylar
+                                    </a>
+                                    @if (vehicle.IsAvailable)
+                                    {
+                                        <a href="/Customer/Rentals/Create?carId=@vehicle.Id" class="btn btn-success flex-grow-1">
+                                            <i class="fas fa-key mr-1"></i> Kirala
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-secondary flex-grow-1" disabled>
+                                            <i class="fas fa-ban mr-1"></i> Kirada
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+</section>

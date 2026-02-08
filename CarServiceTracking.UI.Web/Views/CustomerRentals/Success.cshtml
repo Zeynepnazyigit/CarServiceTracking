@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Başarılı";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/CustomerRentalsSuccess.css" />
+
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="hero-card p-4 p-lg-5 text-center">
+                    <div class="success-message display-4 mb-3">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+
+                    <h2 class="fw-bold">Rezervasyon Alındı!</h2>
+                    <p class="section-subtitle mt-2">
+                        Kiralama talebin başarıyla oluşturuldu. Yakında seninle iletişime geçeceğiz.
+                    </p>
+
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <a class="btn btn-outline-light" href="/Customer/Home">Ana sayfa</a>
+                        <a class="btn btn-brand" href="/Customer/Home#cars">Araçlara dön</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

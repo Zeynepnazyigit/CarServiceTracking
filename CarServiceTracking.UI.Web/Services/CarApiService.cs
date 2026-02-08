@@ -1,51 +1,149 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
+using CarServiceTracking.UI.Web.Models.ApiModels;
+using CarServiceTracking.UI.Web.ViewModels.Cars;
+using CarServiceTracking.UI.Web.Models.ApiModels.CarApiModels;
 
 namespace CarServiceTracking.UI.Web.Services
 {
     public class CarApiService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _client;
 
         public CarApiService(IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
+            // ✅ BaseAddress ayarlı "api" client
+            _client = httpClientFactory.CreateClient("api");
         }
 
-        public async Task<List<CarListVM>> GetAllCarsAsync()
+        // ✅ GET: api/Cars
+        public async Task<List<CarListVM>> GetAllCarsAsync(string? searchTerm = null)
         {
-            var client = _httpClientFactory.CreateClient("api");
+            var url = string.IsNullOrWhiteSpace(searchTerm) 
+                ? "api/Cars" 
+                : $"api/Cars?search={Uri.EscapeDataString(searchTerm)}";
 
-            var response = await client.GetFromJsonAsync<ApiResponse<List<CarListVM>>>("api/Cars");
+            var response = await _client.GetFromJsonAsync<ApiResponse<List<CarListApiModel>>>(url);
 
-            return response?.Data ?? new List<CarListVM>();
+            if (response == null || !response.Success || response.Data == null)
+                return new List<CarListVM>();
+
+            // DTO → VM mapping
+            return response.Data.Select(dto => new CarListVM
+            {
+                Id = dto.Id,
+                PlateNumber = dto.PlateNumber,
+                Brand = dto.Brand,
+                Model = dto.Model,
+                BrandModel = dto.BrandModel,
+                Year = dto.Year,
+                Color = dto.Color,
+                Mileage = dto.Mileage,
+                CustomerId = dto.CustomerId,
+                CustomerName = dto.CustomerName,
+                FuelTypeName = dto.FuelTypeName,
+                TransmissionTypeName = dto.TransmissionTypeName,
+                CarTypeName = dto.CarTypeName,
+                IsActive = dto.IsActive,
+                CreatedDate = dto.CreatedDate
+            }).ToList();
         }
-    }
 
-    // API response formatına göre
-    public class ApiResponse<T>
-    {
-        public T? Data { get; set; }
-        public bool Success { get; set; }
-        public string? Message { get; set; }
-    }
+        // ✅ GET: api/Cars/{id}
+        public async Task<CarDetailVM?> GetCarByIdAsync(int id)
+        {
+            var response =
+                await _client.GetFromJsonAsync<ApiResponse<CarDetailVM>>($"api/Cars/{id}");
 
-    // UI'da listelemek için basit model
-    public class CarListVM
-    {
-        public int Id { get; set; }
-        public string PlateNumber { get; set; } = "";
-        public string Brand { get; set; } = "";
-        public string Model { get; set; } = "";
-        public string BrandModel { get; set; } = "";
-        public int Year { get; set; }
-        public string? Color { get; set; }
-        public int? Mileage { get; set; }
-        public int CustomerId { get; set; }
-        public string CustomerName { get; set; } = "";
-        public string? FuelTypeName { get; set; }
-        public string? TransmissionTypeName { get; set; }
-        public string? CarTypeName { get; set; }
-        public bool IsActive { get; set; }
-        public DateTime CreatedDate { get; set; }
+            if (response == null || !response.Success)
+                return null;
+
+            return response.Data;
+        }
+
+        // ✅ POST: api/Cars
+        public async Task<bool> CreateCarAsync(CarCreateVM model)
+        {
+            try
+            {
+                // VM'yi DTO'ya dönüştür
+                var dto = new CarCreateApiModel
+                {
+                    PlateNumber = model.PlateNumber,
+                    Brand = model.Brand,
+                    Model = model.CarModel,
+                    Year = model.Year,
+                    Color = model.Color,
+                    ChassisNumber = model.ChassisNumber,
+                    Mileage = model.Mileage,
+                    EngineNumber = model.EngineNumber,
+                    Notes = model.Notes,
+                    CustomerId = model.CustomerId,
+                    FuelTypeId = model.FuelTypeId,
+                    TransmissionTypeId = model.TransmissionTypeId,
+                    CarTypeId = model.CarTypeId
+                };
+
+                var response = await _client.PostAsJsonAsync("api/Cars", dto);
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"API Error: {response.StatusCode} - {errorContent}");
+                    return false;
+                }
+
+                var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
+                return result?.Success ?? false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in CreateCarAsync: {ex.Message}");
+                return false;
+            }
+        }
+
+        // ✅ PUT: api/Cars
+        public async Task<bool> UpdateCarAsync(CarUpdateVM model)
+        {
+            // VM'yi DTO'ya dönüştür
+            var dto = new CarUpdateApiModel
+            {
+                Id = model.Id,
+                PlateNumber = model.PlateNumber,
+                Brand = model.Brand,
+                Model = model.CarModel,
+                Year = model.Year,
+                Color = model.Color,
+                ChassisNumber = model.ChassisNumber,
+                Mileage = model.Mileage,
+                EngineNumber = model.EngineNumber,
+                Notes = model.Notes,
+                CustomerId = model.CustomerId,
+                FuelTypeId = model.FuelTypeId,
+                TransmissionTypeId = model.TransmissionTypeId,
+                CarTypeId = model.CarTypeId
+            };
+
+            var response = await _client.PutAsJsonAsync("api/Cars", dto);
+            
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
+            return result?.Success ?? false;
+        }
+
+        // ✅ DELETE: api/Cars/{id}
+        public async Task<bool> DeleteCarAsync(int id)
+        {
+            var response = await _client.DeleteAsync($"api/Cars/{id}");
+            
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
+            return result?.Success ?? false;
+        }
     }
 }

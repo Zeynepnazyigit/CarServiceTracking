@@ -1,0 +1,184 @@
+@model List<CarServiceTracking.UI.Web.ViewModels.Rentals.CustomerRentalListVM>
+@using System.Globalization
+@{
+    ViewData["Title"] = "Kiralamalarım";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+    var trCulture = new CultureInfo("tr-TR");
+
+    // Özet hesaplamaları
+    var totalRentals = Model.Count;
+    var activeRentals = Model.Count(r => r.Status == "Active");
+    var totalAmount = Model.Sum(r => r.TotalAmount);
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-car-side text-info mr-2"></i>
+                    Kiralamalarım
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Customer/Home/Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active">Kiralamalarım</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- Başarı/Hata Mesajları -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <i class="fas fa-check-circle mr-2"></i>@TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <i class="fas fa-exclamation-circle mr-2"></i>@TempData["Error"]
+            </div>
+        }
+
+        <!-- Özet Kartları -->
+        <div class="row">
+            <div class="col-lg-4 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@totalRentals</h3>
+                        <p>Toplam Kiralama</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-car-side"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>@activeRentals</h3>
+                        <p>Aktif Kiralama</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>@totalAmount.ToString("C2", trCulture)</h3>
+                        <p>Toplam Tutar</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-lira-sign"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bilgilendirme -->
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle mr-2"></i>
+            <strong>Bilgi:</strong> Aracınızın bakımı uzun sürdüğünde size geçici olarak kiralık araç tahsis edilebilir. 
+            Kiralama sözleşmelerinizi bu sayfadan takip edebilirsiniz.
+        </div>
+
+        <!-- Kiralama Listesi -->
+        <div class="card card-outline card-info">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-list mr-2"></i>
+                    Kiralama Geçmişi
+                </h3>
+            </div>
+            <div class="card-body">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="bg-dark">
+                                <tr>
+                                    <th style="width: 50px">#</th>
+                                    <th>Sözleşme No</th>
+                                    <th>Araç</th>
+                                    <th>Tarih Aralığı</th>
+                                    <th>Toplam Tutar</th>
+                                    <th>Durum</th>
+                                    <th style="width: 100px">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{var index = 1;}
+                                @foreach (var rental in Model.OrderByDescending(r => r.StartDate))
+                                {
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>
+                                            <code>@rental.AgreementNumber</code>
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-car text-info mr-1"></i>
+                                            @rental.VehicleInfo
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-calendar-alt text-muted mr-1"></i>
+                                            @rental.DateRange
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-primary" style="font-size: 1rem;">
+                                                @rental.TotalAmount.ToString("C2", trCulture)
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @{
+                                                var statusIcon = rental.Status switch
+                                                {
+                                                    "Active" => "fas fa-play-circle",
+                                                    "Completed" => "fas fa-check-circle",
+                                                    "Cancelled" => "fas fa-times-circle",
+                                                    _ => "fas fa-question-circle"
+                                                };
+                                            }
+                                            <span class="@rental.StatusBadgeClass">
+                                                <i class="@statusIcon mr-1"></i>@rental.StatusText
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="/Customer/Rentals/Details/@rental.Id" class="btn btn-info btn-sm" title="Detaylar">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    index++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-secondary text-center">
+                        <i class="fas fa-car-side fa-3x mb-3"></i>
+                        <h4>Henüz kiralama kaydınız bulunmuyor.</h4>
+                        <p class="mb-0">Aracınızın bakımı uzun sürdüğünde size geçici araç tahsis edilecektir.</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</section>

@@ -1,0 +1,195 @@
+@model CarServiceTracking.UI.Web.ViewModels.Payments.PaymentCreateVM
+@using System.Globalization
+@{
+    ViewData["Title"] = "Yeni Ödeme";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+    var trCulture = new CultureInfo("tr-TR");
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-plus-circle text-success mr-2"></i>
+                    Yeni Ödeme
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Customer/Home/Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item"><a href="/Customer/Payments/Index">Ödemelerim</a></li>
+                    <li class="breadcrumb-item active">Yeni Ödeme</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- Hata Mesajı -->
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <i class="fas fa-exclamation-circle mr-2"></i>@TempData["Error"]
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="card card-outline card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-money-bill-wave mr-2"></i>
+                            Ödeme Bilgileri
+                        </h3>
+                    </div>
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="card-body">
+
+                            <!-- Validation Summary -->
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="display:none;"></div>
+
+                            <!-- Fatura Seçimi -->
+                            <div class="form-group">
+                                <label asp-for="InvoiceId" class="font-weight-bold">
+                                    <i class="fas fa-file-invoice mr-1"></i> Fatura
+                                    <span class="text-danger">*</span>
+                                </label>
+                                @if (ViewBag.Invoices != null && ((List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Invoices).Any())
+                                {
+                                    <select asp-for="InvoiceId" asp-items="@ViewBag.Invoices" class="form-control select2">
+                                        <option value="">-- Fatura Seçin --</option>
+                                    </select>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Ödeme bekleyen faturanız bulunmuyor.
+                                    </div>
+                                    <input type="hidden" asp-for="InvoiceId" />
+                                }
+                                <span asp-validation-for="InvoiceId" class="text-danger"></span>
+                            </div>
+
+                            <!-- Ödeme Tarihi -->
+                            <div class="form-group">
+                                <label asp-for="PaymentDate" class="font-weight-bold">
+                                    <i class="fas fa-calendar-alt mr-1"></i> Ödeme Tarihi
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="PaymentDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="PaymentDate" class="text-danger"></span>
+                            </div>
+
+                            <!-- Tutar -->
+                            <div class="form-group">
+                                <label asp-for="Amount" class="font-weight-bold">
+                                    <i class="fas fa-lira-sign mr-1"></i> Ödeme Tutarı
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Amount" type="number" step="0.01" min="0.01" class="form-control" placeholder="0.00" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">₺</span>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="Amount" class="text-danger"></span>
+                                <small class="text-muted">Fatura kalan tutarından fazla ödeme yapılamaz.</small>
+                            </div>
+
+                            <!-- Ödeme Yöntemi -->
+                            <div class="form-group">
+                                <label asp-for="PaymentMethod" class="font-weight-bold">
+                                    <i class="fas fa-credit-card mr-1"></i> Ödeme Yöntemi
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="PaymentMethod" asp-items="@ViewBag.PaymentMethods" class="form-control">
+                                    <option value="">-- Ödeme Yöntemi Seçin --</option>
+                                </select>
+                                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                            </div>
+
+                            <!-- İşlem/Referans No -->
+                            <div class="form-group">
+                                <label asp-for="TransactionId" class="font-weight-bold">
+                                    <i class="fas fa-hashtag mr-1"></i> Referans/İşlem Numarası
+                                </label>
+                                <input asp-for="TransactionId" class="form-control" placeholder="Opsiyonel - Havale/EFT için dekont numarası" />
+                                <span asp-validation-for="TransactionId" class="text-danger"></span>
+                                <small class="text-muted">Banka işlemi için dekont/referans numarası girebilirsiniz.</small>
+                            </div>
+
+                            <!-- Notlar -->
+                            <div class="form-group">
+                                <label asp-for="Notes" class="font-weight-bold">
+                                    <i class="fas fa-sticky-note mr-1"></i> Notlar
+                                </label>
+                                <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Ödeme ile ilgili notlar (opsiyonel)"></textarea>
+                                <span asp-validation-for="Notes" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between">
+                                <a href="/Customer/Payments/Index" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left mr-1"></i> Geri Dön
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save mr-1"></i> Ödemeyi Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Bilgilendirme Kartı -->
+                <div class="card card-outline card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Ödeme Bilgilendirmesi
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="mb-0">
+                            <li><strong>Nakit:</strong> Servis merkezinde nakit ödeme.</li>
+                            <li><strong>Kredi Kartı:</strong> Taksitli veya tek çekim kredi kartı ödemesi.</li>
+                            <li><strong>Banka Kartı:</strong> Banka/debit kartı ile ödeme.</li>
+                            <li><strong>Havale/EFT:</strong> Banka hesabımıza havale veya EFT ile ödeme.</li>
+                        </ul>
+                        <hr />
+                        <p class="mb-0 text-muted">
+                            <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
+                            Ödemeniz onaylandıktan sonra fatura durumu otomatik olarak güncellenecektir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            // Select2 initialization
+            if ($.fn.select2) {
+                $('.select2').select2({
+                    theme: 'bootstrap4',
+                    placeholder: '-- Seçim Yapın --',
+                    allowClear: true
+                });
+            }
+        });
+    </script>
+}

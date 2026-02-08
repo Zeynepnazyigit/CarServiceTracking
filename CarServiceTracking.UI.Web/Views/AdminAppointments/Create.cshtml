@@ -1,0 +1,89 @@
+@model CarServiceTracking.UI.Web.ViewModels.Appointments.AppointmentCreateVM
+
+@{
+    ViewData["Title"] = "Yeni Randevu Oluştur";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-plus"></i> Yeni Randevu Oluştur
+        </h3>
+    </div>
+    <div class="card-body">
+        <form asp-controller="AdminAppointments" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="CustomerId" class="font-weight-bold">Müşteri</label>
+                        <select asp-for="CustomerId" asp-items="ViewBag.Customers" class="form-control">
+                            <option value="">-- Müşteri Seçiniz --</option>
+                        </select>
+                        <span asp-validation-for="CustomerId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="CarId" class="font-weight-bold">Araç</label>
+                        <select asp-for="CarId" asp-items="ViewBag.Cars" class="form-control">
+                            <option value="">-- Araç Seçiniz --</option>
+                        </select>
+                        <span asp-validation-for="CarId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="AppointmentDate" class="font-weight-bold"></label>
+                        <input asp-for="AppointmentDate" class="form-control" type="date" />
+                        <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="TimeSlot" class="font-weight-bold"></label>
+                        <input asp-for="TimeSlot" class="form-control" placeholder="09:00 - 10:00" />
+                        <span asp-validation-for="TimeSlot" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RequestedService" class="font-weight-bold"></label>
+                <input asp-for="RequestedService" class="form-control" placeholder="Periyodik Bakım" />
+                <span asp-validation-for="RequestedService" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="font-weight-bold"></label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Randevu açıklaması"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CustomerNotes" class="font-weight-bold"></label>
+                <textarea asp-for="CustomerNotes" class="form-control" rows="2" placeholder="Müşteri notları"></textarea>
+                <span asp-validation-for="CustomerNotes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <a asp-controller="AdminAppointments" asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Geri Dön
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Kaydet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

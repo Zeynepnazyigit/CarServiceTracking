@@ -1,0 +1,85 @@
+@model CarServiceTracking.UI.Web.ViewModels.Payments.PaymentCreateVM
+
+@{
+    ViewData["Title"] = "Yeni Ödeme Kaydet";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-plus"></i> Yeni Ödeme Kaydet
+        </h3>
+    </div>
+    <div class="card-body">
+        <form asp-controller="AdminPayments" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="InvoiceId" class="font-weight-bold">Fatura ID</label>
+                        <input asp-for="InvoiceId" class="form-control" type="number" placeholder="Fatura ID giriniz" />
+                        <span asp-validation-for="InvoiceId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Amount" class="font-weight-bold"></label>
+                        <input asp-for="Amount" class="form-control" type="number" step="0.01" placeholder="0.00" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="PaymentDate" class="font-weight-bold"></label>
+                        <input asp-for="PaymentDate" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="PaymentDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="PaymentMethod" class="font-weight-bold"></label>
+                        <select asp-for="PaymentMethod" class="form-control">
+                            <option value="">-- Ödeme Yöntemi Seçiniz --</option>
+                            <option value="Cash">Nakit</option>
+                            <option value="CreditCard">Kredi Kartı</option>
+                            <option value="BankTransfer">Banka Transferi</option>
+                            <option value="Check">Çek</option>
+                        </select>
+                        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TransactionId" class="font-weight-bold"></label>
+                <input asp-for="TransactionId" class="form-control" placeholder="İşlem numarası (opsiyonel)" />
+                <span asp-validation-for="TransactionId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Notes" class="font-weight-bold"></label>
+                <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Ödeme notları"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <a asp-controller="AdminPayments" asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Geri Dön
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Kaydet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

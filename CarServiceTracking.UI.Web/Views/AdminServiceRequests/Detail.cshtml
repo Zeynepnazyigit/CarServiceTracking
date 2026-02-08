@@ -1,0 +1,58 @@
+@model CarServiceTracking.UI.Web.ViewModels.ServiceRequests.ServiceRequestDetailVM
+
+@{
+    ViewData["Title"] = "Servis Talebi Detayı";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="mb-3">
+        <a href="/Admin/ServiceRequests/Index" class="btn btn-outline-secondary btn-sm">
+            � Listeye D�n
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Servis Talebi #@Model.Id</h5>
+        </div>
+
+        <div class="card-body">
+            <dl class="row">
+
+                <dt class="col-sm-3">Araç</dt>
+                <dd class="col-sm-9">@Model.CarName</dd>
+
+                <dt class="col-sm-3">Açıklama</dt>
+                <dd class="col-sm-9">@Model.ProblemDescription</dd>
+
+                <dt class="col-sm-3">Durum</dt>
+                <dd class="col-sm-9">
+                    @switch (Model.Status)
+                    {
+                        case 0:
+                            <span class="badge bg-warning text-dark">Beklemede</span>
+                            break;
+                        case 1:
+                            <span class="badge bg-info">İşlemde</span>
+                            break;
+                        case 2:
+                            <span class="badge bg-success">Tamamlandı</span>
+                            break;
+                        case 3:
+                            <span class="badge bg-danger">İptal</span>
+                            break;
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Oluşturulma Tarihi</dt>
+                <dd class="col-sm-9">
+                    @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                </dd>
+
+            </dl>
+        </div>
+    </div>
+</div>
+
+

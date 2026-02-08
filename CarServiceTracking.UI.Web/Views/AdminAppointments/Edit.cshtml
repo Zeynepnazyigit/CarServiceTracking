@@ -1,0 +1,107 @@
+@model CarServiceTracking.UI.Web.ViewModels.Appointments.AppointmentEditVM
+
+@{
+    ViewData["Title"] = "Randevu Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-warning text-dark">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-edit"></i> Randevu Düzenle
+        </h3>
+    </div>
+    <div class="card-body">
+        <form asp-controller="AdminAppointments" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Id)
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="CustomerId" class="font-weight-bold">Müşteri</label>
+                        <select asp-for="CustomerId" asp-items="ViewBag.Customers" class="form-control">
+                            <option value="">-- Müşteri Seçiniz --</option>
+                        </select>
+                        <span asp-validation-for="CustomerId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="CarId" class="font-weight-bold">Araç</label>
+                        <select asp-for="CarId" asp-items="ViewBag.Cars" class="form-control">
+                            <option value="">-- Araç Seçiniz --</option>
+                        </select>
+                        <span asp-validation-for="CarId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="AppointmentDate" class="font-weight-bold"></label>
+                        <input asp-for="AppointmentDate" class="form-control" type="date" />
+                        <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="TimeSlot" class="font-weight-bold"></label>
+                        <input asp-for="TimeSlot" class="form-control" />
+                        <span asp-validation-for="TimeSlot" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RequestedService" class="font-weight-bold"></label>
+                <input asp-for="RequestedService" class="form-control" />
+                <span asp-validation-for="RequestedService" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Status" class="font-weight-bold"></label>
+                <select asp-for="Status" class="form-control">
+                    <option value="Pending">Bekliyor</option>
+                    <option value="Confirmed">Onaylandı</option>
+                    <option value="Completed">Tamamlandı</option>
+                    <option value="Cancelled">İptal</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="font-weight-bold"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CustomerNotes" class="font-weight-bold"></label>
+                <textarea asp-for="CustomerNotes" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="CustomerNotes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AdminNotes" class="font-weight-bold"></label>
+                <textarea asp-for="AdminNotes" class="form-control" rows="2" placeholder="Admin notları"></textarea>
+                <span asp-validation-for="AdminNotes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <a asp-controller="AdminAppointments" asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Geri Dön
+                </a>
+                <button type="submit" class="btn btn-warning">
+                    <i class="fas fa-save"></i> Güncelle
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

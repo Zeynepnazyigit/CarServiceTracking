@@ -53,7 +53,7 @@ namespace CarServiceTracking.Data.Configurations
 
             // Relationships
             builder.HasOne(c => c.Customer)
-                .WithMany()
+                .WithMany(cu => cu.Cars)
                 .HasForeignKey(c => c.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
 

@@ -1,0 +1,228 @@
+@model CarServiceTracking.UI.Web.ViewModels.Rentals.RentalDetailVM
+@using System.Globalization
+@{
+    ViewData["Title"] = "Kiralama Detayları";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+    var trCulture = new CultureInfo("tr-TR");
+
+    var statusIcon = Model.Status switch
+    {
+        "Active" => "fas fa-play-circle text-success",
+        "Completed" => "fas fa-check-circle text-primary",
+        "Cancelled" => "fas fa-times-circle text-danger",
+        _ => "fas fa-question-circle"
+    };
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-file-contract text-info mr-2"></i>
+                    Kiralama Detayları
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Customer/Home/Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item"><a href="/Customer/Rentals/Index">Kiralamalarım</a></li>
+                    <li class="breadcrumb-item active">Detay</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <!-- Sol Kolon - Sözleşme Bilgileri -->
+            <div class="col-lg-8">
+                <div class="card card-outline card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Sözleşme Bilgileri
+                        </h3>
+                        <div class="card-tools">
+                            <span class="@Model.StatusBadgeClass" style="font-size: 1rem;">
+                                <i class="@statusIcon mr-1"></i>@Model.StatusText
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl>
+                                    <dt><i class="fas fa-hashtag mr-1"></i> Sözleşme No</dt>
+                                    <dd class="mb-3"><code class="h5">@Model.AgreementNumber</code></dd>
+
+                                    <dt><i class="fas fa-car mr-1"></i> Araç</dt>
+                                    <dd class="mb-3">
+                                        @if (!string.IsNullOrEmpty(Model.VehicleInfo))
+                                        {
+                                            @Model.VehicleInfo
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Araç #@Model.RentalVehicleId</span>
+                                        }
+                                    </dd>
+
+                                    <dt><i class="fas fa-calendar-alt mr-1"></i> Kiralama Tarihleri</dt>
+                                    <dd class="mb-3">
+                                        <span class="badge badge-info">@Model.StartDate.ToString("dd MMMM yyyy", trCulture)</span>
+                                        <i class="fas fa-arrow-right mx-2"></i>
+                                        <span class="badge badge-info">@Model.EndDate.ToString("dd MMMM yyyy", trCulture)</span>
+                                    </dd>
+
+                                    <dt><i class="fas fa-clock mr-1"></i> Toplam Süre</dt>
+                                    <dd class="mb-3">
+                                        <span class="badge badge-secondary">@Model.TotalDays gün</span>
+                                    </dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl>
+                                    <dt><i class="fas fa-tachometer-alt mr-1"></i> Başlangıç Km</dt>
+                                    <dd class="mb-3">
+                                        @if (Model.StartMileage.HasValue)
+                                        {
+                                            <span>@Model.StartMileage.Value.ToString("N0", trCulture) km</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </dd>
+
+                                    <dt><i class="fas fa-tachometer-alt mr-1"></i> Bitiş Km</dt>
+                                    <dd class="mb-3">
+                                        @if (Model.EndMileage.HasValue)
+                                        {
+                                            <span>@Model.EndMileage.Value.ToString("N0", trCulture) km</span>
+                                            <br />
+                                            <small class="text-muted">
+                                                Toplam: @((Model.EndMileage.Value - (Model.StartMileage ?? 0)).ToString("N0", trCulture)) km
+                                            </small>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Henüz teslim edilmedi</span>
+                                        }
+                                    </dd>
+
+                                    <dt><i class="fas fa-sticky-note mr-1"></i> Notlar</dt>
+                                    <dd class="mb-3">
+                                        @if (!string.IsNullOrEmpty(Model.Notes))
+                                        {
+                                            @Model.Notes
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aktif Kiralama için Bilgilendirme -->
+                @if (Model.Status == "Active")
+                {
+                    <div class="alert alert-success">
+                        <h5><i class="icon fas fa-car"></i> Araç Kullanımda</h5>
+                        Bu araç şu anda sizin kullanımınızdadır. Lütfen kiralama süresinin sonunda aracı belirlenen noktaya teslim ediniz.
+                        <hr />
+                        <p class="mb-0">
+                            <strong>Teslim Tarihi:</strong> @Model.EndDate.ToString("dd MMMM yyyy, dddd", trCulture)
+                        </p>
+                    </div>
+                }
+            </div>
+
+            <!-- Sağ Kolon - Ücret Özeti -->
+            <div class="col-lg-4">
+                <div class="card card-outline card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-lira-sign mr-2"></i>
+                            Ücret Bilgileri
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <tr>
+                                <td>Günlük Ücret:</td>
+                                <td class="text-right">@Model.DailyRate.ToString("C2", trCulture)</td>
+                            </tr>
+                            <tr>
+                                <td>Kiralama Süresi:</td>
+                                <td class="text-right">@Model.TotalDays gün</td>
+                            </tr>
+                            <tr>
+                                <td>Depozito:</td>
+                                <td class="text-right">@Model.DepositAmount.ToString("C2", trCulture)</td>
+                            </tr>
+                            <tr class="table-active font-weight-bold">
+                                <td>Toplam Tutar:</td>
+                                <td class="text-right text-success h5">@Model.TotalAmount.ToString("C2", trCulture)</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Hızlı Linkler -->
+                <div class="card card-outline card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-link mr-2"></i>
+                            Hızlı Linkler
+                        </h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="nav nav-pills flex-column">
+                            <li class="nav-item">
+                                <a href="/Customer/Rentals/Index" class="nav-link">
+                                    <i class="fas fa-list mr-2"></i>
+                                    Tüm Kiralamalarım
+                                    <i class="fas fa-chevron-right float-right mt-1"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/Customer/ServiceRequests/Index" class="nav-link">
+                                    <i class="fas fa-screwdriver-wrench mr-2"></i>
+                                    Servis Kayıtlarım
+                                    <i class="fas fa-chevron-right float-right mt-1"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/Customer/Invoices/Index" class="nav-link">
+                                    <i class="fas fa-file-invoice mr-2"></i>
+                                    Faturalarım
+                                    <i class="fas fa-chevron-right float-right mt-1"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geri Dön -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <a href="/Customer/Rentals/Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left mr-1"></i> Kiralamalarıma Dön
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>

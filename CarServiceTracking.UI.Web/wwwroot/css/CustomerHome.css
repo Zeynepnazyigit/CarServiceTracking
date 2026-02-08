@@ -1,0 +1,120 @@
+/* ============================= */
+/* CUSTOMER HOME PAGE STYLES     */
+/* ============================= */
+
+/* Main Heading */
+.home-main-heading {
+    max-width: 780px;
+}
+
+    .home-main-heading .brand-accent {
+        color: var(--brand);
+    }
+
+/* Subtitle */
+.home-subtitle {
+    max-width: 720px;
+}
+
+/* ============================= */
+/* SUMMARY CARDS                 */
+/* ============================= */
+
+.summary-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+    .summary-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+.summary-icon {
+    margin-bottom: 0.25rem;
+}
+
+/* Icon Colors */
+.icon-brand {
+    color: var(--brand);
+}
+
+.icon-cyan {
+    color: #38bdf8;
+}
+
+.icon-green {
+    color: #22c55e;
+}
+
+.icon-orange {
+    color: #f59e0b;
+}
+
+/* ============================= */
+/* SERVICE REQUEST TABLE         */
+/* ============================= */
+
+.text-truncate-cell {
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Status Badges */
+.badge-pending {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.badge-inprogress {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.badge-completed {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.badge-cancelled {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* ============================= */
+/* RENTAL BANNER                 */
+/* ============================= */
+
+.rental-banner {
+    border-left: 3px solid var(--brand);
+}
+
+.rental-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(47, 107, 255, 0.12);
+    color: var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}

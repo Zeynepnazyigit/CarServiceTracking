@@ -1,0 +1,64 @@
+@model List<CarServiceTracking.UI.Web.ViewModels.Mechanics.MechanicListVM>
+
+@{
+    ViewData["Title"] = "Müsait Teknisyenler";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-check-circle"></i> Müsait Teknisyenler
+        </h3>
+        <div class="card-tools">
+            <a asp-controller="AdminMechanics" asp-action="Index" class="btn btn-sm btn-light">
+                <i class="fas fa-arrow-left"></i> Tüm Teknisyenler
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-warning m-3">
+                <i class="fas fa-exclamation-triangle"></i> Şu anda müsait teknisyen bulunmamaktadır.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success m-3 mb-0">
+                <i class="fas fa-check-circle"></i> <strong>@Model.Count</strong> adet müsait teknisyen bulunmaktadır.
+            </div>
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>Telefon</th>
+                        <th>Uzmanlık</th>
+                        <th class="text-right">Saatlik Ücret</th>
+                        <th class="text-center">Aktif Görevler</th>
+                        <th class="text-center">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var mechanic in Model)
+                    {
+                        <tr>
+                            <td><strong><i class="fas fa-user-check text-success"></i> @mechanic.FirstName @mechanic.LastName</strong></td>
+                            <td><i class="fas fa-phone"></i> @mechanic.PhoneNumber</td>
+                            <td><span class="badge badge-info">@mechanic.Specialization</span></td>
+                            <td class="text-right">@mechanic.HourlyRate.ToString("C2")</td>
+                            <td class="text-center">
+                                <span class="badge badge-warning">@mechanic.ActiveAssignments</span>
+                            </td>
+                            <td class="text-center">
+                                <a asp-controller="AdminMechanics" asp-action="Details" asp-route-id="@mechanic.Id" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i> Detay
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

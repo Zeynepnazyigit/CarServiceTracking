@@ -11,6 +11,7 @@ namespace CarServiceTracking.Business.Abstract
         Task<IDataResult<List<CarListDTO>>> GetActiveAsync();
         Task<IDataResult<List<CarListItemDTO>>> GetCarListItemsAsync();
         Task<IDataResult<List<CarListDTO>>> GetCarsByCustomerIdAsync(int customerId);
+        Task<IDataResult<List<CarListDTO>>> SearchCarsAsync(string searchTerm);
         Task<IDataResult<CarDetailDTO>> GetByIdAsync(int id);
         Task<IDataResult<CarDetailDTO>> GetByPlateNumberAsync(string plateNumber);
         Task<IDataResult<CarDetailDTO>> CreateAsync(CarCreateDTO dto);

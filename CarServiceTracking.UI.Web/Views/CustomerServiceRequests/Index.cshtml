@@ -1,0 +1,62 @@
+@model List<CarServiceTracking.UI.Web.ViewModels.ServiceRequests.ServiceRequestListVM>
+
+@{
+    ViewData["Title"] = "Servis Kayıtlarım";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="card p-4">
+    <h3 class="fw-bold mb-3">Servis Kayıtlarım</h3>
+
+    @if (Model == null || !Model.Any())
+    {
+        <p class="text-muted">
+            Henüz oluşturulmuş bir servis talebiniz bulunmamaktadır.
+        </p>
+
+        <a href="/Customer/Cars/Index"
+           class="btn btn-outline-secondary mt-2">
+            Şahsi Araçlara Dön
+        </a>
+    }
+    else
+    {
+        <table class="table table-dark table-borderless align-middle">
+            <thead>
+                <tr>
+                    <th>Araç</th>
+                    <th>Sorun</th>
+                    <th>Durum</th>
+                    <th>Tarih</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.CarName</td>
+                        <td>@item.ProblemDescription</td>
+                        <td>
+                            <span class="badge badge-soft">
+                                @item.StatusText
+                            </span>
+                        </td>
+                        <td>
+                            @(item.PreferredDate?.ToString("dd.MM.yyyy")
+                                                ?? item.CreatedAt.ToString("dd.MM.yyyy HH:mm"))
+                        </td>
+                        <td>
+                            <a href="/Customer/ServiceRequests/DownloadPdf/@item.Id"
+                               class="btn btn-sm btn-outline-danger" title="PDF İndir">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+

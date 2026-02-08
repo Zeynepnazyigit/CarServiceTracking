@@ -1,0 +1,46 @@
+@model CarServiceTracking.UI.Web.ViewModels.Invoices.InvoiceEditVM
+
+@{
+    ViewData["Title"] = "Fatura Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-warning text-dark">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-edit"></i> Fatura Düzenle
+        </h3>
+    </div>
+    <div class="card-body">
+        <form asp-controller="AdminInvoices" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Id)
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="DueDate" class="font-weight-bold"></label>
+                <input asp-for="DueDate" class="form-control" type="date" />
+                <span asp-validation-for="DueDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Notes" class="font-weight-bold"></label>
+                <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Fatura notları"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <a asp-controller="AdminInvoices" asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Geri Dön
+                </a>
+                <button type="submit" class="btn btn-warning">
+                    <i class="fas fa-save"></i> Güncelle
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

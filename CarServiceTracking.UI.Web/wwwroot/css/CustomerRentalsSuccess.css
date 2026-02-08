@@ -1,0 +1,29 @@
+/* ============================= */
+/* CUSTOMER RENTALS SUCCESS PAGE */
+/* ============================= */
+
+/* Success Display */
+.success-message {
+    color: var(--brand);
+}
+
+    .success-message.display-4 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+/* Success Content */
+.success-content {
+    text-align: center;
+}
+
+    .success-content h2 {
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .success-content p {
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 2rem;
+    }

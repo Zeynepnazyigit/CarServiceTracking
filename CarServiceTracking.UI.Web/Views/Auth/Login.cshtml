@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="container" id="container">
+
+    <!-- REGISTER -->
+    <div class="form-container sign-up-container">
+        <form method="post" action="/Auth/Register">
+            @Html.AntiForgeryToken()
+            <h1>Hesap Oluştur</h1>
+
+            @if (ViewBag.RegisterError != null)
+            {
+                <p class="login-error">@ViewBag.RegisterError</p>
+            }
+
+            <input type="text" name="firstName" placeholder="Ad" required />
+            <input type="text" name="lastName" placeholder="Soyad" required />
+            <input type="email" name="email" placeholder="E-posta" required />
+            <input type="tel" name="phone" placeholder="Telefon (05xx xxx xx xx)" />
+            <input type="password" name="password" placeholder="Şifre (min 6 karakter)" required minlength="6" />
+
+            <button type="submit">Kayıt Ol</button>
+        </form>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="form-container sign-in-container">
+        <form method="post" action="/Auth/Login">
+            @Html.AntiForgeryToken()
+            <h1>Giriş Yap</h1>
+
+            @if (ViewBag.Error != null)
+            {
+                <p class="login-error">
+                    @ViewBag.Error
+                </p>
+            }
+
+            <input type="email" name="email" placeholder="Email" required />
+            <input type="password" name="password" placeholder="Password" required />
+
+            <button type="submit">Giriş Yap</button>
+
+            <!-- Demo Credentials -->
+            <div class="demo-credentials">
+                <p>Demo Credentials:</p>
+                <p class="credential-item"><strong>Admin:</strong> admin@demo.com / 12345678!</p>
+                <p class="credential-item"><strong>Customer:</strong> user1@demo.com / 12345678!</p>
+            </div>
+        </form>
+    </div>
+
+    <!-- OVERLAY -->
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Tekrar Hoş Geldiniz!</h1>
+                <p>Giriş yaparak devam edin</p>
+                <button class="ghost" id="signIn">Giriş Yap</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Merhaba!</h1>
+                <p>Bilgilerinizi girerek kayıt olun</p>
+                <button class="ghost" id="signUp">Kayıt Ol</button>
+            </div>
+        </div>
+    </div>
+
+</div>

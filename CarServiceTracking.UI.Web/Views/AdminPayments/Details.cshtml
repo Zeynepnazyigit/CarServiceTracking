@@ -1,0 +1,106 @@
+@model CarServiceTracking.UI.Web.ViewModels.Payments.PaymentEditVM
+
+@{
+    ViewData["Title"] = "Ödeme Detayı";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-info text-white">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-money-check-alt"></i> Ödeme Detayı
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-info-circle"></i> Ödeme Bilgileri</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5">Fatura No</dt>
+                            <dd class="col-sm-7"><strong>@Model.InvoiceNumber</strong></dd>
+
+                            <dt class="col-sm-5">Müşteri</dt>
+                            <dd class="col-sm-7">@Model.CustomerName</dd>
+
+                            <dt class="col-sm-5">Ödeme Tarihi</dt>
+                            <dd class="col-sm-7">@Model.PaymentDate.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                            <dt class="col-sm-5">Tutar</dt>
+                            <dd class="col-sm-7"><strong class="text-success">@Model.Amount.ToString("C2")</strong></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-credit-card"></i> İşlem Detayları</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5">Ödeme Yöntemi</dt>
+                            <dd class="col-sm-7">
+                                @switch (Model.PaymentMethod)
+                                {
+                                    case "Cash":
+                                        <span class="badge badge-success badge-lg">Nakit</span>
+                                        break;
+                                    case "CreditCard":
+                                        <span class="badge badge-primary badge-lg">Kredi Kartı</span>
+                                        break;
+                                    case "BankTransfer":
+                                        <span class="badge badge-info badge-lg">Banka Transferi</span>
+                                        break;
+                                    case "Check":
+                                        <span class="badge badge-warning badge-lg">Çek</span>
+                                        break;
+                                    default:
+                                        <span class="badge badge-secondary badge-lg">@Model.PaymentMethod</span>
+                                        break;
+                                }
+                            </dd>
+
+                            <dt class="col-sm-5">İşlem No</dt>
+                            <dd class="col-sm-7">
+                                @if (!string.IsNullOrEmpty(Model.TransactionId))
+                                {
+                                    <code>@Model.TransactionId</code>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-sticky-note"></i> Notlar</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">@Model.Notes</p>
+                </div>
+            </div>
+        }
+
+        <div class="mt-3">
+            <a asp-controller="AdminPayments" asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Geri Dön
+            </a>
+            <a asp-controller="AdminPayments" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Düzenle
+            </a>
+        </div>
+    </div>
+</div>

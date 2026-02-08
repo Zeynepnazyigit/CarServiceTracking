@@ -18,10 +18,16 @@
         public int? TransmissionTypeId { get; set; }
         public int? CarTypeId { get; set; }
 
+        // Hesaplanan Property
+        public string DisplayName => $"{Brand} {Model} ({PlateNumber})";
+
         // Navigation Properties
         public virtual Customer Customer { get; set; } = null!;
         public virtual ListItem? FuelTypeItem { get; set; }
         public virtual ListItem? TransmissionTypeItem { get; set; }
         public virtual ListItem? CarTypeItem { get; set; }
+        public virtual ICollection<CustomerCar> CustomerCars { get; set; } = new List<CustomerCar>();
+        public virtual ICollection<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
+        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

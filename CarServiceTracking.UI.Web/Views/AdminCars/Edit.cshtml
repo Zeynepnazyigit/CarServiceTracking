@@ -1,0 +1,156 @@
+@model CarServiceTracking.UI.Web.ViewModels.Cars.CarUpdateVM
+
+@{
+    ViewData["Title"] = "Araç Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-warning text-dark">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-edit"></i> Araç Düzenle
+        </h3>
+    </div>
+    <div class="card-body">
+        @if (Model == null)
+        {
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> Araç bulunamadı.
+            </div>
+        }
+        else
+        {
+            <form asp-controller="AdminCars" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.Id)
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PlateNumber" class="font-weight-bold"></label>
+                            <input asp-for="PlateNumber" class="form-control" />
+                            <span asp-validation-for="PlateNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="CustomerId" class="font-weight-bold">Müşteri</label>
+                            <select asp-for="CustomerId" asp-items="ViewBag.Customers" class="form-control">
+                                <option value="">-- Müşteri Seçiniz --</option>
+                            </select>
+                            <span asp-validation-for="CustomerId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Brand" class="font-weight-bold"></label>
+                            <input asp-for="Brand" class="form-control" />
+                            <span asp-validation-for="Brand" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="CarModel" class="font-weight-bold"></label>
+                            <input asp-for="CarModel" class="form-control" />
+                            <span asp-validation-for="CarModel" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Year" class="font-weight-bold"></label>
+                            <input asp-for="Year" class="form-control" type="number" />
+                            <span asp-validation-for="Year" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Color" class="font-weight-bold"></label>
+                            <input asp-for="Color" class="form-control" />
+                            <span asp-validation-for="Color" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Mileage" class="font-weight-bold"></label>
+                            <input asp-for="Mileage" class="form-control" type="number" />
+                            <span asp-validation-for="Mileage" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="FuelTypeId" class="font-weight-bold">Yakıt Tipi</label>
+                            <select asp-for="FuelTypeId" asp-items="ViewBag.FuelTypes" class="form-control">
+                                <option value="">-- Yakıt Tipi Seçiniz --</option>
+                            </select>
+                            <span asp-validation-for="FuelTypeId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="TransmissionTypeId" class="font-weight-bold">Şanzıman</label>
+                            <select asp-for="TransmissionTypeId" asp-items="ViewBag.TransmissionTypes" class="form-control">
+                                <option value="">-- Şanzıman Seçiniz --</option>
+                            </select>
+                            <span asp-validation-for="TransmissionTypeId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="CarTypeId" class="font-weight-bold">Araç Tipi</label>
+                            <select asp-for="CarTypeId" asp-items="ViewBag.CarTypes" class="form-control">
+                                <option value="">-- Araç Tipi Seçiniz --</option>
+                            </select>
+                            <span asp-validation-for="CarTypeId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="ChassisNumber" class="font-weight-bold"></label>
+                            <input asp-for="ChassisNumber" class="form-control" />
+                            <span asp-validation-for="ChassisNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="EngineNumber" class="font-weight-bold"></label>
+                            <input asp-for="EngineNumber" class="form-control" />
+                            <span asp-validation-for="EngineNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Notes" class="font-weight-bold"></label>
+                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mt-3">
+                    <a asp-controller="AdminCars" asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Geri Dön
+                    </a>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save"></i> Güncelle
+                    </button>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Hata";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1 class="m-0">Bir Hata Oluştu</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-exclamation-triangle"></i> Hata Detayı
+                </h3>
+            </div>
+            <div class="card-body">
+                <p class="text-lg">@ViewBag.ErrorMessage</p>
+                <p class="text-muted">
+                    <i class="fas fa-info-circle"></i> 
+                    Bu hatanın tekrar etmesi durumunda sistem yöneticisiyle iletişime geçiniz.
+                </p>
+            </div>
+            <div class="card-footer">
+                <a href="javascript:history.back()" class="btn btn-default">
+                    <i class="fas fa-arrow-left"></i> Geri Dön
+                </a>
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Ana Sayfaya Git
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

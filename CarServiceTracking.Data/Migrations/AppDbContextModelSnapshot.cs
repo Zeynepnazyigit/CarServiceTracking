@@ -22,6 +22,95 @@ namespace CarServiceTracking.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Appointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdminNotes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ConfirmedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CustomerNotes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ServiceType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TimeSlot")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentDate")
+                        .HasDatabaseName("IX_Appointments_AppointmentDate");
+
+                    b.HasIndex("CarId")
+                        .HasDatabaseName("IX_Appointments_CarId");
+
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("IX_Appointments_CustomerId");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_Appointments_IsDeleted");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("IX_Appointments_Status");
+
+                    b.ToTable("Appointments", (string)null);
+                });
+
             modelBuilder.Entity("CarServiceTracking.Core.Entities.Car", b =>
                 {
                     b.Property<int>("Id")
@@ -181,6 +270,10 @@ namespace CarServiceTracking.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -214,6 +307,179 @@ namespace CarServiceTracking.Data.Migrations
                     b.ToTable("Customers", (string)null);
                 });
 
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.CustomerCar", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BrandModel")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInService")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Mileage")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PlateNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CustomerCars");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Invoice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("GrandTotal")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<DateTime>("InvoiceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InvoiceNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<decimal>("LaborCost")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<decimal>("PaidAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<decimal>("PartsTotal")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("RemainingAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<int>("ServiceRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SubTotal")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<decimal>("TaxAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<decimal>("TaxRate")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)")
+                        .HasDefaultValue(20m);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("IX_Invoices_CustomerId");
+
+                    b.HasIndex("InvoiceNumber")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Invoices_InvoiceNumber");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_Invoices_IsDeleted");
+
+                    b.HasIndex("PaymentStatus")
+                        .HasDatabaseName("IX_Invoices_PaymentStatus");
+
+                    b.HasIndex("ServiceRequestId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Invoices_ServiceRequestId");
+
+                    b.ToTable("Invoices", (string)null);
+                });
+
             modelBuilder.Entity("CarServiceTracking.Core.Entities.ListItem", b =>
                 {
                     b.Property<int>("Id")
@@ -223,39 +489,1017 @@ namespace CarServiceTracking.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ListType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
                     b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_ListItems_IsDeleted");
+
+                    b.HasIndex("ListType")
+                        .HasDatabaseName("IX_ListItems_ListType");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("ListType", "SortOrder")
+                        .HasDatabaseName("IX_ListItems_ListType_SortOrder");
+
+                    b.ToTable("ListItems", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8233),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "CarType",
+                            Name = "Sedan",
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8237),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "CarType",
+                            Name = "Hatchback",
+                            SortOrder = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8240),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "CarType",
+                            Name = "SUV",
+                            SortOrder = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8244),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "CarType",
+                            Name = "Station Wagon",
+                            SortOrder = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8247),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "CarType",
+                            Name = "Pickup",
+                            SortOrder = 5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8250),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "CarType",
+                            Name = "Minivan",
+                            SortOrder = 6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8253),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "CarType",
+                            Name = "Coupe",
+                            SortOrder = 7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8256),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "CarType",
+                            Name = "Cabrio",
+                            SortOrder = 8
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8264),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "FuelType",
+                            Name = "Benzin",
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8268),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "FuelType",
+                            Name = "Dizel",
+                            SortOrder = 2
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8270),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "FuelType",
+                            Name = "LPG",
+                            SortOrder = 3
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8273),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "FuelType",
+                            Name = "Elektrik",
+                            SortOrder = 4
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8276),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "FuelType",
+                            Name = "Hibrit",
+                            SortOrder = 5
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8279),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "FuelType",
+                            Name = "Plug-in Hibrit",
+                            SortOrder = 6
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8286),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "TransmissionType",
+                            Name = "Manuel",
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8288),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "TransmissionType",
+                            Name = "Otomatik",
+                            SortOrder = 2
+                        },
+                        new
+                        {
+                            Id = 23,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8291),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "TransmissionType",
+                            Name = "Yarı Otomatik",
+                            SortOrder = 3
+                        },
+                        new
+                        {
+                            Id = 24,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8294),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "TransmissionType",
+                            Name = "CVT",
+                            SortOrder = 4
+                        },
+                        new
+                        {
+                            Id = 25,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8297),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "TransmissionType",
+                            Name = "DSG",
+                            SortOrder = 5
+                        },
+                        new
+                        {
+                            Id = 31,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8303),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "CustomerType",
+                            Name = "Bireysel",
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 32,
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8306),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ListType = "CustomerType",
+                            Name = "Kurumsal",
+                            SortOrder = 2
+                        });
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Mechanic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("HireDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<decimal>("HourlyRate")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Specialization")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Mechanics_Email");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_Mechanics_IsDeleted");
+
+                    b.HasIndex("Phone")
+                        .HasDatabaseName("IX_Mechanics_Phone");
+
+                    b.ToTable("Mechanics", (string)null);
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Part", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("MinStockLevel")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(5);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PartCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PartName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("StockQuantity")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Supplier")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("SupplierContact")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Category")
+                        .HasDatabaseName("IX_Parts_Category");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_Parts_IsDeleted");
+
+                    b.HasIndex("PartCode")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Parts_PartCode");
+
+                    b.ToTable("Parts", (string)null);
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("TransactionId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId")
+                        .HasDatabaseName("IX_Payments_InvoiceId");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_Payments_IsDeleted");
+
+                    b.HasIndex("PaymentDate")
+                        .HasDatabaseName("IX_Payments_PaymentDate");
+
+                    b.ToTable("Payments", (string)null);
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.RentalAgreement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ActualReturnDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AgreementNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("DailyRate")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("DamageNotes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<decimal>("DepositAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("EndMileage")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<decimal?>("LateFee")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PickupNotes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("RentalVehicleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReturnNotes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int?>("ServiceRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StartMileage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TotalDays")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("AgreementNumber")
+                        .IsUnique()
+                        .HasDatabaseName("IX_RentalAgreements_AgreementNumber");
 
-                    b.ToTable("ListItem");
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("IX_RentalAgreements_CustomerId");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_RentalAgreements_IsDeleted");
+
+                    b.HasIndex("RentalVehicleId")
+                        .HasDatabaseName("IX_RentalAgreements_RentalVehicleId");
+
+                    b.HasIndex("ServiceRequestId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_RentalAgreements_ServiceRequestId")
+                        .HasFilter("[ServiceRequestId] IS NOT NULL");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("IX_RentalAgreements_Status");
+
+                    b.ToTable("RentalAgreements", (string)null);
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.RentalVehicle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Color")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<decimal>("DailyRate")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("FuelType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("LastMaintenanceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Mileage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NextMaintenanceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("PlateNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TransmissionType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("VehicleCondition")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsAvailable")
+                        .HasDatabaseName("IX_RentalVehicles_IsAvailable");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_RentalVehicles_IsDeleted");
+
+                    b.HasIndex("PlateNumber")
+                        .IsUnique()
+                        .HasDatabaseName("IX_RentalVehicles_PlateNumber");
+
+                    b.ToTable("RentalVehicles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Brand = "Toyota",
+                            Color = "Beyaz",
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8404),
+                            DailyRate = 750.00m,
+                            FuelType = "Benzin",
+                            ImageUrl = "https://www.arabazzi.com/images/yuklemeler/corolla-14079.jpg",
+                            IsActive = true,
+                            IsAvailable = true,
+                            IsDeleted = false,
+                            Mileage = 15000,
+                            Model = "Corolla",
+                            Notes = "Klima, ABS, Airbag, Geri Görüş Kamerası",
+                            PlateNumber = "34 ABC 123",
+                            TransmissionType = "Otomatik",
+                            Year = 2023
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Brand = "Volkswagen",
+                            Color = "Siyah",
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8411),
+                            DailyRate = 900.00m,
+                            FuelType = "Dizel",
+                            ImageUrl = "https://www.arabazzi.com/images/model_gorsel/passat223.jpg",
+                            IsActive = true,
+                            IsAvailable = true,
+                            IsDeleted = false,
+                            Mileage = 28000,
+                            Model = "Passat",
+                            Notes = "Deri Koltuk, Sunroof, Navigasyon, Apple CarPlay",
+                            PlateNumber = "06 XYZ 456",
+                            TransmissionType = "DSG",
+                            Year = 2022
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Brand = "Renault",
+                            Color = "Kırmızı",
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8416),
+                            DailyRate = 650.00m,
+                            FuelType = "Benzin",
+                            ImageUrl = "https://www.arabazzi.com/images/yuklemeler/renault-megane-sedan2340.jpg",
+                            IsActive = true,
+                            IsAvailable = true,
+                            IsDeleted = false,
+                            Mileage = 5000,
+                            Model = "Megane",
+                            Notes = "Bluetooth, Klima, Park Sensörü",
+                            PlateNumber = "35 DEF 789",
+                            TransmissionType = "Manuel",
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Brand = "BMW",
+                            Color = "Gri",
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8421),
+                            DailyRate = 1500.00m,
+                            FuelType = "Benzin",
+                            ImageUrl = "https://www.arabazzi.com/images/model_gorsel/3-serisi22.jpg",
+                            IsActive = true,
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            Mileage = 12000,
+                            Model = "320i",
+                            Notes = "Premium Sound, Deri Döşeme, Adaptif Hız Kontrolü, M Sport Paket",
+                            PlateNumber = "16 GHI 321",
+                            TransmissionType = "Otomatik",
+                            Year = 2023
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Brand = "Ford",
+                            Color = "Mavi",
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8426),
+                            DailyRate = 550.00m,
+                            FuelType = "Dizel",
+                            ImageUrl = "https://www.arabazzi.com/images/model_gorsel/focus-2019244.jpg",
+                            IsActive = true,
+                            IsAvailable = true,
+                            IsDeleted = false,
+                            Mileage = 45000,
+                            Model = "Focus",
+                            Notes = "Park Sensörü, Klima, ABS, Ekonomik Yakıt Tüketimi",
+                            PlateNumber = "41 JKL 654",
+                            TransmissionType = "Manuel",
+                            Year = 2021
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Brand = "Mercedes-Benz",
+                            Color = "Beyaz",
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8432),
+                            DailyRate = 1800.00m,
+                            FuelType = "Benzin",
+                            ImageUrl = "https://www.arabazzi.com/images/model_gorsel/c-serisi123.jpg",
+                            IsActive = true,
+                            IsAvailable = true,
+                            IsDeleted = false,
+                            Mileage = 8000,
+                            Model = "C180",
+                            Notes = "AMG Line, Burmester Ses Sistemi, Panoramik Tavan, 360° Kamera",
+                            PlateNumber = "34 LMN 987",
+                            TransmissionType = "Otomatik",
+                            Year = 2023
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Brand = "Hyundai",
+                            Color = "Yeşil",
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8437),
+                            DailyRate = 1100.00m,
+                            FuelType = "Hibrit",
+                            ImageUrl = "https://www.arabazzi.com/images/yuklemeler/hyundai-tucson-nasil8975.jpg",
+                            IsActive = true,
+                            IsAvailable = true,
+                            IsDeleted = false,
+                            Mileage = 3000,
+                            Model = "Tucson",
+                            Notes = "Hibrit Motor, 4x4, Büyük Bagaj, Şerit Takip Sistemi",
+                            PlateNumber = "07 OPQ 246",
+                            TransmissionType = "Otomatik",
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Brand = "Audi",
+                            Color = "Lacivert",
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8442),
+                            DailyRate = 1400.00m,
+                            FuelType = "Dizel",
+                            ImageUrl = "https://www.arabazzi.com/images/model_gorsel/a48.jpg",
+                            IsActive = true,
+                            IsAvailable = true,
+                            IsDeleted = false,
+                            Mileage = 22000,
+                            Model = "A4",
+                            Notes = "Quattro 4x4, Virtual Cockpit, Matrix LED Far, B&O Ses Sistemi",
+                            PlateNumber = "34 RST 135",
+                            TransmissionType = "S-Tronic",
+                            Year = 2022
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Brand = "Fiat",
+                            Color = "Gümüş",
+                            CreatedDate = new DateTime(2026, 2, 7, 16, 55, 54, 79, DateTimeKind.Local).AddTicks(8447),
+                            DailyRate = 450.00m,
+                            FuelType = "LPG",
+                            ImageUrl = "https://www.arabazzi.com/images/model_gorsel/egea-sedan62.jpg",
+                            IsActive = true,
+                            IsAvailable = true,
+                            IsDeleted = false,
+                            Mileage = 18000,
+                            Model = "Egea",
+                            Notes = "LPG'li, Ekonomik, Geniş İç Mekan, USB Girişi",
+                            PlateNumber = "35 UVW 864",
+                            TransmissionType = "Manuel",
+                            Year = 2023
+                        });
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.ServiceAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("ActualHours")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<DateTime>("AssignedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<decimal?>("EstimatedHours")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("MechanicId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("ServiceRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_ServiceAssignments_IsDeleted");
+
+                    b.HasIndex("MechanicId")
+                        .HasDatabaseName("IX_ServiceAssignments_MechanicId");
+
+                    b.HasIndex("ServiceRequestId")
+                        .HasDatabaseName("IX_ServiceAssignments_ServiceRequestId");
+
+                    b.ToTable("ServiceAssignments", (string)null);
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.ServicePart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("PartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_ServiceParts_IsDeleted");
+
+                    b.HasIndex("PartId")
+                        .HasDatabaseName("IX_ServiceParts_PartId");
+
+                    b.HasIndex("ServiceRequestId")
+                        .HasDatabaseName("IX_ServiceParts_ServiceRequestId");
+
+                    b.ToTable("ServiceParts", (string)null);
                 });
 
             modelBuilder.Entity("CarServiceTracking.Core.Entities.ServiceRecord", b =>
@@ -318,6 +1562,133 @@ namespace CarServiceTracking.Data.Migrations
                     b.ToTable("ServiceRecords", (string)null);
                 });
 
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.ServiceRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdminNote")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PreferredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProblemDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("ServicePrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("Status");
+
+                    b.ToTable("ServiceRequests", (string)null);
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId")
+                        .IsUnique()
+                        .HasFilter("[CustomerId] IS NOT NULL");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Appointment", b =>
+                {
+                    b.HasOne("CarServiceTracking.Core.Entities.Car", "Car")
+                        .WithMany("Appointments")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CarServiceTracking.Core.Entities.Customer", "Customer")
+                        .WithMany("Appointments")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Car");
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("CarServiceTracking.Core.Entities.Car", b =>
                 {
                     b.HasOne("CarServiceTracking.Core.Entities.ListItem", "CarTypeItem")
@@ -326,7 +1697,7 @@ namespace CarServiceTracking.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("CarServiceTracking.Core.Entities.Customer", "Customer")
-                        .WithMany()
+                        .WithMany("Cars")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -359,13 +1730,121 @@ namespace CarServiceTracking.Data.Migrations
                     b.Navigation("CustomerType");
                 });
 
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.CustomerCar", b =>
+                {
+                    b.HasOne("CarServiceTracking.Core.Entities.Car", null)
+                        .WithMany("CustomerCars")
+                        .HasForeignKey("CarId");
+
+                    b.HasOne("CarServiceTracking.Core.Entities.Customer", null)
+                        .WithMany("CustomerCars")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Invoice", b =>
+                {
+                    b.HasOne("CarServiceTracking.Core.Entities.Customer", "Customer")
+                        .WithMany("Invoices")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CarServiceTracking.Core.Entities.ServiceRequest", "ServiceRequest")
+                        .WithOne("Invoice")
+                        .HasForeignKey("CarServiceTracking.Core.Entities.Invoice", "ServiceRequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("ServiceRequest");
+                });
+
             modelBuilder.Entity("CarServiceTracking.Core.Entities.ListItem", b =>
                 {
                     b.HasOne("CarServiceTracking.Core.Entities.ListItem", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Payment", b =>
+                {
+                    b.HasOne("CarServiceTracking.Core.Entities.Invoice", "Invoice")
+                        .WithMany("Payments")
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.RentalAgreement", b =>
+                {
+                    b.HasOne("CarServiceTracking.Core.Entities.Customer", "Customer")
+                        .WithMany("RentalAgreements")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CarServiceTracking.Core.Entities.RentalVehicle", "RentalVehicle")
+                        .WithMany("RentalAgreements")
+                        .HasForeignKey("RentalVehicleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CarServiceTracking.Core.Entities.ServiceRequest", "ServiceRequest")
+                        .WithOne("RentalAgreement")
+                        .HasForeignKey("CarServiceTracking.Core.Entities.RentalAgreement", "ServiceRequestId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("RentalVehicle");
+
+                    b.Navigation("ServiceRequest");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.ServiceAssignment", b =>
+                {
+                    b.HasOne("CarServiceTracking.Core.Entities.Mechanic", "Mechanic")
+                        .WithMany("ServiceAssignments")
+                        .HasForeignKey("MechanicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CarServiceTracking.Core.Entities.ServiceRequest", "ServiceRequest")
+                        .WithMany("ServiceAssignments")
+                        .HasForeignKey("ServiceRequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Mechanic");
+
+                    b.Navigation("ServiceRequest");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.ServicePart", b =>
+                {
+                    b.HasOne("CarServiceTracking.Core.Entities.Part", "Part")
+                        .WithMany("ServiceParts")
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CarServiceTracking.Core.Entities.ServiceRequest", "ServiceRequest")
+                        .WithMany("ServiceParts")
+                        .HasForeignKey("ServiceRequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Part");
+
+                    b.Navigation("ServiceRequest");
                 });
 
             modelBuilder.Entity("CarServiceTracking.Core.Entities.ServiceRecord", b =>
@@ -377,7 +1856,7 @@ namespace CarServiceTracking.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("CarServiceTracking.Core.Entities.Customer", "Customer")
-                        .WithMany()
+                        .WithMany("ServiceRecords")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -387,9 +1866,97 @@ namespace CarServiceTracking.Data.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.ServiceRequest", b =>
+                {
+                    b.HasOne("CarServiceTracking.Core.Entities.Car", "Car")
+                        .WithMany("ServiceRequests")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CarServiceTracking.Core.Entities.Customer", "Customer")
+                        .WithMany("ServiceRequests")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Car");
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.User", b =>
+                {
+                    b.HasOne("CarServiceTracking.Core.Entities.Customer", "Customer")
+                        .WithOne("User")
+                        .HasForeignKey("CarServiceTracking.Core.Entities.User", "CustomerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Car", b =>
+                {
+                    b.Navigation("Appointments");
+
+                    b.Navigation("CustomerCars");
+
+                    b.Navigation("ServiceRequests");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Customer", b =>
+                {
+                    b.Navigation("Appointments");
+
+                    b.Navigation("Cars");
+
+                    b.Navigation("CustomerCars");
+
+                    b.Navigation("Invoices");
+
+                    b.Navigation("RentalAgreements");
+
+                    b.Navigation("ServiceRecords");
+
+                    b.Navigation("ServiceRequests");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Invoice", b =>
+                {
+                    b.Navigation("Payments");
+                });
+
             modelBuilder.Entity("CarServiceTracking.Core.Entities.ListItem", b =>
                 {
                     b.Navigation("Children");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Mechanic", b =>
+                {
+                    b.Navigation("ServiceAssignments");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.Part", b =>
+                {
+                    b.Navigation("ServiceParts");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.RentalVehicle", b =>
+                {
+                    b.Navigation("RentalAgreements");
+                });
+
+            modelBuilder.Entity("CarServiceTracking.Core.Entities.ServiceRequest", b =>
+                {
+                    b.Navigation("Invoice");
+
+                    b.Navigation("RentalAgreement");
+
+                    b.Navigation("ServiceAssignments");
+
+                    b.Navigation("ServiceParts");
                 });
 #pragma warning restore 612, 618
         }

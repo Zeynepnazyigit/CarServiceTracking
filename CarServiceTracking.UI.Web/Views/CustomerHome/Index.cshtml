@@ -1,0 +1,277 @@
+@model CarServiceTracking.UI.Web.ViewModels.Home.CustomerHomeVM
+
+@{
+    ViewData["Title"] = "Ana Sayfa";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/CustomerHome.css" />
+
+<section class="py-4">
+    <div class="container-fluid">
+
+        <!-- HERO -->
+        <div class="card mb-4">
+            <div class="card-body p-4 p-lg-5">
+
+                <span class="badge-soft mb-3 d-inline-block">
+                    <i class="fa-solid fa-screwdriver-wrench me-1"></i>
+                    Araç Servis & Bakım Takip Platformu
+                </span>
+
+                <h1 class="mt-3 fw-bold home-main-heading">
+                    Aracınızın bakım ve servis süreçlerini
+                    <span class="brand-accent">tek panelden takip edin</span>
+                </h1>
+
+                <p class="text-soft mt-3 home-subtitle">
+                    Servis taleplerinizi oluşturun, randevularınızı yönetin, fatura ve ödemelerinizi takip edin.
+                    Aracınız servisteyken ihtiyaç duyarsanız geçici araç kiralama seçeneğimiz de mevcut.
+                </p>
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <a href="/Customer/ServiceRequests/Create"
+                       class="btn btn-primary px-4">
+                        <i class="fa-solid fa-screwdriver-wrench me-1"></i>
+                        Servis Talebi Oluştur
+                    </a>
+                    <a href="/Customer/Cars/Index"
+                       class="btn btn-outline-light px-4">
+                        <i class="fa-solid fa-car me-1"></i>
+                        Araçlarım
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ÖZET KARTLARI -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-3 col-6">
+                <a href="/Customer/Cars/Index" class="text-decoration-none">
+                    <div class="card summary-card text-center h-100">
+                        <div class="card-body">
+                            <div class="summary-icon icon-cyan">
+                                <i class="fa-solid fa-car fa-2x"></i>
+                            </div>
+                            <h3 class="fw-bold mt-2 mb-0">@Model.RegisteredCarCount</h3>
+                            <div class="text-soft small">Kayıtlı Araç</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3 col-6">
+                <a href="/Customer/ServiceRequests/Index" class="text-decoration-none">
+                    <div class="card summary-card text-center h-100">
+                        <div class="card-body">
+                            <div class="summary-icon icon-brand">
+                                <i class="fa-solid fa-screwdriver-wrench fa-2x"></i>
+                            </div>
+                            <h3 class="fw-bold mt-2 mb-0">@Model.ActiveServiceCount</h3>
+                            <div class="text-soft small">Aktif Servis</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3 col-6">
+                <a href="/Customer/Appointments/Index" class="text-decoration-none">
+                    <div class="card summary-card text-center h-100">
+                        <div class="card-body">
+                            <div class="summary-icon icon-green">
+                                <i class="fa-solid fa-calendar-check fa-2x"></i>
+                            </div>
+                            <h3 class="fw-bold mt-2 mb-0">@Model.UpcomingAppointmentCount</h3>
+                            <div class="text-soft small">Yaklaşan Randevu</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3 col-6">
+                <a href="/Customer/Invoices/Index" class="text-decoration-none">
+                    <div class="card summary-card text-center h-100">
+                        <div class="card-body">
+                            <div class="summary-icon icon-orange">
+                                <i class="fa-solid fa-file-invoice-dollar fa-2x"></i>
+                            </div>
+                            <h3 class="fw-bold mt-2 mb-0">@Model.UnpaidInvoiceCount</h3>
+                            <div class="text-soft small">Ödenmemiş Fatura</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+
+        <!-- İÇERİK: SERVİS TALEPLERİ + RANDEVULAR -->
+        <div class="row g-3 mb-4">
+
+            <!-- SOL: Son Servis Talepleri -->
+            <div class="col-lg-7">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fa-solid fa-clipboard-list me-2"></i>
+                            Son Servis Talepleri
+                        </h5>
+                        <a href="/Customer/ServiceRequests/Index" class="btn btn-sm btn-outline-light">
+                            Tümünü Gör
+                        </a>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (Model.RecentServiceRequests.Any())
+                        {
+                            <table class="table table-dark table-borderless align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Araç</th>
+                                        <th>Sorun</th>
+                                        <th>Durum</th>
+                                        <th>Tarih</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.RecentServiceRequests)
+                                    {
+                                        <tr>
+                                            <td class="fw-medium">@item.CarName</td>
+                                            <td class="text-truncate-cell">@item.ProblemDescription</td>
+                                            <td>
+                                                @{
+                                                    var statusClass = item.Status switch
+                                                    {
+                                                        0 => "badge-pending",
+                                                        1 => "badge-inprogress",
+                                                        2 => "badge-completed",
+                                                        3 => "badge-cancelled",
+                                                        _ => "badge-soft"
+                                                    };
+                                                }
+                                                <span class="badge @statusClass">
+                                                    @item.StatusText
+                                                </span>
+                                            </td>
+                                            <td class="text-nowrap">
+                                                @item.CreatedAt.ToString("dd.MM.yyyy")
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="p-4 text-center text-soft">
+                                <i class="fa-solid fa-inbox fa-2x mb-2"></i>
+                                <p class="mb-2">Henüz servis talebiniz bulunmuyor.</p>
+                                <a href="/Customer/ServiceRequests/Create" class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-plus me-1"></i> İlk Talebinizi Oluşturun
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- SAĞ: Yaklaşan Randevular -->
+            <div class="col-lg-5">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fa-solid fa-calendar-days me-2"></i>
+                            Yaklaşan Randevular
+                        </h5>
+                        <a href="/Customer/Appointments/Index" class="btn btn-sm btn-outline-light">
+                            Tümünü Gör
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.UpcomingAppointments.Any())
+                        {
+                            @foreach (var apt in Model.UpcomingAppointments)
+                            {
+                                <div class="appointment-item @(apt != Model.UpcomingAppointments.Last() ? "mb-3 pb-3 border-bottom border-secondary" : "")">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <div class="fw-medium">@apt.CarInfo</div>
+                                            <div class="text-soft small">@apt.RequestedService</div>
+                                        </div>
+                                        <span class="@apt.StatusBadgeClass">
+                                            @(apt.Status == "Pending" ? "Bekliyor" :
+                                              apt.Status == "Confirmed" ? "Onaylandı" : apt.Status)
+                                        </span>
+                                    </div>
+                                    <div class="text-soft small mt-1">
+                                        <i class="fa-solid fa-clock me-1"></i>
+                                        @apt.AppointmentDate.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                                        @if (!string.IsNullOrEmpty(apt.TimeSlot))
+                                        {
+                                            <span>• @apt.TimeSlot</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center text-soft py-3">
+                                <i class="fa-solid fa-calendar-xmark fa-2x mb-2"></i>
+                                <p class="mb-2">Yaklaşan randevunuz yok.</p>
+                                <a href="/Customer/Appointments/Create" class="btn btn-sm btn-outline-light">
+                                    <i class="fa-solid fa-plus me-1"></i> Randevu Oluştur
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- KİRALAMA BİLGİ BANDI -->
+        <div class="card rental-banner">
+            <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rental-icon">
+                        <i class="fa-solid fa-car-side fa-lg"></i>
+                    </div>
+                    <div>
+                        @if (Model.ActiveRentalCount > 0)
+                        {
+                            <div class="fw-bold">
+                                <i class="fa-solid fa-circle text-success me-1" style="font-size: 0.5rem; vertical-align: middle;"></i>
+                                @Model.ActiveRentalCount aktif kiralama
+                            </div>
+                            <div class="text-soft small">@Model.ActiveRentalInfo</div>
+                        }
+                        else
+                        {
+                            <div class="fw-bold">Aracınız servisteyken yolda kalmayın!</div>
+                            <div class="text-soft small">
+                                Bakım veya onarım süreciniz uzadığında, uygun fiyatlı geçici araç kiralayabilirsiniz.
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div>
+                    @if (Model.ActiveRentalCount > 0)
+                    {
+                        <a href="/Customer/Rentals/Index" class="btn btn-sm btn-outline-light">
+                            <i class="fa-solid fa-eye me-1"></i> Kiralamalarım
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="/Customer/CarsList/Index" class="btn btn-sm btn-outline-light">
+                            <i class="fa-solid fa-car me-1"></i> Geçici Araçları İncele
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

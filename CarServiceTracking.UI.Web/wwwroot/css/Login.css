@@ -1,0 +1,30 @@
+/* ============================= */
+/* LOGIN PAGE INLINE STYLES */
+/* ============================= */
+
+/* Error Message */
+.login-error {
+    color: #f87171;
+    margin-bottom: 10px;
+}
+
+/* Demo Credentials Section */
+.demo-credentials {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 12px;
+    text-align: center;
+}
+
+    .demo-credentials p {
+        opacity: 0.7;
+    }
+
+    .demo-credentials .credential-item {
+        margin: 3px 0;
+    }
+
+        .demo-credentials .credential-item strong {
+            font-weight: bold;
+        }

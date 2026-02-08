@@ -1,0 +1,92 @@
+@model CarServiceTracking.UI.Web.ViewModels.ServiceRequests.ServiceRequestCreateVM
+@using CarServiceTracking.UI.Web.ViewModels.Cars
+
+@{
+    ViewData["Title"] = "Servis Talebi Oluştur";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+
+    var cars = ViewBag.Cars as List<CarListVM> ?? new List<CarListVM>();
+}
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-3">Servis Talebi Oluştur</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div id="validationSummary" class="text-danger mb-3"></div>
+
+    <form
+          method="post"
+          class="card p-3">
+
+        @Html.AntiForgeryToken()
+
+        <!-- ARAÇ SEÇİMİ -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Araç</label>
+            <select class="form-select" name="CarId">
+                <option value="">Araç seçiniz</option>
+
+                @foreach (var c in cars)
+                {
+                    if (Model.CarId == c.Id)
+                    {
+                        <option value="@c.Id" selected>
+                            @c.BrandModel (@c.PlateNumber)
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="@c.Id">
+                            @c.BrandModel (@c.PlateNumber)
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+
+        <!-- PROBLEM AÇIKLAMASI -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Sorun / İstek Açıklaması</label>
+            <textarea class="form-control"
+                      rows="4"
+                      name="ProblemDescription"
+                      placeholder="Aracınızda yaşadığınız sorunu detaylıca yazınız...">
+            </textarea>
+
+        </div>
+
+        <!-- TERC�H ED�LEN TAR�H -->
+        <div class="form-group">
+            <label>Tercih Edilen Tarih</label>
+
+            <input type="datetime-local"
+                   name="PreferredDate"
+                   class="form-control" />
+        </div>
+
+
+        <!-- BUTONLAR -->
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                Talep Oluştur
+            </button>
+
+            <a href="/Customer/Cars/Index"
+               class="btn btn-outline-secondary">
+                Şahsi Araçlara Dön
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

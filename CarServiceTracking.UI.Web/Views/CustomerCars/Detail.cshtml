@@ -1,0 +1,82 @@
+@model CarServiceTracking.UI.Web.ViewModels.CustomerCars.CustomerCarVM
+
+@{
+    ViewData["Title"] = "Araç Detayı";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h2 class="fw-bold mb-2">Araç Detayı</h2>
+        <p class="text-muted">Aracınıza ait detay bilgileri aşağıda yer almaktadır.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 col-xl-6">
+            <div class="card p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0">@Model.BrandModel</h4>
+                    <span class="badge @(Model.IsInService ? "bg-warning text-dark" : "bg-success")">
+                        @Model.StatusText
+                    </span>
+                </div>
+
+                <table class="table table-borderless mb-0">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted fw-semibold" style="width:40%;">Plaka</td>
+                            <td class="fw-bold">@Model.PlateNumber</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted fw-semibold">Model Yılı</td>
+                            <td>@Model.Year</td>
+                        </tr>
+                        @if (Model.Mileage.HasValue && Model.Mileage > 0)
+                        {
+                            <tr>
+                                <td class="text-muted fw-semibold">Kilometre</td>
+                                <td>@Model.Mileage.Value.ToString("N0") km</td>
+                            </tr>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.Color))
+                        {
+                            <tr>
+                                <td class="text-muted fw-semibold">Renk</td>
+                                <td>@Model.Color</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td class="text-muted fw-semibold">Durum</td>
+                            <td>
+                                @if (Model.IsInService)
+                                {
+                                    <span class="text-warning fw-bold">Serviste</span>
+                                }
+                                else
+                                {
+                                    <span class="text-success fw-bold">Aktif</span>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex gap-2 mt-4">
+                    <a href="/Customer/Cars/Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Geri
+                    </a>
+                    @if (!Model.IsInService)
+                    {
+                        <a href="/Customer/ServiceRequests/Create?carId=@Model.Id" class="btn btn-primary">
+                            <i class="fas fa-wrench me-1"></i> Servis Talebi Oluştur
+                        </a>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

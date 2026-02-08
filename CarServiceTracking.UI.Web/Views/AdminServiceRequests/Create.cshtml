@@ -1,0 +1,55 @@
+@model CarServiceTracking.UI.Web.ViewModels.ServiceRequests.ServiceRequestCreateVM
+
+@{
+    ViewData["Title"] = "Yeni Servis Talebi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-plus"></i> Yeni Servis Talebi Oluştur
+        </h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="CarId" class="font-weight-bold"></label>
+                <select asp-for="CarId" asp-items="ViewBag.Cars" class="form-control">
+                    <option value="">-- Araç Seçiniz --</option>
+                </select>
+                <span asp-validation-for="CarId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ProblemDescription" class="font-weight-bold"></label>
+                <textarea asp-for="ProblemDescription" class="form-control" rows="5"
+                          placeholder="Aracınızla ilgili sorunları detaylı olarak açıklayın..."></textarea>
+                <span asp-validation-for="ProblemDescription" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PreferredDate" class="font-weight-bold"></label>
+                <input asp-for="PreferredDate" type="date" class="form-control" />
+                <span asp-validation-for="PreferredDate" class="text-danger"></span>
+                <small class="form-text text-muted">Servise getirmek istediğiniz tarihi seçiniz (opsiyonel)</small>
+            </div>
+
+            <div class="form-group mt-4">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Geri Dön
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Oluştur
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

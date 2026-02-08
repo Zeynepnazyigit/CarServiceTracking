@@ -1,0 +1,113 @@
+﻿/* ================
+   ADMIN PANEL CSS
+   File: wwwroot/css/admin.css
+   ================= */
+
+/* Genel */
+body {
+    background: #f6f7fb;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #111827;
+    color: #fff;
+    padding: 18px 14px;
+    z-index: 101;
+}
+
+    .sidebar .brand {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: .2px;
+    }
+
+        .sidebar .brand small {
+            display: block;
+            font-size: 12px;
+            color: rgba(255,255,255,.6);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+    .sidebar a {
+        color: rgba(255,255,255,.85);
+    }
+
+    .sidebar .menu-title {
+        margin-top: 18px;
+        font-size: 11px;
+        letter-spacing: 1px;
+        color: rgba(255,255,255,.4);
+        text-transform: uppercase;
+    }
+
+    .sidebar .nav-link {
+        border-radius: 12px;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 6px;
+    }
+
+        .sidebar .nav-link:hover {
+            background: rgba(255,255,255,.08);
+        }
+
+        .sidebar .nav-link.active {
+            background: rgba(99,102,241,.25);
+            border: 1px solid rgba(99,102,241,.45);
+        }
+
+/* Content */
+.content {
+    margin-left: 260px;
+    min-height: 100vh;
+}
+
+/* Topbar */
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    border-bottom: 1px solid #eaeaea;
+}
+
+    .topbar .searchbox {
+        max-width: 420px;
+    }
+
+/* Soft shadow */
+.shadow-soft {
+    box-shadow: 0 10px 30px rgba(17,24,39,.06);
+}
+
+.admin-footer {
+    color: #6b7280;
+}
+
+/* MOBILE */
+@media (max-width:992px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+        min-height: auto;
+        border-radius: 0 0 18px 18px;
+    }
+
+    .content {
+        margin-left: 0;
+    }
+}

@@ -1,0 +1,185 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/AdminDashboard.css?v=@DateTime.Now.Ticks" />
+
+<div class="row">
+
+    <!-- Aktif Araç -->
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="kpi-card">
+            <div class="kpi-accent accent-primary"></div>
+            <div class="kpi-top">
+                <div>
+                    <h3 class="kpi-num">24</h3>
+                    <div class="kpi-title">Aktif Araç</div>
+                    <div class="kpi-sub">Sistemde kullanılabilir</div>
+                </div>
+                <div class="kpi-icon glow-primary">
+                    <i class="fa-solid fa-car-side"></i>
+                </div>
+            </div>
+            <div class="kpi-footer">
+                <span class="kpi-badge">+2 bu hafta</span>
+                <a class="kpi-link" href="/AdminCars/Index">
+                    Detay <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bug�n Kiralanan -->
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="kpi-card">
+            <div class="kpi-accent accent-success"></div>
+            <div class="kpi-top">
+                <div>
+                    <h3 class="kpi-num">7</h3>
+                    <div class="kpi-title">Bugün Kiralanan</div>
+                    <div class="kpi-sub">Günlük işlem sayısı</div>
+                </div>
+                <div class="kpi-icon glow-success">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+            </div>
+            <div class="kpi-footer">
+                <span class="kpi-badge">Onay bekliyor: 2</span>
+                <a class="kpi-link" href="/AdminRentals/Index">
+                    Detay <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Serviste Olan -->
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="kpi-card">
+            <div class="kpi-accent accent-warning"></div>
+            <div class="kpi-top">
+                <div>
+                    <h3 class="kpi-num">4</h3>
+                    <div class="kpi-title">Serviste Olan</div>
+                    <div class="kpi-sub">Aktif bakım/onarım</div>
+                </div>
+                <div class="kpi-icon glow-warning">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                </div>
+            </div>
+            <div class="kpi-footer">
+                <span class="kpi-badge">Ortalama: 2 gün</span>
+                <a class="kpi-link" href="/AdminServiceRecords/Index">
+                    Detay <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bekleyen Servis -->
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="kpi-card">
+            <div class="kpi-accent accent-danger"></div>
+            <div class="kpi-top">
+                <div>
+                    <h3 class="kpi-num">3</h3>
+                    <div class="kpi-title">Bekleyen Servis Talebi</div>
+                    <div class="kpi-sub">Hızlı aksiyon gerek</div>
+                </div>
+                <div class="kpi-icon glow-danger">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+            </div>
+            <div class="kpi-footer">
+                <span class="kpi-badge">Kritik: 1</span>
+                <a class="kpi-link" href="/AdminServiceRecords/Index">
+                    Detay <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-2">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h3 class="card-title font-weight-bold">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Son Kiralamalar
+                </h3>
+                <div class="card-tools">
+                    <a href="/AdminRentals/Index" class="btn btn-sm btn-primary btn-round">
+                        Tümünü Gör
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Müşteri</th>
+                            <th>Araç</th>
+                            <th>Durum</th>
+                            <th class="text-right">Tutar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Zeynep Naz</td>
+                            <td>BMW 320i</td>
+                            <td><span class="badge badge-success">Onaylandı</span></td>
+                            <td class="text-right">₺ 4.250</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Ecem</td>
+                            <td>Mercedes A180</td>
+                            <td><span class="badge badge-warning">Beklemede</span></td>
+                            <td class="text-right">₺ 2.900</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Berk</td>
+                            <td>Renault Clio</td>
+                            <td><span class="badge badge-danger">Reddedildi</span></td>
+                            <td class="text-right">₺ 1.750</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h3 class="card-title font-weight-bold">
+                    <i class="fa-solid fa-bell"></i> Akıllı Uyarılar
+                </h3>
+            </div>
+            <div class="card-body">
+
+                <div class="callout callout-danger">
+                    <h6 class="font-weight-bold mb-1">Gecikmış İade</h6>
+                    <p class="mb-0 text-soft">1 kiralama gecikmış görünüyor.</p>
+                </div>
+
+                <div class="callout callout-warning">
+                    <h6 class="font-weight-bold mb-1">Servis Bekleyen</h6>
+                    <p class="mb-0 text-soft">3 servis talebi sırada.</p>
+                </div>
+
+                <div class="callout callout-info">
+                    <h6 class="font-weight-bold mb-1">Yeni Müşteri</h6>
+                    <p class="mb-0 text-soft">Bugün 2 yeni kayıt alındı.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+

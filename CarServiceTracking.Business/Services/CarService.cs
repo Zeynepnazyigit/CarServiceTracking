@@ -59,6 +59,26 @@ namespace CarServiceTracking.Business.Services
             return new SuccessDataResult<List<CarListDTO>>(carDtos, "Müşteri araçları başarıyla listelendi.");
         }
 
+        public async Task<IDataResult<List<CarListDTO>>> SearchCarsAsync(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return await GetAllAsync();
+
+            var cars = await _unitOfWork.CarRepository.GetAllWithDetailsAsync();
+            var searchLower = searchTerm.ToLowerInvariant();
+
+            var filteredCars = cars.Where(c =>
+                c.PlateNumber.ToLowerInvariant().Contains(searchLower) ||
+                c.Brand.ToLowerInvariant().Contains(searchLower) ||
+                c.Model.ToLowerInvariant().Contains(searchLower) ||
+                (c.Customer != null && 
+                    (c.Customer.FirstName + " " + c.Customer.LastName).ToLowerInvariant().Contains(searchLower))
+            ).ToList();
+
+            var carDtos = _mapper.Map<List<CarListDTO>>(filteredCars);
+            return new SuccessDataResult<List<CarListDTO>>(carDtos, $"{filteredCars.Count} araç bulundu.");
+        }
+
         public async Task<IDataResult<CarDetailDTO>> GetByIdAsync(int id)
         {
             var car = await _unitOfWork.CarRepository.GetByIdWithDetailsAsync(id);
