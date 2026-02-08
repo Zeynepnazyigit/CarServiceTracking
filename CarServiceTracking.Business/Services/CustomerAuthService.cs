@@ -97,13 +97,9 @@ namespace CarServiceTracking.Business.Services
             if (user == null)
                 return new ErrorDataResult<AuthLoginResponseDTO>("E-posta veya şifre hatalı.");
 
-            Console.WriteLine($"🔍 USER FOUND - Id: {user.Id}, Email: {user.Email}, Role: {user.Role}");
-
             // Şifreyi hash ile kontrol et
             if (!PasswordHelper.VerifyPassword(dto.Password, user.PasswordHash))
                 return new ErrorDataResult<AuthLoginResponseDTO>("E-posta veya şifre hatalı.");
-
-            Console.WriteLine($"🔍 PASSWORD VERIFIED - Returning Role: {user.Role}");
 
             return new SuccessDataResult<AuthLoginResponseDTO>(
                 new AuthLoginResponseDTO

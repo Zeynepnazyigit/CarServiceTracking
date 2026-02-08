@@ -88,17 +88,14 @@ namespace CarServiceTracking.UI.Web.Services
                 
                 if (!response.IsSuccessStatusCode)
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"API Error: {response.StatusCode} - {errorContent}");
                     return false;
                 }
 
                 var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
                 return result?.Success ?? false;
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"Exception in CreateCarAsync: {ex.Message}");
                 return false;
             }
         }

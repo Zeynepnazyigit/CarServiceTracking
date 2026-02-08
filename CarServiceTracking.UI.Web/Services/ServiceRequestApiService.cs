@@ -74,16 +74,15 @@ namespace CarServiceTracking.UI.Web.Services
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"API Error: {response.StatusCode} - {errorContent}");
+                    // API hata döndü
                     return false;
                 }
 
                 var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
                 return result?.Success ?? false;
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"Exception in CreateAsync: {ex.Message}");
                 return false;
             }
         }
@@ -104,16 +103,15 @@ namespace CarServiceTracking.UI.Web.Services
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"API Error: {response.StatusCode} - {errorContent}");
+                    // API hata döndü
                     return false;
                 }
 
                 var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
                 return result?.Success ?? false;
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"Exception in UpdateStatusAsync: {ex.Message}");
                 return false;
             }
         }
@@ -130,9 +128,8 @@ namespace CarServiceTracking.UI.Web.Services
                 var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
                 return result?.Success ?? false;
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"Exception in DeleteAsync: {ex.Message}");
                 return false;
             }
         }

@@ -13,16 +13,13 @@ namespace CarServiceTracking.API.Controllers
     {
         private readonly ICustomerAuthService _customerAuthService;
         private readonly IJwtTokenService _jwtTokenService;
-        private readonly ILogger<AuthController> _logger;
 
         public AuthController(
             ICustomerAuthService customerAuthService,
-            IJwtTokenService jwtTokenService,
-            ILogger<AuthController> logger)
+            IJwtTokenService jwtTokenService)
         {
             _customerAuthService = customerAuthService;
             _jwtTokenService = jwtTokenService;
-            _logger = logger;
         }
 
         /// <summary>
@@ -32,20 +29,10 @@ namespace CarServiceTracking.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<ApiResponse<LoginResponseDTO>>> Login([FromBody] CustomerLoginDTO dto)
         {
-            _logger.LogWarning("🔍 LOGIN ATTEMPT - Email: {Email}", dto.Email);
-            
-            // Giriş işlemi
             var result = await _customerAuthService.LoginAsync(dto);
-            
-            _logger.LogWarning("🔍 LOGIN RESULT - Success: {Success}, Role: {Role}, UserId: {UserId}", 
-                result.Success, 
-                result.Success ? result.Data.Role : "N/A",
-                result.Success ? result.Data.UserId : -1);
 
-            // Başarılı giriş
             if (result.Success)
             {
-                // Token oluştur (role bilgisini result.Data'dan al)
                 var token = _jwtTokenService.GenerateToken(
                     result.Data.UserId,
                     result.Data.Email,
@@ -59,8 +46,6 @@ namespace CarServiceTracking.API.Controllers
                     Token = token,
                     ExpiresAt = DateTime.UtcNow.AddHours(24)
                 };
-                
-                _logger.LogWarning("🔍 RESPONSE CREATED - Role: {Role}, UserId: {UserId}", response.Role, response.UserId);
 
                 return Ok(ApiResponse<LoginResponseDTO>.SuccessResponse(
                     response,
