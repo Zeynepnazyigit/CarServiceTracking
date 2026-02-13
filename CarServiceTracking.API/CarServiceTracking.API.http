@@ -1,6 +1,0 @@
-@CarServiceTracking.API_HostAddress = http://localhost:5130
-
-GET {{CarServiceTracking.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
