@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# VS Code / Cursor (IDE ayarlari - proje kodu degil)
+.vscode/
+
 # Windows reserved name (causes errors if tracked)
 nul
 
