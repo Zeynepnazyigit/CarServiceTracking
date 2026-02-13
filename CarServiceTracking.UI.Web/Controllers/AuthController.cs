@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using CarServiceTracking.UI.Web.Services;
 using CarServiceTracking.UI.Web.Constants;
@@ -33,27 +33,30 @@ namespace CarServiceTracking.UI.Web.Controllers
         public async Task<IActionResult> Login(string email, string password)
         {
             _logger.LogInformation("Login attempt for email: {Email}", email);
-            
-            // API çağrısı yap
+
             var loginResponse = await _authApiService.LoginAsync(email, password);
 
-            _logger.LogInformation("Login response received. IsNull: {IsNull}, Token: {HasToken}", 
-                loginResponse == null, 
+            _logger.LogInformation("Login response received. IsNull: {IsNull}, Token: {HasToken}",
+                loginResponse == null,
                 loginResponse?.Token != null ? "YES" : "NO");
 
-            // Başarılı giriş
             if (loginResponse != null)
             {
                 HttpContext.Session.SetString("UserRole", loginResponse.Role);
                 HttpContext.Session.SetInt32("UserId", loginResponse.UserId);
+
+                if (loginResponse.CustomerId.HasValue)
+                    HttpContext.Session.SetInt32("CustomerId", loginResponse.CustomerId.Value);
+
+                // JWT token'ı tüm API çağrılarında kullanılacak ortak key ile sakla
                 HttpContext.Session.SetString("access_token", loginResponse.Token);
-                
-                _logger.LogInformation("Session set - Role: {Role}, UserId: {UserId}, Token length: {TokenLength}", 
-                    loginResponse.Role, 
-                    loginResponse.UserId, 
+
+                _logger.LogInformation(
+                    "Session set - Role: {Role}, UserId: {UserId}, Token length: {TokenLength}",
+                    loginResponse.Role,
+                    loginResponse.UserId,
                     loginResponse.Token?.Length ?? 0);
 
-                // Role'e göre yönlendir
                 if (loginResponse.Role == Roles.Admin)
                 {
                     return RedirectToAction("Index", "AdminDashboard");
@@ -64,7 +67,6 @@ namespace CarServiceTracking.UI.Web.Controllers
                 }
             }
 
-            // Hatalı giriş
             ViewBag.Error = "E-posta veya şifre hatalı";
             return View("~/Views/Auth/Login.cshtml");
         }
@@ -75,7 +77,6 @@ namespace CarServiceTracking.UI.Web.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-
             return RedirectToAction("Login");
         }
 
@@ -84,9 +85,15 @@ namespace CarServiceTracking.UI.Web.Controllers
         // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(string firstName, string lastName, string email, string password, string phone)
+        public async Task<IActionResult> Register(
+            string firstName,
+            string lastName,
+            string email,
+            string password,
+            string phone)
         {
-            var (success, message) = await _authApiService.SignupAsync(firstName, lastName, email, password, phone);
+            var (success, message) =
+                await _authApiService.SignupAsync(firstName, lastName, email, password, phone);
 
             if (success)
             {

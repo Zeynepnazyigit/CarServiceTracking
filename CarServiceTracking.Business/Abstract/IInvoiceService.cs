@@ -8,6 +8,7 @@ namespace CarServiceTracking.Business.Abstract
     {
         Task<IDataResult<List<InvoiceListDTO>>> GetAllAsync();
         Task<IDataResult<List<InvoiceListDTO>>> GetByCustomerIdAsync(int customerId);
+        Task<IDataResult<List<InvoiceListDTO>>> GetPendingInvoicesByCustomerIdAsync(int customerId);
         Task<IDataResult<List<InvoiceListDTO>>> GetByServiceRequestIdAsync(int serviceRequestId);
         Task<IDataResult<List<InvoiceListDTO>>> GetByPaymentStatusAsync(PaymentStatus status);
         Task<IDataResult<List<InvoiceListDTO>>> GetOverdueInvoicesAsync();
@@ -16,6 +17,7 @@ namespace CarServiceTracking.Business.Abstract
         Task<IDataResult<InvoiceDetailDTO>> CreateAsync(InvoiceCreateDTO dto);
         Task<IDataResult<InvoiceDetailDTO>> UpdateAsync(InvoiceUpdateDTO dto);
         Task<IResult> DeleteAsync(int id);
-        Task<IDataResult<InvoiceDetailDTO>> CreateFromServiceRequestAsync(int serviceRequestId);
+        Task<IDataResult<InvoiceDetailDTO>> CreateFromServiceRequestAsync(int serviceRequestId, bool replaceIfExists = false);
+        Task<IDataResult<InvoiceDetailDTO>> CreateRentalInvoiceAsync(int rentalAgreementId);
     }
 }

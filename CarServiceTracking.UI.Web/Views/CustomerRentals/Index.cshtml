@@ -7,7 +7,7 @@
 
     // Özet hesaplamaları
     var totalRentals = Model.Count;
-    var activeRentals = Model.Count(r => r.Status == "Active");
+    var activeRentals = Model.Count(r => r.StatusText == "Aktif");
     var totalAmount = Model.Sum(r => r.TotalAmount);
 }
 
@@ -118,6 +118,7 @@
                                     <th>Tarih Aralığı</th>
                                     <th>Toplam Tutar</th>
                                     <th>Durum</th>
+                                    <th>Ödeme</th>
                                     <th style="width: 100px">İşlem</th>
                                 </tr>
                             </thead>
@@ -155,6 +156,11 @@
                                             }
                                             <span class="@rental.StatusBadgeClass">
                                                 <i class="@statusIcon mr-1"></i>@rental.StatusText
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="@rental.PaymentBadgeClass">
+                                                @rental.PaymentStatusText
                                             </span>
                                         </td>
                                         <td>

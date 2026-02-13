@@ -40,6 +40,7 @@ namespace CarServiceTracking.Business
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IMechanicService, MechanicService>();
+            services.AddScoped<IServiceAssignmentService, ServiceAssignmentService>();
             services.AddScoped<IRentalService, RentalService>();
 
             return services;

@@ -45,6 +45,9 @@ namespace CarServiceTracking.UI.Web.ViewModels.Rentals
         [Range(0, 999999.99)]
         public decimal DepositAmount { get; set; }
 
+        public bool DepositRefunded { get; set; }
+        public DateTime? DepositRefundedDate { get; set; }
+
         [Required(ErrorMessage = "Durum zorunludur")]
         [StringLength(50)]
         public string Status { get; set; } = "Active";

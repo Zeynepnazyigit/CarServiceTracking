@@ -22,5 +22,15 @@ namespace CarServiceTracking.Business.Abstract
         Task<IDataResult<RentalAgreementDetailDTO>> UpdateAgreementAsync(RentalAgreementUpdateDTO dto);
         Task<IResult> DeleteAgreementAsync(int id);
         Task<IResult> CompleteRentalAsync(int agreementId, int endMileage, DateTime returnDate);
+
+
+        Task<IDataResult<RentalAgreementDetailDTO>>
+CreateRentalWithVehicleLockAsync(RentalAgreementCreateDTO dto);
+
+        // Arac durumlarini aktif kiralamalara gore senkronize et
+        Task<IResult> SyncVehicleAvailabilityAsync();
+
+        /// <summary>Tüm kiralık araçları müsait (IsAvailable = true) yapar.</summary>
+        Task<IResult> SetAllVehiclesAvailableAsync();
     }
 }

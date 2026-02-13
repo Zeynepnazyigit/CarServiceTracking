@@ -17,6 +17,8 @@ namespace CarServiceTracking.UI.Web.Models.ApiModels.RentalApiModels
         public decimal DailyRate { get; set; }
         public decimal DepositAmount { get; set; }
         public decimal TotalCost { get; set; }
+        public bool DepositRefunded { get; set; }
+        public DateTime? DepositRefundedDate { get; set; }
         public RentalStatus Status { get; set; }
         public int? ServiceRequestId { get; set; }
         public int StartMileage { get; set; }

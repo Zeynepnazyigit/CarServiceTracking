@@ -1,4 +1,4 @@
-﻿using CarServiceTracking.Core;
+using CarServiceTracking.Core;
 using CarServiceTracking.Core.Entities;
 using CarServiceTracking.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +40,11 @@ namespace CarServiceTracking.Data.Repositories
         public async Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetListIncludingDeletedAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.IgnoreQueryFilters().Where(predicate).ToListAsync();
         }
 
         public async Task<T> AddAsync(T entity)

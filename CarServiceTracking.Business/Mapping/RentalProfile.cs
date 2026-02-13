@@ -13,8 +13,13 @@ namespace CarServiceTracking.Business.Mapping
             CreateMap<RentalVehicleCreateDTO, RentalVehicle>();
             CreateMap<RentalVehicleUpdateDTO, RentalVehicle>();
 
-            CreateMap<RentalAgreement, RentalAgreementListDTO>();
-            CreateMap<RentalAgreement, RentalAgreementDetailDTO>();
+            CreateMap<RentalAgreement, RentalAgreementListDTO>()
+                .ForMember(dest => dest.TotalCost, opt => opt.MapFrom(src => src.TotalAmount))
+                .ForMember(dest => dest.RentalDays, opt => opt.MapFrom(src => src.TotalDays));
+
+            CreateMap<RentalAgreement, RentalAgreementDetailDTO>()
+                .ForMember(dest => dest.TotalCost, opt => opt.MapFrom(src => src.TotalAmount))
+                .ForMember(dest => dest.RentalDays, opt => opt.MapFrom(src => src.TotalDays));
             CreateMap<RentalAgreementCreateDTO, RentalAgreement>();
             CreateMap<RentalAgreementUpdateDTO, RentalAgreement>();
         }

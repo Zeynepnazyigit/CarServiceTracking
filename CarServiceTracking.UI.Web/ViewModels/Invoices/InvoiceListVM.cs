@@ -4,14 +4,17 @@ namespace CarServiceTracking.UI.Web.ViewModels.Invoices
     {
         public int Id { get; set; }
         public string InvoiceNumber { get; set; } = string.Empty;
-        public int ServiceRequestId { get; set; }
+        public int? ServiceRequestId { get; set; }
+        public int? RentalAgreementId { get; set; }
         public string ServiceRequestInfo { get; set; } = string.Empty;
+        public string? RentalInfo { get; set; }
         public DateTime InvoiceDate { get; set; }
         public DateTime DueDate { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal PaidAmount { get; set; }
         public decimal RemainingAmount { get; set; }
         public string PaymentStatus { get; set; } = string.Empty;
+        public bool IsRentalInvoice => RentalAgreementId.HasValue;
 
         /// <summary>
         /// Fatura tarihi formatlanmış hali

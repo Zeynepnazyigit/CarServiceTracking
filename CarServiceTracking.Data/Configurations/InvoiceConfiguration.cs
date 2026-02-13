@@ -71,9 +71,18 @@ namespace CarServiceTracking.Data.Configurations
                 .HasDefaultValueSql("GETDATE()");
 
             // Relationships
+            // Servis faturasi (opsiyonel)
             builder.HasOne(x => x.ServiceRequest)
                 .WithOne(x => x.Invoice)
                 .HasForeignKey<Invoice>(x => x.ServiceRequestId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Kiralama faturasi (opsiyonel)
+            builder.HasOne(x => x.RentalAgreement)
+                .WithOne(x => x.Invoice)
+                .HasForeignKey<Invoice>(x => x.RentalAgreementId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.Customer)
@@ -86,9 +95,17 @@ namespace CarServiceTracking.Data.Configurations
                 .IsUnique()
                 .HasDatabaseName("IX_Invoices_InvoiceNumber");
 
+            // Filtered unique index: ServiceRequestId (NULL ve soft-deleted haric benzersiz)
             builder.HasIndex(x => x.ServiceRequestId)
                 .IsUnique()
+                .HasFilter("[ServiceRequestId] IS NOT NULL AND [IsDeleted] = 0")
                 .HasDatabaseName("IX_Invoices_ServiceRequestId");
+
+            // Filtered unique index: RentalAgreementId (NULL ve soft-deleted haric benzersiz)
+            builder.HasIndex(x => x.RentalAgreementId)
+                .IsUnique()
+                .HasFilter("[RentalAgreementId] IS NOT NULL AND [IsDeleted] = 0")
+                .HasDatabaseName("IX_Invoices_RentalAgreementId");
 
             builder.HasIndex(x => x.CustomerId)
                 .HasDatabaseName("IX_Invoices_CustomerId");

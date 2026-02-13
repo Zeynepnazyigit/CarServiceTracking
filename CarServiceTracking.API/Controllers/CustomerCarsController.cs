@@ -19,6 +19,29 @@ namespace CarServiceTracking.API.Controllers
         }
 
         // ======================================================
+        // GET: api/CustomerCars/all
+        // ======================================================
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var cars = await _customerCarService.GetAllAsync();
+
+            var dtoList = cars.Select(x => new CustomerCarListDTO
+            {
+                Id = x.Id,
+                CustomerId = x.CustomerId,
+                BrandModel = x.BrandModel,
+                PlateNumber = x.PlateNumber,
+                Year = x.Year,
+                Mileage = x.Mileage,
+                Color = x.Color,
+                IsInService = x.IsInService
+            }).ToList();
+
+            return Ok(dtoList);
+        }
+
+        // ======================================================
         // GET: api/CustomerCars?customerId=1
         // ======================================================
         [HttpGet]

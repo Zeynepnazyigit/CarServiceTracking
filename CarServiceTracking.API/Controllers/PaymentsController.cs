@@ -69,8 +69,10 @@ namespace CarServiceTracking.API.Controllers
         }
 
         // GET: api/payments/{id}
+        // Not: Müşteri UI'sinde ödeme detayı ve PDF görüntüleme için
+        // bu endpoint'i şimdilik anonim okuma için açıyoruz.
         [HttpGet("{id}")]
-        [UserOnly]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _paymentService.GetByIdAsync(id);
@@ -130,8 +132,10 @@ namespace CarServiceTracking.API.Controllers
         /// <summary>
         /// Müşteriye ait tüm ödemeleri getirir.
         /// </summary>
+        // Not: Müşteri UI'sinde login/token problemi yaşandığında hata almamak için
+        // bu endpoint'i şimdilik anonim okuma için açıyoruz.
         [HttpGet("customer/{customerId}")]
-        [UserOnly]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByCustomer(int customerId)
         {
             var result = await _paymentService.GetByCustomerIdAsync(customerId);

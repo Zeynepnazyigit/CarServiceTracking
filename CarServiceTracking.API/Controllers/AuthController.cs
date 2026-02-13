@@ -41,6 +41,7 @@ namespace CarServiceTracking.API.Controllers
                 var response = new LoginResponseDTO
                 {
                     UserId = result.Data.UserId,
+                    CustomerId = result.Data.CustomerId,
                     Email = result.Data.Email,
                     Role = result.Data.Role,
                     Token = token,
@@ -96,6 +97,7 @@ namespace CarServiceTracking.API.Controllers
     public class LoginResponseDTO
     {
         public int UserId { get; set; }
+        public int? CustomerId { get; set; }
         public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string Token { get; set; } = string.Empty;

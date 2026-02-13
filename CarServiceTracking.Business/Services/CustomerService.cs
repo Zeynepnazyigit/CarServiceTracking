@@ -30,7 +30,7 @@ namespace CarServiceTracking.Business.Services
             // Her müşteri için araç ve servis sayılarını hesapla
             foreach (var dto in customerDtos)
             {
-                var cars = await _unitOfWork.Cars.GetListAsync(c => c.CustomerId == dto.Id && !c.IsDeleted);
+                var cars = await _unitOfWork.CustomerCars.GetListAsync(c => c.CustomerId == dto.Id && !c.IsDeleted);
                 dto.TotalVehicles = cars.Count();
                 
                 var serviceRequests = await _unitOfWork.ServiceRequests.GetListAsync(s => s.CustomerId == dto.Id && !s.IsDeleted);
@@ -69,7 +69,7 @@ namespace CarServiceTracking.Business.Services
             var customerDto = _mapper.Map<CustomerDetailDTO>(customer);
             
             // Araç ve servis istatistiklerini hesapla
-            var cars = await _unitOfWork.Cars.GetListAsync(c => c.CustomerId == id && !c.IsDeleted);
+            var cars = await _unitOfWork.CustomerCars.GetListAsync(c => c.CustomerId == id && !c.IsDeleted);
             customerDto.TotalVehicles = cars.Count();
             
             var serviceRequests = await _unitOfWork.ServiceRequests.GetListAsync(s => s.CustomerId == id && !s.IsDeleted);

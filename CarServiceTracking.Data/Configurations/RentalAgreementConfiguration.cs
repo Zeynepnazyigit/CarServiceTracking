@@ -38,6 +38,12 @@ namespace CarServiceTracking.Data.Configurations
                 .HasPrecision(18, 2)
                 .HasDefaultValue(0);
 
+            builder.Property(x => x.DepositRefunded)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.Property(x => x.DepositRefundedDate);
+
             builder.Property(x => x.LateFee)
                 .HasPrecision(18, 2);
 

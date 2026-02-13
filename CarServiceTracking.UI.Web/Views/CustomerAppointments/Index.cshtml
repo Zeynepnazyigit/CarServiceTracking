@@ -121,21 +121,21 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
+                                            <a href="/Customer/Appointments/Details/@item.Id"
+                                               class="btn btn-sm btn-outline-info me-1" title="Detay">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
                                             @if (item.Status == "Pending")
                                             {
                                                 <form asp-action="Cancel" asp-route-id="@item.Id" method="post" class="d-inline">
                                                     @Html.AntiForgeryToken()
                                                     <input type="hidden" name="reason" value="Müşteri talebi" />
-                                                    <button type="submit" 
+                                                    <button type="submit"
                                                             class="btn btn-sm btn-outline-danger"
                                                             onclick="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?')">
                                                         <i class="fa-solid fa-times me-1"></i> İptal Et
                                                     </button>
                                                 </form>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">-</span>
                                             }
                                         </td>
                                     </tr>

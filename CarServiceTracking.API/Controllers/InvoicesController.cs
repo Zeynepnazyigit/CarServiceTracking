@@ -125,15 +125,42 @@ namespace CarServiceTracking.API.Controllers
         }
 
         // POST: api/invoices/from-service-request/{serviceRequestId}
+        /// <param name="replace">true ise bu servis talebi için mevcut fatura soft-delete edilip yenisi oluşturulur.</param>
         [HttpPost("from-service-request/{serviceRequestId}")]
-        public async Task<IActionResult> CreateFromServiceRequest(int serviceRequestId)
+        public async Task<IActionResult> CreateFromServiceRequest(int serviceRequestId, [FromQuery] bool replace = false)
         {
-            var result = await _invoiceService.CreateFromServiceRequestAsync(serviceRequestId);
+            var result = await _invoiceService.CreateFromServiceRequestAsync(serviceRequestId, replace);
             
             if (!result.Success)
                 return BadRequest(result);
 
             return CreatedAtAction(nameof(GetById), new { id = result.Data?.Id }, result);
+        }
+
+        // POST: api/invoices/from-rental/{rentalAgreementId}
+        [HttpPost("from-rental/{rentalAgreementId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateFromRentalAgreement(int rentalAgreementId)
+        {
+            var result = await _invoiceService.CreateRentalInvoiceAsync(rentalAgreementId);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return CreatedAtAction(nameof(GetById), new { id = result.Data?.Id }, result);
+        }
+
+        // GET: api/invoices/customer/{customerId}/pending
+        [HttpGet("customer/{customerId}/pending")]
+        [UserOnly]
+        public async Task<IActionResult> GetPendingByCustomer(int customerId)
+        {
+            var result = await _invoiceService.GetPendingInvoicesByCustomerIdAsync(customerId);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         // PUT: api/invoices/{id}

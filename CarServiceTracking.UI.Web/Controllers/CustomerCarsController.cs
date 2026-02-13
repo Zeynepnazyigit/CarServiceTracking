@@ -20,7 +20,7 @@ namespace CarServiceTracking.UI.Web.Controllers
         [Route("Index")]
         public async Task<IActionResult> Index()
         {
-            var userId = HttpContext.Session.GetInt32("UserId")!.Value;
+            var userId = HttpContext.Session.GetInt32("CustomerId")!.Value;
             var cars = await _api.GetByCustomerIdAsync(userId);
             return View(cars);
         }
@@ -44,7 +44,7 @@ namespace CarServiceTracking.UI.Web.Controllers
         {
             var model = new CustomerCarCreateVM
             {
-                CustomerId = HttpContext.Session.GetInt32("UserId")!.Value,
+                CustomerId = HttpContext.Session.GetInt32("CustomerId")!.Value,
                 Year = DateTime.Now.Year
             };
             return View(model);
@@ -61,7 +61,7 @@ namespace CarServiceTracking.UI.Web.Controllers
                 ModelState.AddModelError("", "❌ Model NULL - Form binding başarısız olmuş!");
                 return View(new CustomerCarCreateVM 
                 { 
-                    CustomerId = HttpContext.Session.GetInt32("UserId") ?? 0,
+                    CustomerId = HttpContext.Session.GetInt32("CustomerId") ?? 0,
                     Year = DateTime.Now.Year
                 });
             }
@@ -71,7 +71,7 @@ namespace CarServiceTracking.UI.Web.Controllers
                 return View(model);
             }
 
-            model.CustomerId = HttpContext.Session.GetInt32("UserId")!.Value;
+            model.CustomerId = HttpContext.Session.GetInt32("CustomerId")!.Value;
 
             var success = await _api.CreateAsync(model);
 

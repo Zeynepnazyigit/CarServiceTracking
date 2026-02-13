@@ -9,16 +9,16 @@ namespace CarServiceTracking.UI.Web.Controllers
     {
         private readonly AppointmentApiService _appointmentApiService;
         private readonly CustomerApiService _customerApiService;
-        private readonly CarApiService _carApiService;
+        private readonly CustomerCarApiService _customerCarApiService;
 
         public AdminAppointmentsController(
             AppointmentApiService appointmentApiService,
             CustomerApiService customerApiService,
-            CarApiService carApiService)
+            CustomerCarApiService customerCarApiService)
         {
             _appointmentApiService = appointmentApiService;
             _customerApiService = customerApiService;
-            _carApiService = carApiService;
+            _customerCarApiService = customerCarApiService;
         }
 
         // GET: AdminAppointments/Index
@@ -194,7 +194,7 @@ namespace CarServiceTracking.UI.Web.Controllers
             var customers = await _customerApiService.GetAllCustomersAsync();
             ViewBag.Customers = new SelectList(customers, "Id", "FullName");
 
-            var cars = await _carApiService.GetAllCarsAsync();
+            var cars = await _customerCarApiService.GetAllAsync();
             ViewBag.Cars = new SelectList(cars, "Id", "PlateNumber");
         }
     }

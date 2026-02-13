@@ -25,14 +25,21 @@ namespace CarServiceTracking.UI.Web.Controllers
             _logger = logger;
         }
 
+        // =========================
+        // LİSTE
+        // =========================
+        [HttpGet("")]
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
-            var customerId = HttpContext.Session.GetInt32("UserId")!.Value;
+            var customerId = HttpContext.Session.GetInt32("CustomerId");
+
+            if (customerId == null)
+                return RedirectToAction("Login", "Auth");
 
             try
             {
-                var payments = await _paymentApiService.GetByCustomerIdAsync(customerId);
+                var payments = await _paymentApiService.GetByCustomerIdAsync(customerId.Value);
                 return View(payments);
             }
             catch (Exception ex)
@@ -43,14 +50,20 @@ namespace CarServiceTracking.UI.Web.Controllers
             }
         }
 
+        // =========================
+        // CREATE (GET)
+        // =========================
         [HttpGet("Create")]
         public async Task<IActionResult> Create(int? invoiceId)
         {
-            var customerId = HttpContext.Session.GetInt32("UserId")!.Value;
+            var customerId = HttpContext.Session.GetInt32("CustomerId") ?? HttpContext.Session.GetInt32("UserId");
+
+            if (customerId == null || customerId <= 0)
+                return RedirectToAction("Login", "Auth");
 
             try
             {
-                await LoadCustomerInvoicesToViewBag(customerId);
+                await LoadCustomerInvoicesToViewBag(customerId.Value);
                 LoadPaymentMethodsToViewBag();
 
                 var model = new PaymentCreateVM
@@ -61,6 +74,7 @@ namespace CarServiceTracking.UI.Web.Controllers
                 if (invoiceId.HasValue)
                 {
                     model.InvoiceId = invoiceId.Value;
+
                     var invoice = await _invoiceApiService.GetByIdAsync(invoiceId.Value);
                     if (invoice != null)
                     {
@@ -78,15 +92,21 @@ namespace CarServiceTracking.UI.Web.Controllers
             }
         }
 
+        // =========================
+        // CREATE (POST)
+        // =========================
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PaymentCreateVM model)
         {
-            var customerId = HttpContext.Session.GetInt32("UserId")!.Value;
+            var customerId = HttpContext.Session.GetInt32("CustomerId") ?? HttpContext.Session.GetInt32("UserId");
+
+            if (customerId == null || customerId <= 0)
+                return RedirectToAction("Login", "Auth");
 
             if (!ModelState.IsValid)
             {
-                await LoadCustomerInvoicesToViewBag(customerId);
+                await LoadCustomerInvoicesToViewBag(customerId.Value);
                 LoadPaymentMethodsToViewBag();
                 return View(model);
             }
@@ -100,17 +120,17 @@ namespace CarServiceTracking.UI.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                var result = await _paymentApiService.CreateAsync(model);
+                var (success, message) = await _paymentApiService.CreateAsync(model);
 
-                if (result.Success)
+                if (success)
                 {
                     TempData["Success"] = "Ödemeniz başarıyla kaydedildi.";
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    TempData["Error"] = result.Message;
-                    await LoadCustomerInvoicesToViewBag(customerId);
+                    TempData["Error"] = message;
+                    await LoadCustomerInvoicesToViewBag(customerId.Value);
                     LoadPaymentMethodsToViewBag();
                     return View(model);
                 }
@@ -119,12 +139,15 @@ namespace CarServiceTracking.UI.Web.Controllers
             {
                 _logger.LogError(ex, "Ödeme kaydedilirken hata oluştu. CustomerId: {CustomerId}", customerId);
                 TempData["Error"] = "Ödeme kaydedilirken bir hata oluştu.";
-                await LoadCustomerInvoicesToViewBag(customerId);
+                await LoadCustomerInvoicesToViewBag(customerId.Value);
                 LoadPaymentMethodsToViewBag();
                 return View(model);
             }
         }
 
+        // =========================
+        // DETAILS
+        // =========================
         [HttpGet("Details/{id}")]
         public async Task<IActionResult> Details(int id)
         {
@@ -147,6 +170,9 @@ namespace CarServiceTracking.UI.Web.Controllers
             }
         }
 
+        // =========================
+        // PDF
+        // =========================
         [HttpGet("DownloadPdf/{id}")]
         public async Task<IActionResult> DownloadPdf(int id)
         {
@@ -170,11 +196,15 @@ namespace CarServiceTracking.UI.Web.Controllers
             }
         }
 
+        // =========================
+        // HELPER METOTLAR (EN ÖNEMLİ KISIM)
+        // =========================
         private async Task LoadCustomerInvoicesToViewBag(int customerId)
         {
-            var invoices = await _invoiceApiService.GetByCustomerIdAsync(customerId);
+            // 🔥 KRİTİK: SADECE BEKLEYEN FATURALAR
+            var invoices = await _invoiceApiService.GetPendingByCustomerIdAsync(customerId);
 
-            var pendingInvoices = invoices
+            ViewBag.Invoices = invoices
                 .Where(i => i.RemainingAmount > 0)
                 .Select(i => new SelectListItem
                 {
@@ -182,8 +212,6 @@ namespace CarServiceTracking.UI.Web.Controllers
                     Text = $"{i.InvoiceNumber} - Kalan: {i.RemainingAmount:C2}"
                 })
                 .ToList();
-
-            ViewBag.Invoices = pendingInvoices;
         }
 
         private void LoadPaymentMethodsToViewBag()

@@ -5,6 +5,11 @@ namespace CarServiceTracking.Business.Abstract
     public interface ICustomerCarService
     {
         /// <summary>
+        /// Tüm şahsi araçları getirir (Admin)
+        /// </summary>
+        Task<List<CustomerCar>> GetAllAsync();
+
+        /// <summary>
         /// Müşteriye ait şahsi araçları getirir
         /// </summary>
         Task<List<CustomerCar>> GetByCustomerIdAsync(int customerId);

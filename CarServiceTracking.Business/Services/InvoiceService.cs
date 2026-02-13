@@ -27,14 +27,7 @@ namespace CarServiceTracking.Business.Services
             foreach (var invoice in invoices.OrderByDescending(x => x.InvoiceDate))
             {
                 var dto = _mapper.Map<InvoiceListDTO>(invoice);
-
-                var serviceRequest = await _unitOfWork.ServiceRequests.GetByIdAsync(invoice.ServiceRequestId);
-                if (serviceRequest != null)
-                {
-                    var customer = await _unitOfWork.Customers.GetByIdAsync(serviceRequest.CustomerId);
-                    dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
-                }
-
+                await PopulateInvoiceListDtoAsync(dto, invoice);
                 invoiceDtos.Add(dto);
             }
 
@@ -49,14 +42,7 @@ namespace CarServiceTracking.Business.Services
             foreach (var invoice in invoices.OrderByDescending(x => x.InvoiceDate))
             {
                 var dto = _mapper.Map<InvoiceListDTO>(invoice);
-
-                var serviceRequest = await _unitOfWork.ServiceRequests.GetByIdAsync(invoice.ServiceRequestId);
-                if (serviceRequest != null)
-                {
-                    var customer = await _unitOfWork.Customers.GetByIdAsync(serviceRequest.CustomerId);
-                    dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
-                }
-
+                await PopulateInvoiceListDtoAsync(dto, invoice);
                 invoiceDtos.Add(dto);
             }
 
@@ -64,17 +50,13 @@ namespace CarServiceTracking.Business.Services
         }
 
         /// <summary>
-        /// Müşteriye ait faturaları getirir
-        /// Clean Code: Single Responsibility - Sadece müşteri faturalarını filtreler
+        /// Musteriye ait tum faturalari getirir (servis + kiralama)
+        /// CustomerId uzerinden direkt sorgular - her iki tur faturayi kapsar
         /// </summary>
         public async Task<IDataResult<List<InvoiceListDTO>>> GetByCustomerIdAsync(int customerId)
         {
-            // Önce müşterinin servis taleplerini bul
-            var serviceRequests = await _unitOfWork.ServiceRequests.GetListAsync(x => x.CustomerId == customerId);
-            var serviceRequestIds = serviceRequests.Select(x => x.Id).ToList();
-
-            // Bu servis taleplerine ait faturaları getir
-            var invoices = await _unitOfWork.Invoices.GetListAsync(x => serviceRequestIds.Contains(x.ServiceRequestId));
+            // CustomerId uzerinden direkt sorgula - hem servis hem kiralama faturalari gelir
+            var invoices = await _unitOfWork.Invoices.GetListAsync(x => x.CustomerId == customerId);
             var invoiceDtos = new List<InvoiceListDTO>();
 
             var customer = await _unitOfWork.Customers.GetByIdAsync(customerId);
@@ -84,10 +66,59 @@ namespace CarServiceTracking.Business.Services
             {
                 var dto = _mapper.Map<InvoiceListDTO>(invoice);
                 dto.CustomerName = customerName;
+
+                // Kiralama faturasi ise arac bilgisi ekle
+                if (invoice.RentalAgreementId.HasValue)
+                {
+                    var rental = await _unitOfWork.RentalAgreements.GetByIdAsync(invoice.RentalAgreementId.Value);
+                    if (rental != null)
+                    {
+                        var vehicle = await _unitOfWork.RentalVehicles.GetByIdAsync(rental.RentalVehicleId);
+                        dto.RentalInfo = $"{rental.AgreementNumber} - {vehicle?.DisplayName ?? "Bilinmiyor"}";
+                    }
+                }
+
                 invoiceDtos.Add(dto);
             }
 
             return new SuccessDataResult<List<InvoiceListDTO>>(invoiceDtos, "Müşteri faturaları başarıyla listelendi.");
+        }
+
+        /// <summary>
+        /// Musteriye ait odenmemis faturalari getirir (servis + kiralama)
+        /// </summary>
+        public async Task<IDataResult<List<InvoiceListDTO>>> GetPendingInvoicesByCustomerIdAsync(int customerId)
+        {
+            // CustomerId uzerinden direkt sorgula + odeme durumu filtresi
+            var invoices = await _unitOfWork.Invoices.GetListAsync(x =>
+                x.CustomerId == customerId &&
+                (x.PaymentStatus == PaymentStatus.Pending || x.PaymentStatus == PaymentStatus.Partial));
+
+            var invoiceDtos = new List<InvoiceListDTO>();
+
+            var customer = await _unitOfWork.Customers.GetByIdAsync(customerId);
+            var customerName = customer?.FullName ?? "Bilinmiyor";
+
+            foreach (var invoice in invoices.OrderByDescending(x => x.InvoiceDate))
+            {
+                var dto = _mapper.Map<InvoiceListDTO>(invoice);
+                dto.CustomerName = customerName;
+
+                // Kiralama faturasi ise arac bilgisi ekle
+                if (invoice.RentalAgreementId.HasValue)
+                {
+                    var rental = await _unitOfWork.RentalAgreements.GetByIdAsync(invoice.RentalAgreementId.Value);
+                    if (rental != null)
+                    {
+                        var vehicle = await _unitOfWork.RentalVehicles.GetByIdAsync(rental.RentalVehicleId);
+                        dto.RentalInfo = $"{rental.AgreementNumber} - {vehicle?.DisplayName ?? "Bilinmiyor"}";
+                    }
+                }
+
+                invoiceDtos.Add(dto);
+            }
+
+            return new SuccessDataResult<List<InvoiceListDTO>>(invoiceDtos, "Müşteriye ait bekleyen faturalar başarıyla listelendi.");
         }
 
         public async Task<IDataResult<List<InvoiceListDTO>>> GetByPaymentStatusAsync(PaymentStatus status)
@@ -98,14 +129,7 @@ namespace CarServiceTracking.Business.Services
             foreach (var invoice in invoices.OrderByDescending(x => x.InvoiceDate))
             {
                 var dto = _mapper.Map<InvoiceListDTO>(invoice);
-
-                var serviceRequest = await _unitOfWork.ServiceRequests.GetByIdAsync(invoice.ServiceRequestId);
-                if (serviceRequest != null)
-                {
-                    var customer = await _unitOfWork.Customers.GetByIdAsync(serviceRequest.CustomerId);
-                    dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
-                }
-
+                await PopulateInvoiceListDtoAsync(dto, invoice);
                 invoiceDtos.Add(dto);
             }
 
@@ -124,14 +148,7 @@ namespace CarServiceTracking.Business.Services
             foreach (var invoice in invoices.OrderByDescending(x => x.InvoiceDate))
             {
                 var dto = _mapper.Map<InvoiceListDTO>(invoice);
-
-                var serviceRequest = await _unitOfWork.ServiceRequests.GetByIdAsync(invoice.ServiceRequestId);
-                if (serviceRequest != null)
-                {
-                    var customer = await _unitOfWork.Customers.GetByIdAsync(serviceRequest.CustomerId);
-                    dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
-                }
-
+                await PopulateInvoiceListDtoAsync(dto, invoice);
                 invoiceDtos.Add(dto);
             }
 
@@ -147,15 +164,32 @@ namespace CarServiceTracking.Business.Services
 
             var dto = _mapper.Map<InvoiceDetailDTO>(invoice);
 
-            var serviceRequest = await _unitOfWork.ServiceRequests.GetByIdAsync(invoice.ServiceRequestId);
-            if (serviceRequest != null)
-            {
-                var customer = await _unitOfWork.Customers.GetByIdAsync(serviceRequest.CustomerId);
-                dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
-                dto.CustomerPhone = customer?.Phone ?? "Bilinmiyor";
+            // Musteri bilgisi (CustomerId uzerinden direkt)
+            var customer = await _unitOfWork.Customers.GetByIdAsync(invoice.CustomerId);
+            dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
+            dto.CustomerPhone = customer?.Phone ?? "Bilinmiyor";
 
-                var customerCar = await _unitOfWork.CustomerCars.GetByIdAsync(serviceRequest.CarId);
-                dto.CarInfo = customerCar?.BrandModel ?? "Bilinmiyor";
+            // Servis faturasi ise arac bilgisi — Servis Talebi'nin CarId'si Car tablosuna baglidir (Opel Mokka vb.)
+            if (invoice.ServiceRequestId.HasValue)
+            {
+                var serviceRequest = await _unitOfWork.ServiceRequests.GetByIdAsync(invoice.ServiceRequestId.Value);
+                if (serviceRequest != null)
+                {
+                    var car = await _unitOfWork.Cars.GetByIdAsync(serviceRequest.CarId);
+                    dto.CarInfo = car != null ? $"{car.Brand} {car.Model}" : "Bilinmiyor";
+                }
+            }
+
+            // Kiralama faturasi ise kiralama + arac bilgisi
+            if (invoice.RentalAgreementId.HasValue)
+            {
+                var rental = await _unitOfWork.RentalAgreements.GetByIdAsync(invoice.RentalAgreementId.Value);
+                if (rental != null)
+                {
+                    var vehicle = await _unitOfWork.RentalVehicles.GetByIdAsync(rental.RentalVehicleId);
+                    dto.RentalInfo = $"{rental.AgreementNumber} - {vehicle?.DisplayName ?? "Bilinmiyor"}";
+                    dto.CarInfo = vehicle?.DisplayName ?? "Kiralık Araç";
+                }
             }
 
             return new SuccessDataResult<InvoiceDetailDTO>(dto, "Fatura başarıyla getirildi.");
@@ -175,6 +209,8 @@ namespace CarServiceTracking.Business.Services
         {
             var invoice = _mapper.Map<Invoice>(dto);
             invoice.InvoiceNumber = await GenerateInvoiceNumberAsync();
+            invoice.PaidAmount = 0m;
+            invoice.PaymentStatus = PaymentStatus.Pending;
 
             CalculateInvoiceAmounts(invoice);
 
@@ -214,37 +250,141 @@ namespace CarServiceTracking.Business.Services
             return new SuccessResult("Fatura başarıyla silindi.");
         }
 
-        public async Task<IDataResult<InvoiceDetailDTO>> CreateFromServiceRequestAsync(int serviceRequestId)
+        public async Task<IDataResult<InvoiceDetailDTO>> CreateFromServiceRequestAsync(int serviceRequestId, bool replaceIfExists = false)
         {
             var serviceRequest = await _unitOfWork.ServiceRequests.GetByIdAsync(serviceRequestId);
             if (serviceRequest == null)
                 return new ErrorDataResult<InvoiceDetailDTO>("Servis talebi bulunamadı.");
 
-            var serviceParts = await _unitOfWork.ServiceParts.GetListAsync(x => x.ServiceRequestId == serviceRequestId);
-            var partsCost = serviceParts.Sum(x => x.Quantity * x.UnitPrice);
+            var customer = await _unitOfWork.Customers.GetByIdAsync(serviceRequest.CustomerId);
+            if (customer == null || customer.IsDeleted)
+                return new ErrorDataResult<InvoiceDetailDTO>("Bu servis talebine ait müşteri bulunamadı veya pasif. Fatura oluşturulamaz.");
 
-            var createDto = new InvoiceCreateDTO
+            var existingInvoice = await _unitOfWork.Invoices.GetAsync(
+                i => i.ServiceRequestId == serviceRequestId);
+            if (existingInvoice != null)
+            {
+                if (!replaceIfExists)
+                    return new ErrorDataResult<InvoiceDetailDTO>(
+                        $"Bu servis talebi için zaten fatura mevcut: {existingInvoice.InvoiceNumber}. Yeniden oluşturmak için \"Mevcut faturayı silip yeniden oluştur\" seçeneğini işaretleyin.");
+
+                // Replace: atomik işlem — önce sil, sonra oluştur; hata olursa rollback (clean code: tek sorumluluk, tutarlı durum)
+                await _unitOfWork.BeginTransactionAsync();
+                try
+                {
+                    await _unitOfWork.Invoices.DeleteAsync(existingInvoice.Id);
+                    var customerId = serviceRequest.CustomerId;
+                    var totalCost = serviceRequest.ServicePrice ?? 0m;
+                    var createDto = new InvoiceCreateDTO
+                    {
+                        ServiceRequestId = serviceRequestId,
+                        CustomerId = customerId,
+                        InvoiceDate = DateTime.Now,
+                        DueDate = DateTime.Now.AddDays(30),
+                        LaborCost = 0m,
+                        PartsTotal = totalCost,
+                        TaxRate = 20m
+                    };
+                    var createResult = await CreateAsync(createDto);
+                    if (!createResult.Success)
+                    {
+                        await _unitOfWork.RollbackAsync();
+                        return createResult;
+                    }
+                    await _unitOfWork.CommitAsync();
+                    return createResult;
+                }
+                catch
+                {
+                    await _unitOfWork.RollbackAsync();
+                    throw;
+                }
+            }
+
+            var customerIdFinal = serviceRequest.CustomerId;
+            decimal totalCostFinal = serviceRequest.ServicePrice ?? 0m;
+            var createDtoFinal = new InvoiceCreateDTO
             {
                 ServiceRequestId = serviceRequestId,
+                CustomerId = customerIdFinal,
                 InvoiceDate = DateTime.Now,
                 DueDate = DateTime.Now.AddDays(30),
                 LaborCost = 0m,
-                PartsTotal = partsCost,
+                PartsTotal = totalCostFinal,
                 TaxRate = 20m
+            };
+
+            return await CreateAsync(createDtoFinal);
+        }
+
+        /// <summary>
+        /// Kiralama sozlesmesi icin otomatik fatura olusturur
+        /// </summary>
+        public async Task<IDataResult<InvoiceDetailDTO>> CreateRentalInvoiceAsync(int rentalAgreementId)
+        {
+            // Kiralama sozlesmesini kontrol et
+            var rental = await _unitOfWork.RentalAgreements.GetByIdAsync(rentalAgreementId);
+            if (rental == null)
+                return new ErrorDataResult<InvoiceDetailDTO>("Kiralama sözleşmesi bulunamadı.");
+
+            // Ayni kiralama icin zaten fatura var mi kontrol et
+            var existingInvoice = await _unitOfWork.Invoices.GetAsync(x => x.RentalAgreementId == rentalAgreementId);
+            if (existingInvoice != null)
+                return new ErrorDataResult<InvoiceDetailDTO>("Bu kiralama sözleşmesi için zaten bir fatura mevcut.");
+
+            // Kiralama verilerinden fatura olustur
+            var createDto = new InvoiceCreateDTO
+            {
+                RentalAgreementId = rentalAgreementId,
+                ServiceRequestId = null,
+                CustomerId = rental.CustomerId,
+                InvoiceDate = DateTime.Now,
+                DueDate = rental.EndDate,
+                LaborCost = rental.TotalAmount,   // Kiralama ucreti
+                PartsTotal = rental.DepositAmount, // Depozito
+                TaxRate = 0m,                      // Kiralama icin KDV yok (gerekirse degistirilebilir)
+                Notes = $"Kiralama Sözleşmesi: {rental.AgreementNumber}"
             };
 
             return await CreateAsync(createDto);
         }
 
+        // ==========================================
+        // HELPER METOTLAR
+        // ==========================================
+
+        /// <summary>
+        /// Fatura listesi DTO'suna musteri ve kiralama bilgisi ekler
+        /// </summary>
+        private async Task PopulateInvoiceListDtoAsync(InvoiceListDTO dto, Invoice invoice)
+        {
+            // Musteri bilgisi (CustomerId uzerinden direkt)
+            var customer = await _unitOfWork.Customers.GetByIdAsync(invoice.CustomerId);
+            dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
+
+            // Kiralama faturasi ise ek bilgi
+            if (invoice.RentalAgreementId.HasValue)
+            {
+                var rental = await _unitOfWork.RentalAgreements.GetByIdAsync(invoice.RentalAgreementId.Value);
+                if (rental != null)
+                {
+                    var vehicle = await _unitOfWork.RentalVehicles.GetByIdAsync(rental.RentalVehicleId);
+                    dto.RentalInfo = $"{rental.AgreementNumber} - {vehicle?.DisplayName ?? "Bilinmiyor"}";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Benzersiz fatura numarası üretir. Silinmiş (soft-delete) faturalar dahil tüm kayıtlar dikkate alınır;
+        /// böylece "mevcut faturayı silip yeniden oluştur" sonrası numara çakışması olmaz.
+        /// </summary>
         private async Task<string> GenerateInvoiceNumberAsync()
         {
-            var year = DateTime.Now.Year;
-            var month = DateTime.Now.Month;
-            var prefix = $"INV{year}{month:00}";
+            var now = DateTime.Now;
+            var prefix = $"INV{now:yyyyMM}";
 
-            var lastInvoice = (await _unitOfWork.Invoices.GetListAsync(x => x.InvoiceNumber.StartsWith(prefix)))
-                .OrderByDescending(x => x.InvoiceNumber)
-                .FirstOrDefault();
+            var allWithPrefix = await _unitOfWork.Invoices.GetListIncludingDeletedAsync(x => x.InvoiceNumber.StartsWith(prefix));
+            var lastInvoice = allWithPrefix.OrderByDescending(x => x.InvoiceNumber).FirstOrDefault();
 
             if (lastInvoice == null)
                 return $"{prefix}0001";
@@ -262,12 +402,10 @@ namespace CarServiceTracking.Business.Services
 
             invoice.RemainingAmount = invoice.GrandTotal - invoice.PaidAmount;
 
-            if (invoice.RemainingAmount <= 0)
+            if (invoice.PaidAmount > 0 && invoice.RemainingAmount <= 0)
                 invoice.PaymentStatus = PaymentStatus.Paid;
-            else if (invoice.PaidAmount > 0)
+            else if (invoice.PaidAmount > 0 && invoice.RemainingAmount > 0)
                 invoice.PaymentStatus = PaymentStatus.Partial;
-            else if (invoice.DueDate.HasValue && invoice.DueDate.Value < DateTime.Now)
-                invoice.PaymentStatus = PaymentStatus.Overdue;
             else
                 invoice.PaymentStatus = PaymentStatus.Pending;
         }

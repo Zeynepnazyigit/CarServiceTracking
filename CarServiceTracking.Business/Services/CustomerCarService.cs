@@ -14,6 +14,15 @@ namespace CarServiceTracking.Business.Services
         }
 
         // =========================
+        // Tüm araçlar (Admin)
+        // =========================
+        public async Task<List<CustomerCar>> GetAllAsync()
+        {
+            var allCars = await _unitOfWork.CustomerCars.GetAllAsync();
+            return allCars.Where(x => !x.IsDeleted && x.IsActive).ToList();
+        }
+
+        // =========================
         // Customer'a ait araçlar
         // =========================
         public async Task<List<CustomerCar>> GetByCustomerIdAsync(int customerId)

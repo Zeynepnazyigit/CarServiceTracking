@@ -7,13 +7,19 @@ namespace CarServiceTracking.UI.Web.Controllers
     public class AdminInvoicesController : AdminBaseController
     {
         private readonly InvoiceApiService _invoiceApiService;
+        private readonly PdfService _pdfService;
 
-        public AdminInvoicesController(InvoiceApiService invoiceApiService)
+        public AdminInvoicesController(
+            InvoiceApiService invoiceApiService,
+            PdfService pdfService)
         {
             _invoiceApiService = invoiceApiService;
+            _pdfService = pdfService;
         }
 
-        // GET: AdminInvoices/Index
+        // =========================
+        // INDEX
+        // =========================
         public async Task<IActionResult> Index(string? status)
         {
             List<InvoiceListVM> invoices;
@@ -31,14 +37,18 @@ namespace CarServiceTracking.UI.Web.Controllers
             return View(invoices);
         }
 
-        // GET: AdminInvoices/Overdue
+        // =========================
+        // OVERDUE
+        // =========================
         public async Task<IActionResult> Overdue()
         {
             var invoices = await _invoiceApiService.GetOverdueAsync();
             return View(invoices);
         }
 
-        // GET: AdminInvoices/Details/5
+        // =========================
+        // DETAILS
+        // =========================
         public async Task<IActionResult> Details(int id)
         {
             var invoice = await _invoiceApiService.GetByIdAsync(id);
@@ -48,35 +58,41 @@ namespace CarServiceTracking.UI.Web.Controllers
             return View(invoice);
         }
 
-        // GET: AdminInvoices/Create
+        // =========================
+        // CREATE (GET)
+        // =========================
         public IActionResult Create()
         {
-            return View();
+            return View(new InvoiceCreateVM());
         }
 
-        // POST: AdminInvoices/Create
+        // =========================
+        // CREATE (POST) — DOĞRU YOL
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(InvoiceCreateVM model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
-            var (success, message, invoiceId) = await _invoiceApiService.CreateFromServiceRequestAsync(model.ServiceRequestId);
+            var result =
+                await _invoiceApiService.CreateFromServiceRequestAsync(model.ServiceRequestId, model.ReplaceIfExists);
 
-            if (!success)
+            if (!result.Success)
             {
-                ModelState.AddModelError("", message);
+                ModelState.AddModelError("", result.Message);
                 return View(model);
             }
 
             TempData["SuccessMessage"] = "Fatura başarıyla oluşturuldu.";
-            return RedirectToAction(nameof(Details), new { id = invoiceId });
+
+            return RedirectToAction(nameof(Details), new { id = result.Data.Id });
         }
 
-        // GET: AdminInvoices/Edit/5
+        // =========================
+        // EDIT (GET)
+        // =========================
         public async Task<IActionResult> Edit(int id)
         {
             var invoice = await _invoiceApiService.GetByIdAsync(id);
@@ -86,14 +102,15 @@ namespace CarServiceTracking.UI.Web.Controllers
             var model = new InvoiceEditVM
             {
                 Id = invoice.Id,
-                DueDate = invoice.DueDate,
                 Notes = invoice.Notes
             };
 
             return View(model);
         }
 
-        // POST: AdminInvoices/Edit/5
+        // =========================
+        // EDIT (POST)
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, InvoiceEditVM model)
@@ -102,15 +119,13 @@ namespace CarServiceTracking.UI.Web.Controllers
                 return NotFound();
 
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
-            var (success, message) = await _invoiceApiService.UpdateAsync(model);
+            var result = await _invoiceApiService.UpdateAsync(model);
 
-            if (!success)
+            if (!result.Success)
             {
-                ModelState.AddModelError("", message);
+                ModelState.AddModelError("", result.Message);
                 return View(model);
             }
 
@@ -118,21 +133,35 @@ namespace CarServiceTracking.UI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: AdminInvoices/Delete/5
+        // =========================
+        // PDF
+        // =========================
+        public async Task<IActionResult> DownloadPdf(int id)
+        {
+            var invoice = await _invoiceApiService.GetByIdForPdfAsync(id);
+            if (invoice == null)
+            {
+                TempData["ErrorMessage"] = "Fatura bulunamadı.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var pdfBytes = _pdfService.GenerateInvoicePdf(invoice);
+            return File(pdfBytes, "application/pdf", $"Fatura_{invoice.InvoiceNumber}.pdf");
+        }
+
+        // =========================
+        // DELETE
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var (success, message) = await _invoiceApiService.DeleteAsync(id);
+            var result = await _invoiceApiService.DeleteAsync(id);
 
-            if (!success)
-            {
-                TempData["ErrorMessage"] = message;
-            }
+            if (!result.Success)
+                TempData["ErrorMessage"] = result.Message;
             else
-            {
                 TempData["SuccessMessage"] = "Fatura başarıyla silindi.";
-            }
 
             return RedirectToAction(nameof(Index));
         }

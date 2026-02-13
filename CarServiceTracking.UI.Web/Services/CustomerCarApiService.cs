@@ -13,6 +13,30 @@ namespace CarServiceTracking.UI.Web.Services
             _httpClientFactory = httpClientFactory;
         }
 
+        public async Task<List<CustomerCarVM>> GetAllAsync()
+        {
+            var client = _httpClientFactory.CreateClient("api");
+            var response = await client.GetAsync("api/CustomerCars/all");
+
+            if (!response.IsSuccessStatusCode)
+                return new List<CustomerCarVM>();
+
+            var dtoList = await response.Content
+                .ReadFromJsonAsync<List<CustomerCarListApiModel>>()
+                ?? new List<CustomerCarListApiModel>();
+
+            return dtoList.Select(x => new CustomerCarVM
+            {
+                Id = x.Id,
+                BrandModel = x.BrandModel,
+                PlateNumber = x.PlateNumber,
+                Year = x.Year,
+                Mileage = x.Mileage,
+                Color = x.Color,
+                IsInService = x.IsInService
+            }).ToList();
+        }
+
         public async Task<List<CustomerCarVM>> GetByCustomerIdAsync(int customerId)
         {
             var client = _httpClientFactory.CreateClient("api");

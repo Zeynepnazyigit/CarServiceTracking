@@ -1,8 +1,13 @@
 using System.Net;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarServiceTracking.API.Middlewares
 {
+    /// <summary>
+    /// Katmanlı mimari: API katmanında tüm istisnaları yakalar,
+    /// veritabanı hatalarını (DbUpdateException) anlamlı mesaja çevirir.
+    /// </summary>
     public class GlobalExceptionMiddleware
     {
         private readonly RequestDelegate _next;
@@ -24,9 +29,28 @@ namespace CarServiceTracking.API.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception occurred: {Message}", ex.Message);
+                _logger.LogError(ex, "Unhandled exception: {Message}", ex.Message);
+                if (ex is DbUpdateException dbEx && dbEx.InnerException != null)
+                    _logger.LogError(dbEx.InnerException, "Inner exception (veritabanı): {Message}", dbEx.InnerException.Message);
                 await HandleExceptionAsync(context, ex, _environment.IsDevelopment());
             }
+        }
+
+        private static string GetUserFriendlyMessage(Exception exception)
+        {
+            var innerMessage = exception.InnerException?.Message ?? exception.Message;
+
+            if (innerMessage.Contains("IX_Invoices_ServiceRequestId", StringComparison.OrdinalIgnoreCase) ||
+                innerMessage.Contains("UNIQUE", StringComparison.OrdinalIgnoreCase) && innerMessage.Contains("ServiceRequestId", StringComparison.OrdinalIgnoreCase))
+                return "Bu servis talebi için zaten bir fatura mevcut.";
+
+            if (innerMessage.Contains("IX_Invoices_InvoiceNumber", StringComparison.OrdinalIgnoreCase))
+                return "Fatura numarası çakışması oluştu. Lütfen tekrar deneyin.";
+
+            if (innerMessage.Contains("FK_", StringComparison.OrdinalIgnoreCase) || innerMessage.Contains("foreign key", StringComparison.OrdinalIgnoreCase))
+                return "İlişkili kayıt bulunamadı. Lütfen müşteri ve servis talebinin geçerli olduğundan emin olun.";
+
+            return "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.";
         }
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception, bool isDevelopment)
@@ -34,11 +58,15 @@ namespace CarServiceTracking.API.Middlewares
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
+            var isDbUpdate = exception is DbUpdateException;
+            var message = isDbUpdate ? GetUserFriendlyMessage(exception) : "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.";
+            var innerDetail = isDbUpdate ? (exception.InnerException?.Message ?? exception.Message) : exception.Message;
+
             var response = new
             {
                 success = false,
-                message = "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
-                detail = isDevelopment ? exception.Message : null, // Sadece development'ta detay göster
+                message,
+                detail = isDevelopment ? innerDetail : null,
                 data = (object?)null
             };
 

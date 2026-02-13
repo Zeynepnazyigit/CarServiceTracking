@@ -6,10 +6,12 @@ namespace CarServiceTracking.Core.DTOs.InvoiceDTOs
     {
         public int Id { get; set; }
         public string InvoiceNumber { get; set; } = string.Empty;
-        public int ServiceRequestId { get; set; }
+        public int? ServiceRequestId { get; set; }
+        public int? RentalAgreementId { get; set; }
         public string CustomerName { get; set; } = string.Empty;
         public string CustomerPhone { get; set; } = string.Empty;
         public string CarInfo { get; set; } = string.Empty;
+        public string? RentalInfo { get; set; }          // Kiralama faturasi icin arac/sozlesme bilgisi
         public DateTime InvoiceDate { get; set; }
         public DateTime? DueDate { get; set; }
         public decimal LaborCost { get; set; }
@@ -23,5 +25,10 @@ namespace CarServiceTracking.Core.DTOs.InvoiceDTOs
         public PaymentStatus PaymentStatus { get; set; }
         public string? Notes { get; set; }
         public DateTime CreatedDate { get; set; }
+
+        /// <summary>
+        /// Fatura tipi: Servis veya Kiralama
+        /// </summary>
+        public bool IsRentalInvoice => RentalAgreementId.HasValue;
     }
 }

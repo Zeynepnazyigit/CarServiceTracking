@@ -22,11 +22,9 @@ namespace CarServiceTracking.UI.Web.ViewModels.Rentals
         [Range(1900, 2100, ErrorMessage = "Geçerli bir yıl giriniz")]
         public int Year { get; set; }
 
-        [Required(ErrorMessage = "Yakıt tipi zorunludur")]
         [StringLength(50)]
         public string FuelType { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Vites tipi zorunludur")]
         [StringLength(50)]
         public string TransmissionType { get; set; } = string.Empty;
 

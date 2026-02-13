@@ -95,6 +95,9 @@
                                 <a asp-controller="AdminPayments" asp-action="Details" asp-route-id="@payment.Id" class="btn btn-sm btn-info" title="Detay">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                <a asp-controller="AdminPayments" asp-action="DownloadPdf" asp-route-id="@payment.Id" class="btn btn-sm btn-secondary" title="Makbuz İndir">
+                                    <i class="fas fa-file-pdf"></i>
+                                </a>
                                 <a asp-controller="AdminPayments" asp-action="Edit" asp-route-id="@payment.Id" class="btn btn-sm btn-warning" title="Düzenle">
                                     <i class="fas fa-edit"></i>
                                 </a>

@@ -6,8 +6,10 @@ namespace CarServiceTracking.UI.Web.Models.ApiModels.InvoiceApiModels
     {
         public int Id { get; set; }
         public string InvoiceNumber { get; set; } = string.Empty;
-        public int ServiceRequestId { get; set; }
+        public int? ServiceRequestId { get; set; }
+        public int? RentalAgreementId { get; set; }
         public string CustomerName { get; set; } = string.Empty;
+        public string? RentalInfo { get; set; }
         public string CustomerPhone { get; set; } = string.Empty;
         public string CarInfo { get; set; } = string.Empty;
         public DateTime InvoiceDate { get; set; }

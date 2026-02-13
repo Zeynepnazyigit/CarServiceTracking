@@ -30,11 +30,12 @@ namespace CarServiceTracking.UI.Web.Controllers
         [Route("Index")]
         public async Task<IActionResult> Index()
         {
-            var userId = GetCurrentUserId();
-            if (userId == null)
+            var customerId = HttpContext.Session.GetInt32("CustomerId");
+
+            if (customerId == null)
                 return RedirectToLogin();
 
-            var invoices = await _invoiceApiService.GetByCustomerIdAsync(userId.Value);
+            var invoices = await _invoiceApiService.GetByCustomerIdAsync(customerId.Value);
             return View(invoices);
         }
 
@@ -88,12 +89,18 @@ namespace CarServiceTracking.UI.Web.Controllers
         #region Helper Methods
 
         /// <summary>
-        /// Mevcut kullanıcı ID'sini session'dan alır
+        /// Mevcut müşteri ID'sini session'dan alır (öncelik CustomerId, yoksa UserId).
         /// </summary>
         private int? GetCurrentUserId()
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            return (userId == null || userId <= 0) ? null : userId;
+            var customerId = HttpContext.Session.GetInt32("CustomerId");
+            if (customerId == null || customerId <= 0)
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                return (userId == null || userId <= 0) ? null : userId;
+            }
+
+            return customerId;
         }
 
         /// <summary>

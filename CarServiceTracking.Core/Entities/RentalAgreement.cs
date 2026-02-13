@@ -21,6 +21,11 @@ namespace CarServiceTracking.Core.Entities
         public decimal TotalAmount { get; set; }
         public decimal DepositAmount { get; set; }
         public decimal? LateFee { get; set; }
+
+        /// <summary>Depozito teslim sonrası iade edildi mi?</summary>
+        public bool DepositRefunded { get; set; }
+        /// <summary>Depozito iade tarihi (kiralama tamamlandığında set edilir)</summary>
+        public DateTime? DepositRefundedDate { get; set; }
         
         public RentalStatus Status { get; set; } = RentalStatus.Active;
         
@@ -35,5 +40,6 @@ namespace CarServiceTracking.Core.Entities
         public virtual Customer Customer { get; set; } = null!;
         public virtual RentalVehicle RentalVehicle { get; set; } = null!;
         public virtual ServiceRequest? ServiceRequest { get; set; }
+        public virtual Invoice? Invoice { get; set; }
     }
 }

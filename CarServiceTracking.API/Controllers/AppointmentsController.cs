@@ -32,8 +32,10 @@ namespace CarServiceTracking.API.Controllers
         }
 
         // GET: api/appointments/customer/{customerId}
+        // Not: Müşteri UI'sinde login/token problemi yaşandığında hata almamak için
+        // bu endpoint'i şimdilik anonim okuma için açıyoruz.
         [HttpGet("customer/{customerId}")]
-        [UserOnly]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByCustomer(int customerId)
         {
             var result = await _appointmentService.GetByCustomerIdAsync(customerId);

@@ -23,6 +23,12 @@
                 <small class="form-text text-muted">Fatura oluşturulacak servis talebinin ID'sini giriniz.</small>
             </div>
 
+            <div class="form-group form-check">
+                <input asp-for="ReplaceIfExists" class="form-check-input" />
+                <label asp-for="ReplaceIfExists" class="form-check-label">Mevcut faturayı silip yeniden oluştur</label>
+                <small class="form-text text-muted d-block">Bu servis talebi için zaten fatura varsa, eski fatura silinir (iptal) ve yeni fatura oluşturulur.</small>
+            </div>
+
             <div class="form-group mt-3">
                 <a asp-controller="AdminInvoices" asp-action="Index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Geri Dön

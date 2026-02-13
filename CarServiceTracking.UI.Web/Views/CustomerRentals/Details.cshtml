@@ -147,7 +147,7 @@
                 }
             </div>
 
-            <!-- Sağ Kolon - Ücret Özeti -->
+            <!-- Sag Kolon - Ucret Ozeti -->
             <div class="col-lg-4">
                 <div class="card card-outline card-success">
                     <div class="card-header">
@@ -170,15 +170,90 @@
                                 <td>Depozito:</td>
                                 <td class="text-right">@Model.DepositAmount.ToString("C2", trCulture)</td>
                             </tr>
+                            <tr>
+                                <td colspan="2" class="small">
+                                    @if (Model.DepositRefunded && Model.DepositRefundedDate.HasValue)
+                                    {
+                                        <span class="text-success"><i class="fas fa-check-circle mr-1"></i>Depozito iade edildi (@Model.DepositRefundedDate.Value.ToString("dd.MM.yyyy", trCulture))</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted"><i class="fas fa-info-circle mr-1"></i>Depozito, aracın sorunsuz teslimi sonrası iade edilir. Ödeme yaptığınız karta veya hesaba iade edilir.</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr class="table-active">
+                                <td>Kiralama Bedeli (1 gün × günlük):</td>
+                                <td class="text-right font-weight-bold">@Model.TotalAmount.ToString("C2", trCulture)</td>
+                            </tr>
                             <tr class="table-active font-weight-bold">
-                                <td>Toplam Tutar:</td>
-                                <td class="text-right text-success h5">@Model.TotalAmount.ToString("C2", trCulture)</td>
+                                <td>Ödenecek Toplam (Kiralama + Depozito):</td>
+                                <td class="text-right text-success h5">@((Model.TotalAmount + Model.DepositAmount).ToString("C2", trCulture))</td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
-                <!-- Hızlı Linkler -->
+                <!-- Odeme Durumu Karti -->
+                <div class="card card-outline card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-money-bill-wave mr-2"></i>
+                            Ödeme Durumu
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.HasInvoice)
+                        {
+                            <table class="table table-sm mb-3">
+                                <tr>
+                                    <td>Fatura Tutarı:</td>
+                                    <td class="text-right font-weight-bold">@Model.GrandTotal.ToString("C2", trCulture)</td>
+                                </tr>
+                                <tr>
+                                    <td>Ödenen:</td>
+                                    <td class="text-right text-success">@Model.PaidAmount.ToString("C2", trCulture)</td>
+                                </tr>
+                                <tr class="table-active">
+                                    <td>Kalan:</td>
+                                    <td class="text-right text-danger font-weight-bold">@Model.RemainingAmount.ToString("C2", trCulture)</td>
+                                </tr>
+                            </table>
+
+                            <div class="text-center mb-3">
+                                <span class="@Model.PaymentBadgeClass" style="font-size: 1.1rem;">
+                                    @Model.PaymentStatusText
+                                </span>
+                            </div>
+
+                            @if (Model.RemainingAmount > 0)
+                            {
+                                <a href="/Customer/Payments/Create?invoiceId=@Model.InvoiceId"
+                                   class="btn btn-success btn-block btn-lg">
+                                    <i class="fas fa-credit-card mr-2"></i>
+                                    Ödeme Yap
+                                </a>
+                            }
+                            else
+                            {
+                                <div class="alert alert-success text-center mb-0">
+                                    <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                    <br />
+                                    <strong>Ödeme tamamlandı!</strong>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="alert alert-info text-center mb-0">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Fatura henüz oluşturulmamış.
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Hizli Linkler -->
                 <div class="card card-outline card-secondary">
                     <div class="card-header">
                         <h3 class="card-title">
@@ -195,16 +270,26 @@
                                     <i class="fas fa-chevron-right float-right mt-1"></i>
                                 </a>
                             </li>
+                            @if (Model.HasInvoice)
+                            {
+                                <li class="nav-item">
+                                    <a href="/Customer/Invoices/Details/@Model.InvoiceId" class="nav-link">
+                                        <i class="fas fa-file-invoice mr-2"></i>
+                                        Faturayı Görüntüle
+                                        <i class="fas fa-chevron-right float-right mt-1"></i>
+                                    </a>
+                                </li>
+                            }
                             <li class="nav-item">
-                                <a href="/Customer/ServiceRequests/Index" class="nav-link">
-                                    <i class="fas fa-screwdriver-wrench mr-2"></i>
-                                    Servis Kayıtlarım
+                                <a href="/Customer/Payments/Index" class="nav-link">
+                                    <i class="fas fa-money-bill-wave mr-2"></i>
+                                    Ödemelerim
                                     <i class="fas fa-chevron-right float-right mt-1"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="/Customer/Invoices/Index" class="nav-link">
-                                    <i class="fas fa-file-invoice mr-2"></i>
+                                    <i class="fas fa-file-invoice-dollar mr-2"></i>
                                     Faturalarım
                                     <i class="fas fa-chevron-right float-right mt-1"></i>
                                 </a>

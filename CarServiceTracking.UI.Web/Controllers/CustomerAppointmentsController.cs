@@ -43,6 +43,27 @@ namespace CarServiceTracking.UI.Web.Controllers
             return View(appointments);
         }
 
+        /// <summary>
+        /// Randevu detay sayfası
+        /// </summary>
+        [HttpGet]
+        [Route("Details/{id}")]
+        public async Task<IActionResult> Details(int id)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null)
+                return RedirectToLogin();
+
+            var detail = await _appointmentApiService.GetByIdAsync(id);
+            if (detail == null)
+            {
+                TempData["Error"] = "Randevu bulunamadı.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(detail);
+        }
+
         #endregion
 
         #region Oluşturma İşlemleri

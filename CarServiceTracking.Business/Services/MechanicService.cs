@@ -30,6 +30,7 @@ namespace CarServiceTracking.Business.Services
 
                 var assignments = await _unitOfWork.ServiceAssignments.GetListAsync(x => x.MechanicId == mechanic.Id);
                 dto.ActiveAssignments = assignments.Count(x => x.CompletedAt == null);
+                dto.IsAvailable = dto.ActiveAssignments == 0;
 
                 mechanicDtos.Add(dto);
             }
@@ -72,6 +73,7 @@ namespace CarServiceTracking.Business.Services
 
                 var assignments = await _unitOfWork.ServiceAssignments.GetListAsync(x => x.MechanicId == mechanic.Id);
                 dto.ActiveAssignments = assignments.Count(x => x.CompletedAt == null);
+                dto.IsAvailable = dto.ActiveAssignments == 0;
 
                 mechanicDtos.Add(dto);
             }

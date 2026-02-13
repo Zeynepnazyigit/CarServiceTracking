@@ -80,6 +80,7 @@ builder.Services.AddScoped<MechanicApiService>();
 builder.Services.AddScoped<InvoiceApiService>();
 builder.Services.AddScoped<PaymentApiService>();
 builder.Services.AddScoped<RentalApiService>();
+builder.Services.AddScoped<ServiceAssignmentApiService>();
 builder.Services.AddScoped<PdfService>();
 
 var app = builder.Build();

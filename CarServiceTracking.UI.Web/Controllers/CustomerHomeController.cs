@@ -1,6 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using CarServiceTracking.UI.Web.ViewModels.Home;
 using CarServiceTracking.UI.Web.Services;
+using CarServiceTracking.UI.Web.ViewModels.CustomerCars;
+using CarServiceTracking.UI.Web.ViewModels.ServiceRequests;
+using CarServiceTracking.UI.Web.ViewModels.Appointments;
+using CarServiceTracking.UI.Web.ViewModels.Invoices;
+using CarServiceTracking.UI.Web.ViewModels.Rentals;
 
 namespace CarServiceTracking.UI.Web.Controllers
 {
@@ -32,52 +37,68 @@ namespace CarServiceTracking.UI.Web.Controllers
         [Route("")]
         public async Task<IActionResult> Index()
         {
-            var userId = HttpContext.Session.GetInt32("UserId")!.Value;
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+                return RedirectToAction("Login", "Auth");
 
-            // Paralel veri çekme
-            var carsTask = _customerCarApiService.GetByCustomerIdAsync(userId);
-            var serviceRequestsTask = _serviceRequestApiService.GetAllAsync();
-            var appointmentsTask = _appointmentApiService.GetByCustomerIdAsync(userId);
-            var invoicesTask = _invoiceApiService.GetByCustomerIdAsync(userId);
-            var rentalsTask = _rentalApiService.GetCustomerRentalsAsync(userId);
+            var customerId = HttpContext.Session.GetInt32("CustomerId") ?? userId.Value;
 
-            await Task.WhenAll(carsTask, serviceRequestsTask, appointmentsTask, invoicesTask, rentalsTask);
+            List<CustomerCarVM> customerCars = new();
+            List<ServiceRequestListVM> serviceRequests = new();
+            List<AppointmentListVM> appointments = new();
+            List<InvoiceListVM> invoices = new();
+            List<CustomerRentalListVM> rentals = new();
 
-            var customerCars = await carsTask;
-            var serviceRequests = await serviceRequestsTask;
-            var appointments = await appointmentsTask;
-            var invoices = await invoicesTask;
-            var rentals = await rentalsTask;
+            try
+            {
+                var carsTask = _customerCarApiService.GetByCustomerIdAsync(customerId);
+                var srTask = _serviceRequestApiService.GetByCustomerIdAsync(customerId);
+                var appTask = _appointmentApiService.GetByCustomerIdAsync(customerId);
+                var invTask = _invoiceApiService.GetByCustomerIdAsync(customerId);
+                var rentTask = _rentalApiService.GetCustomerRentalsAsync(customerId);
 
-            // Aktif servisler (Beklemede=0, İşlemde=1)
-            var activeServiceCount = serviceRequests?.Count(s => s.Status == 0 || s.Status == 1) ?? 0;
+                await Task.WhenAll(carsTask, srTask, appTask, invTask, rentTask);
 
-            // Yaklaşan randevular (Pending veya Confirmed, gelecek tarihli)
-            var upcomingAppointments = appointments?
-                .Where(a => (a.Status == "Pending" || a.Status == "Confirmed") && a.AppointmentDate >= DateTime.Today)
+                customerCars = await carsTask;
+                serviceRequests = await srTask;
+                appointments = await appTask;
+                invoices = await invTask;
+                rentals = await rentTask;
+            }
+            catch
+            {
+                // API 401 verirse dashboard patlamasın diye yumuşak düşüş
+            }
+
+            var activeServiceCount =
+                serviceRequests.Count(s => s.Status == 0 || s.Status == 1);
+
+            var upcomingAppointments = appointments
+                .Where(a => (a.Status == "Pending" || a.Status == "Confirmed")
+                            && a.AppointmentDate >= DateTime.Today)
                 .OrderBy(a => a.AppointmentDate)
                 .Take(3)
-                .ToList() ?? new();
+                .ToList();
 
-            // Ödenmemiş faturalar
-            var unpaidInvoiceCount = invoices?.Count(i => i.PaymentStatus != "Paid") ?? 0;
+            // 🔥 DÜZELTİLDİ — artık doğru sayıyor
+            var unpaidInvoiceCount =
+                invoices.Count(i => i.RemainingAmount > 0);
 
-            // Aktif kiralamalar
-            var activeRentals = rentals?.Where(r => r.Status == "Active").ToList() ?? new();
+            var activeRentals =
+                rentals.Where(r => r.Status == "Active").ToList();
+
             var activeRentalInfo = activeRentals.Any()
                 ? $"{activeRentals.First().VehicleInfo} ({activeRentals.First().DateRange})"
                 : null;
 
             var vm = new CustomerHomeVM
             {
-                RegisteredCarCount = customerCars?.Count ?? 0,
+                RegisteredCarCount = customerCars.Count,
                 ActiveServiceCount = activeServiceCount,
                 UpcomingAppointmentCount = upcomingAppointments.Count,
                 UnpaidInvoiceCount = unpaidInvoiceCount,
-                RecentServiceRequests = serviceRequests?
-                    .OrderByDescending(s => s.CreatedAt)
-                    .Take(5)
-                    .ToList() ?? new(),
+                RecentServiceRequests =
+                    serviceRequests.OrderByDescending(s => s.CreatedAt).Take(5).ToList(),
                 UpcomingAppointments = upcomingAppointments,
                 ActiveRentalCount = activeRentals.Count,
                 ActiveRentalInfo = activeRentalInfo

@@ -95,26 +95,19 @@ namespace CarServiceTracking.Business.Services
         }
 
         /// <summary>
-        /// Müşteriye ait tüm ödemeleri getirir.
-        /// İlişki zinciri: Payment → Invoice → ServiceRequest → Customer
+        /// Musteriye ait tum odemeleri getirir (servis + kiralama faturalari)
+        /// CustomerId uzerinden direkt sorgular
         /// </summary>
         public async Task<IDataResult<List<PaymentListDTO>>> GetByCustomerIdAsync(int customerId)
         {
-            // 1. Müşterinin tüm servis taleplerini bul
-            var serviceRequests = await _unitOfWork.ServiceRequests.GetListAsync(sr => sr.CustomerId == customerId);
-            var serviceRequestIds = serviceRequests.Select(sr => sr.Id).ToList();
-
-            if (!serviceRequestIds.Any())
-                return new SuccessDataResult<List<PaymentListDTO>>(new List<PaymentListDTO>(), "Müşteriye ait ödeme bulunamadı.");
-
-            // 2. Bu servis taleplerine ait faturaları bul
-            var invoices = await _unitOfWork.Invoices.GetListAsync(inv => serviceRequestIds.Contains(inv.ServiceRequestId));
+            // 1. Musterinin tum faturalarini bul (servis + kiralama)
+            var invoices = await _unitOfWork.Invoices.GetListAsync(inv => inv.CustomerId == customerId);
             var invoiceIds = invoices.Select(inv => inv.Id).ToList();
 
             if (!invoiceIds.Any())
                 return new SuccessDataResult<List<PaymentListDTO>>(new List<PaymentListDTO>(), "Müşteriye ait ödeme bulunamadı.");
 
-            // 3. Bu faturalara ait ödemeleri getir
+            // 2. Bu faturalara ait odemeleri getir
             var payments = await _unitOfWork.Payments.GetListAsync(p => invoiceIds.Contains(p.InvoiceId));
 
             var paymentDtos = new List<PaymentListDTO>();
@@ -144,12 +137,9 @@ namespace CarServiceTracking.Business.Services
 
             if (invoice != null)
             {
-                var serviceRequest = await _unitOfWork.ServiceRequests.GetByIdAsync(invoice.ServiceRequestId);
-                if (serviceRequest != null)
-                {
-                    var customer = await _unitOfWork.Customers.GetByIdAsync(serviceRequest.CustomerId);
-                    dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
-                }
+                // Musteri bilgisini direkt CustomerId uzerinden al
+                var customer = await _unitOfWork.Customers.GetByIdAsync(invoice.CustomerId);
+                dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
             }
 
             return new SuccessDataResult<PaymentDetailDTO>(dto, "Ödeme başarıyla getirildi.");

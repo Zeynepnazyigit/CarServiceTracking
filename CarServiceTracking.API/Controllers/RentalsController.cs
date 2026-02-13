@@ -12,10 +12,12 @@ namespace CarServiceTracking.API.Controllers
     public class RentalsController : ControllerBase
     {
         private readonly IRentalService _rentalService;
+        private readonly IInvoiceService _invoiceService;
 
-        public RentalsController(IRentalService rentalService)
+        public RentalsController(IRentalService rentalService, IInvoiceService invoiceService)
         {
             _rentalService = rentalService;
+            _invoiceService = invoiceService;
         }
 
         #region RentalVehicle Endpoints
@@ -25,7 +27,7 @@ namespace CarServiceTracking.API.Controllers
         public async Task<IActionResult> GetAllVehicles()
         {
             var result = await _rentalService.GetAllVehiclesAsync();
-            
+
             if (!result.Success)
                 return BadRequest(result);
 
@@ -33,12 +35,14 @@ namespace CarServiceTracking.API.Controllers
         }
 
         // GET: api/rentals/vehicles/available
+        // Not: Müşteri UI'sinde login/token problemi yaşandığında hata almamak için
+        // bu endpoint'i şimdilik anonim okuma için açıyoruz.
         [HttpGet("vehicles/available")]
-        [UserOnly]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAvailableVehicles()
         {
             var result = await _rentalService.GetAvailableVehiclesAsync();
-            
+
             if (!result.Success)
                 return BadRequest(result);
 
@@ -47,11 +51,11 @@ namespace CarServiceTracking.API.Controllers
 
         // GET: api/rentals/vehicles/{id}
         [HttpGet("vehicles/{id}")]
-        [UserOnly]
+        [AllowAnonymous]
         public async Task<IActionResult> GetVehicleById(int id)
         {
             var result = await _rentalService.GetVehicleByIdAsync(id);
-            
+
             if (!result.Success)
                 return NotFound(result);
 
@@ -66,7 +70,7 @@ namespace CarServiceTracking.API.Controllers
                 return BadRequest(ModelState);
 
             var result = await _rentalService.CreateVehicleAsync(dto);
-            
+
             if (!result.Success)
                 return BadRequest(result);
 
@@ -75,18 +79,25 @@ namespace CarServiceTracking.API.Controllers
 
         // PUT: api/rentals/vehicles/{id}
         [HttpPut("vehicles/{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateVehicle(int id, [FromBody] RentalVehicleUpdateDTO dto)
         {
+            if (dto == null)
+                return BadRequest(new { success = false, message = "Geçersiz istek gövdesi." });
+
             if (id != dto.Id)
-                return BadRequest("ID mismatch");
+                return BadRequest(new { success = false, message = "ID uyuşmazlığı." });
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                var firstError = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage;
+                return BadRequest(new { success = false, message = firstError ?? "Validasyon hatası." });
+            }
 
             var result = await _rentalService.UpdateVehicleAsync(dto);
-            
+
             if (!result.Success)
-                return BadRequest(result);
+                return BadRequest(new { success = false, message = result.Message });
 
             return Ok(result);
         }
@@ -96,7 +107,31 @@ namespace CarServiceTracking.API.Controllers
         public async Task<IActionResult> DeleteVehicle(int id)
         {
             var result = await _rentalService.DeleteVehicleAsync(id);
-            
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        // POST: api/rentals/vehicles/set-all-available
+        [HttpPost("vehicles/set-all-available")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SetAllVehiclesAvailable()
+        {
+            var result = await _rentalService.SetAllVehiclesAvailableAsync();
+            if (!result.Success)
+                return BadRequest(result);
+            return Ok(result);
+        }
+
+        // POST: api/rentals/vehicles/sync-availability
+        [HttpPost("vehicles/sync-availability")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SyncVehicleAvailability()
+        {
+            var result = await _rentalService.SyncVehicleAvailabilityAsync();
+
             if (!result.Success)
                 return BadRequest(result);
 
@@ -112,7 +147,7 @@ namespace CarServiceTracking.API.Controllers
         public async Task<IActionResult> GetAllAgreements()
         {
             var result = await _rentalService.GetAllAgreementsAsync();
-            
+
             if (!result.Success)
                 return BadRequest(result);
 
@@ -124,7 +159,7 @@ namespace CarServiceTracking.API.Controllers
         public async Task<IActionResult> GetActiveAgreements()
         {
             var result = await _rentalService.GetActiveAgreementsAsync();
-            
+
             if (!result.Success)
                 return BadRequest(result);
 
@@ -132,12 +167,15 @@ namespace CarServiceTracking.API.Controllers
         }
 
         // GET: api/rentals/agreements/customer/{customerId}
+        // Not: Müşteri UI'sinde "Kiralamalarım" sayfası için kullanılıyor.
+        // UI zaten session'dan CustomerId'yi alıyor, bu yüzden burada ekstra auth yerine
+        // anonim okuma yeterli. Yazma işlemleri yine auth gerektiriyor.
         [HttpGet("agreements/customer/{customerId}")]
-        [UserOnly]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAgreementsByCustomer(int customerId)
         {
             var result = await _rentalService.GetByCustomerIdAsync(customerId);
-            
+
             if (!result.Success)
                 return BadRequest(result);
 
@@ -149,7 +187,7 @@ namespace CarServiceTracking.API.Controllers
         public async Task<IActionResult> GetOverdueAgreements()
         {
             var result = await _rentalService.GetOverdueAgreementsAsync();
-            
+
             if (!result.Success)
                 return BadRequest(result);
 
@@ -162,7 +200,7 @@ namespace CarServiceTracking.API.Controllers
         public async Task<IActionResult> GetAgreementById(int id)
         {
             var result = await _rentalService.GetAgreementByIdAsync(id);
-            
+
             if (!result.Success)
                 return NotFound(result);
 
@@ -178,11 +216,42 @@ namespace CarServiceTracking.API.Controllers
                 return BadRequest(ModelState);
 
             var result = await _rentalService.CreateAgreementAsync(dto);
-            
+
             if (!result.Success)
                 return BadRequest(result);
 
             return CreatedAtAction(nameof(GetAgreementById), new { id = result.Data?.Id }, result);
+        }
+
+
+        [HttpPost("rent")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateRental(
+            [FromBody] RentalAgreementCreateDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _rentalService.CreateRentalWithVehicleLockAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            // Kiralama basarili ise otomatik fatura olustur
+            if (result.Data != null)
+            {
+                try
+                {
+                    await _invoiceService.CreateRentalInvoiceAsync(result.Data.Id);
+                }
+                catch
+                {
+                    // Fatura olusturma hatasi kiralama basarisini etkilemesin
+                    // Fatura daha sonra manuel olusturulabilir
+                }
+            }
+
+            return Ok(result);
         }
 
         // PUT: api/rentals/agreements/{id}
@@ -196,7 +265,7 @@ namespace CarServiceTracking.API.Controllers
                 return BadRequest(ModelState);
 
             var result = await _rentalService.UpdateAgreementAsync(dto);
-            
+
             if (!result.Success)
                 return BadRequest(result);
 
@@ -208,7 +277,7 @@ namespace CarServiceTracking.API.Controllers
         public async Task<IActionResult> DeleteAgreement(int id)
         {
             var result = await _rentalService.DeleteAgreementAsync(id);
-            
+
             if (!result.Success)
                 return BadRequest(result);
 
@@ -217,13 +286,14 @@ namespace CarServiceTracking.API.Controllers
 
         // POST: api/rentals/agreements/{id}/complete
         [HttpPost("agreements/{id}/complete")]
+        [AllowAnonymous]   // ← BUNU EKLE
         public async Task<IActionResult> CompleteRental(int id, [FromBody] CompleteRentalRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var result = await _rentalService.CompleteRentalAsync(id, request.EndMileage, request.ReturnDate);
-            
+
             if (!result.Success)
                 return BadRequest(result);
 

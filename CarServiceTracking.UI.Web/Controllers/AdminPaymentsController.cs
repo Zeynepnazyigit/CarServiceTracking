@@ -7,10 +7,12 @@ namespace CarServiceTracking.UI.Web.Controllers
     public class AdminPaymentsController : AdminBaseController
     {
         private readonly PaymentApiService _paymentApiService;
+        private readonly PdfService _pdfService;
 
-        public AdminPaymentsController(PaymentApiService paymentApiService)
+        public AdminPaymentsController(PaymentApiService paymentApiService, PdfService pdfService)
         {
             _paymentApiService = paymentApiService;
+            _pdfService = pdfService;
         }
 
         // GET: AdminPayments/Index
@@ -113,6 +115,20 @@ namespace CarServiceTracking.UI.Web.Controllers
 
             TempData["SuccessMessage"] = "Ödeme başarıyla güncellendi.";
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: AdminPayments/DownloadPdf/5
+        public async Task<IActionResult> DownloadPdf(int id)
+        {
+            var payment = await _paymentApiService.GetByIdAsync(id);
+            if (payment == null)
+            {
+                TempData["ErrorMessage"] = "Ödeme bulunamadı.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var pdfBytes = _pdfService.GeneratePaymentReceiptPdf(payment);
+            return File(pdfBytes, "application/pdf", $"OdemeMakbuzu_{payment.Id}.pdf");
         }
 
         // POST: AdminPayments/Delete/5

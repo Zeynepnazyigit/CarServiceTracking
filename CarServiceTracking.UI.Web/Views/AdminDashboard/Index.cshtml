@@ -1,3 +1,4 @@
+@model CarServiceTracking.UI.Web.ViewModels.Home.AdminDashboardVM
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -5,24 +6,25 @@
 
 <link rel="stylesheet" href="~/css/AdminDashboard.css?v=@DateTime.Now.Ticks" />
 
+<!-- KPI KARTLARI -->
 <div class="row">
 
-    <!-- Aktif Araç -->
+    <!-- Toplam Araç -->
     <div class="col-lg-3 col-md-6 mb-3">
         <div class="kpi-card">
             <div class="kpi-accent accent-primary"></div>
             <div class="kpi-top">
                 <div>
-                    <h3 class="kpi-num">24</h3>
-                    <div class="kpi-title">Aktif Araç</div>
-                    <div class="kpi-sub">Sistemde kullanılabilir</div>
+                    <h3 class="kpi-num">@Model.TotalCarCount</h3>
+                    <div class="kpi-title">Toplam Araç</div>
+                    <div class="kpi-sub">Sistemde kayıtlı</div>
                 </div>
                 <div class="kpi-icon glow-primary">
                     <i class="fa-solid fa-car-side"></i>
                 </div>
             </div>
             <div class="kpi-footer">
-                <span class="kpi-badge">+2 bu hafta</span>
+                <span class="kpi-badge">@Model.TotalCustomerCount müşteri</span>
                 <a class="kpi-link" href="/AdminCars/Index">
                     Detay <i class="fa-solid fa-arrow-right"></i>
                 </a>
@@ -30,60 +32,60 @@
         </div>
     </div>
 
-    <!-- Bug�n Kiralanan -->
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="kpi-card">
-            <div class="kpi-accent accent-success"></div>
-            <div class="kpi-top">
-                <div>
-                    <h3 class="kpi-num">7</h3>
-                    <div class="kpi-title">Bugün Kiralanan</div>
-                    <div class="kpi-sub">Günlük işlem sayısı</div>
-                </div>
-                <div class="kpi-icon glow-success">
-                    <i class="fa-solid fa-key"></i>
-                </div>
-            </div>
-            <div class="kpi-footer">
-                <span class="kpi-badge">Onay bekliyor: 2</span>
-                <a class="kpi-link" href="/AdminRentals/Index">
-                    Detay <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Serviste Olan -->
+    <!-- Aktif Servis -->
     <div class="col-lg-3 col-md-6 mb-3">
         <div class="kpi-card">
             <div class="kpi-accent accent-warning"></div>
             <div class="kpi-top">
                 <div>
-                    <h3 class="kpi-num">4</h3>
-                    <div class="kpi-title">Serviste Olan</div>
-                    <div class="kpi-sub">Aktif bakım/onarım</div>
+                    <h3 class="kpi-num">@Model.ActiveServiceCount</h3>
+                    <div class="kpi-title">Aktif Servis</div>
+                    <div class="kpi-sub">İşlemde olan talepler</div>
                 </div>
                 <div class="kpi-icon glow-warning">
                     <i class="fa-solid fa-screwdriver-wrench"></i>
                 </div>
             </div>
             <div class="kpi-footer">
-                <span class="kpi-badge">Ortalama: 2 gün</span>
-                <a class="kpi-link" href="/AdminServiceRecords/Index">
+                <span class="kpi-badge">@Model.PendingServiceCount beklemede</span>
+                <a class="kpi-link" href="/AdminServiceRequests/Index">
                     Detay <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Bekleyen Servis -->
+    <!-- Aktif Kiralama -->
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="kpi-card">
+            <div class="kpi-accent accent-success"></div>
+            <div class="kpi-top">
+                <div>
+                    <h3 class="kpi-num">@Model.ActiveRentalCount</h3>
+                    <div class="kpi-title">Aktif Kiralama</div>
+                    <div class="kpi-sub">Devam eden sözleşmeler</div>
+                </div>
+                <div class="kpi-icon glow-success">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+            </div>
+            <div class="kpi-footer">
+                <span class="kpi-badge">@Model.TodayAppointmentCount randevu bugün</span>
+                <a class="kpi-link" href="/AdminRentalAgreements/Index">
+                    Detay <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bekleyen Talepler -->
     <div class="col-lg-3 col-md-6 mb-3">
         <div class="kpi-card">
             <div class="kpi-accent accent-danger"></div>
             <div class="kpi-top">
                 <div>
-                    <h3 class="kpi-num">3</h3>
-                    <div class="kpi-title">Bekleyen Servis Talebi</div>
+                    <h3 class="kpi-num">@Model.PendingServiceCount</h3>
+                    <div class="kpi-title">Bekleyen Talepler</div>
                     <div class="kpi-sub">Hızlı aksiyon gerek</div>
                 </div>
                 <div class="kpi-icon glow-danger">
@@ -91,8 +93,8 @@
                 </div>
             </div>
             <div class="kpi-footer">
-                <span class="kpi-badge">Kritik: 1</span>
-                <a class="kpi-link" href="/AdminServiceRecords/Index">
+                <span class="kpi-badge">@Model.LowStockPartCount düşük stok</span>
+                <a class="kpi-link" href="/AdminServiceRequests/Index">
                     Detay <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -101,58 +103,118 @@
 
 </div>
 
+<!-- İÇERİK: Tablolar + Uyarılar -->
 <div class="row mt-2">
+
+    <!-- Son Servis Talepleri -->
     <div class="col-lg-8">
         <div class="card shadow-sm">
             <div class="card-header">
                 <h3 class="card-title font-weight-bold">
-                    <i class="fa-solid fa-clock-rotate-left"></i> Son Kiralamalar
+                    <i class="fa-solid fa-screwdriver-wrench"></i> Son Servis Talepleri
                 </h3>
                 <div class="card-tools">
-                    <a href="/AdminRentals/Index" class="btn btn-sm btn-primary btn-round">
+                    <a href="/AdminServiceRequests/Index" class="btn btn-sm btn-primary btn-round">
                         Tümünü Gör
                     </a>
                 </div>
             </div>
             <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Müşteri</th>
-                            <th>Araç</th>
-                            <th>Durum</th>
-                            <th class="text-right">Tutar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Zeynep Naz</td>
-                            <td>BMW 320i</td>
-                            <td><span class="badge badge-success">Onaylandı</span></td>
-                            <td class="text-right">₺ 4.250</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Ecem</td>
-                            <td>Mercedes A180</td>
-                            <td><span class="badge badge-warning">Beklemede</span></td>
-                            <td class="text-right">₺ 2.900</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Berk</td>
-                            <td>Renault Clio</td>
-                            <td><span class="badge badge-danger">Reddedildi</span></td>
-                            <td class="text-right">₺ 1.750</td>
-                        </tr>
-                    </tbody>
-                </table>
+                @if (Model.RecentServiceRequests.Any())
+                {
+                    <table class="table table-hover dashboard-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Araç</th>
+                                <th>Sorun</th>
+                                <th>Durum</th>
+                                <th class="text-right">Tarih</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var sr in Model.RecentServiceRequests)
+                            {
+                                var badgeClass = sr.Status switch
+                                {
+                                    0 => "badge badge-warning",
+                                    1 => "badge badge-info",
+                                    2 => "badge badge-success",
+                                    3 => "badge badge-danger",
+                                    _ => "badge badge-secondary"
+                                };
+                                <tr>
+                                    <td>@sr.Id</td>
+                                    <td>@sr.CarName</td>
+                                    <td>@(sr.ProblemDescription.Length > 40 ? sr.ProblemDescription[..40] + "..." : sr.ProblemDescription)</td>
+                                    <td><span class="@badgeClass">@sr.StatusText</span></td>
+                                    <td class="text-right">@sr.CreatedAt.ToString("dd.MM.yyyy")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="p-4 text-center text-muted">
+                        <i class="fa-solid fa-inbox fa-2x mb-2"></i>
+                        <p>Henüz servis talebi bulunmuyor.</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Son Kiralamalar -->
+        <div class="card shadow-sm mt-3">
+            <div class="card-header">
+                <h3 class="card-title font-weight-bold">
+                    <i class="fa-solid fa-car-side"></i> Son Kiralamalar
+                </h3>
+                <div class="card-tools">
+                    <a href="/AdminRentalAgreements/Index" class="btn btn-sm btn-success btn-round">
+                        Tümünü Gör
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.RecentRentals.Any())
+                {
+                    <table class="table table-hover dashboard-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Müşteri</th>
+                                <th>Araç</th>
+                                <th>Durum</th>
+                                <th class="text-right">Tutar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in Model.RecentRentals)
+                            {
+                                <tr>
+                                    <td>@r.Id</td>
+                                    <td>@r.CustomerName</td>
+                                    <td>@r.VehicleInfo</td>
+                                    <td><span class="@r.StatusBadgeClass">@r.StatusText</span></td>
+                                    <td class="text-right">@r.TotalAmount.ToString("C0", new System.Globalization.CultureInfo("tr-TR"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="p-4 text-center text-muted">
+                        <i class="fa-solid fa-inbox fa-2x mb-2"></i>
+                        <p>Henüz kiralama kaydı bulunmuyor.</p>
+                    </div>
+                }
             </div>
         </div>
     </div>
 
+    <!-- Akıllı Uyarılar -->
     <div class="col-lg-4">
         <div class="card shadow-sm">
             <div class="card-header">
@@ -162,24 +224,57 @@
             </div>
             <div class="card-body">
 
-                <div class="callout callout-danger">
-                    <h6 class="font-weight-bold mb-1">Gecikmış İade</h6>
-                    <p class="mb-0 text-soft">1 kiralama gecikmış görünüyor.</p>
-                </div>
+                @if (Model.PendingServiceCount > 0)
+                {
+                    <div class="alert-card alert-card-warning">
+                        <h6><i class="fa-solid fa-clock"></i> Bekleyen Servis</h6>
+                        <p class="mb-0">@Model.PendingServiceCount servis talebi onay bekliyor.</p>
+                    </div>
+                }
 
-                <div class="callout callout-warning">
-                    <h6 class="font-weight-bold mb-1">Servis Bekleyen</h6>
-                    <p class="mb-0 text-soft">3 servis talebi sırada.</p>
-                </div>
+                @if (Model.OverdueRentalCount > 0)
+                {
+                    <div class="alert-card alert-card-danger">
+                        <h6><i class="fa-solid fa-calendar-xmark"></i> Gecikmiş İade</h6>
+                        <p class="mb-0">@Model.OverdueRentalCount kiralama süresi dolmuş.</p>
+                    </div>
+                }
 
-                <div class="callout callout-info">
-                    <h6 class="font-weight-bold mb-1">Yeni Müşteri</h6>
-                    <p class="mb-0 text-soft">Bugün 2 yeni kayıt alındı.</p>
-                </div>
+                @if (Model.UnpaidInvoiceCount > 0)
+                {
+                    <div class="alert-card alert-card-danger">
+                        <h6><i class="fa-solid fa-file-invoice-dollar"></i> Ödenmemiş Fatura</h6>
+                        <p class="mb-0">@Model.UnpaidInvoiceCount fatura ödenmemiş.</p>
+                    </div>
+                }
+
+                @if (Model.LowStockPartCount > 0)
+                {
+                    <div class="alert-card alert-card-info">
+                        <h6><i class="fa-solid fa-box-open"></i> Düşük Stok</h6>
+                        <p class="mb-0">@Model.LowStockPartCount parçanın stoku kritik seviyede.</p>
+                    </div>
+                }
+
+                @if (Model.TodayAppointmentCount > 0)
+                {
+                    <div class="alert-card alert-card-success">
+                        <h6><i class="fa-solid fa-calendar-check"></i> Bugünkü Randevular</h6>
+                        <p class="mb-0">Bugün @Model.TodayAppointmentCount randevu planlanmış.</p>
+                    </div>
+                }
+
+                @if (Model.PendingServiceCount == 0 && Model.OverdueRentalCount == 0 &&
+                     Model.UnpaidInvoiceCount == 0 && Model.LowStockPartCount == 0 &&
+                     Model.TodayAppointmentCount == 0)
+                {
+                    <div class="alert-card alert-card-success">
+                        <h6><i class="fa-solid fa-check-circle"></i> Her Şey Yolunda</h6>
+                        <p class="mb-0">Şu an aktif uyarı bulunmuyor.</p>
+                    </div>
+                }
 
             </div>
         </div>
     </div>
 </div>
-
-

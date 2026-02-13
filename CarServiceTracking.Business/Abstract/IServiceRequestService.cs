@@ -10,6 +10,7 @@ namespace CarServiceTracking.Business.Abstract
         Task<IResult> CreateAsync(ServiceRequestCreateDTO dto);
         Task<IDataResult<List<ServiceRequestListDTO>>> GetAllAsync();
         Task<IDataResult<ServiceRequestDetailDTO>> GetByIdAsync(int id);
+        Task<IResult> UpdateAsync(int id, ServiceRequestUpdateDTO dto);
         Task<IResult> UpdateStatusAsync(int id, int status, decimal? servicePrice, string? adminNote);
         Task<IResult> DeleteAsync(int id);
         Task<IDataResult<List<ServiceRequestListDTO>>> GetByCustomerIdAsync(int customerId);

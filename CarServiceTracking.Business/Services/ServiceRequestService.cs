@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CarServiceTracking.Business.Abstract;
 using CarServiceTracking.Core.Abstracts;
 using CarServiceTracking.Core.DTOs.ServiceRequestDTOs;
@@ -28,18 +28,66 @@ namespace CarServiceTracking.Business.Services
         // =========================
         public async Task<IResult> CreateAsync(ServiceRequestCreateDTO dto)
         {
-            var entity = _mapper.Map<ServiceRequest>(dto);
+            // CarId, CustomerCars tablosundan gelebilir.
+            // Cars tablosunda karsilik gelen kayit yoksa olustur.
+            var carId = await ResolveCarIdAsync(dto.CarId, dto.CustomerId);
+            if (carId == 0)
+                return new ErrorResult("Araç bulunamadı.");
 
+            var entity = _mapper.Map<ServiceRequest>(dto);
+            entity.CarId = carId;
             entity.Status = ServiceRequestStatus.Pending;
             entity.CreatedAt = DateTime.Now;
-
-            //  PreferredDate zaten DateTime? → manuel parse GEREKMİYOR
             entity.PreferredDate = dto.PreferredDate;
 
             await _unitOfWork.ServiceRequests.AddAsync(entity);
             await _unitOfWork.SaveChangesAsync();
 
             return new SuccessResult("Servis talebi oluşturuldu.");
+        }
+
+        /// <summary>
+        /// CustomerCar ID verilmisse, Cars tablosunda karsilik gelen kaydi bulur veya olusturur.
+        /// Mantik: Gelen ID once CustomerCars'ta aranir (musteri panelinden gelir).
+        /// Eger CustomerCars'ta varsa, plaka uzerinden Cars'ta eslesen kayit bulunur/olusturulur.
+        /// Eger CustomerCars'ta yoksa, Cars tablosunda dogrudan aranir (admin panelinden gelir).
+        /// </summary>
+        private async Task<int> ResolveCarIdAsync(int carId, int customerId)
+        {
+            // 1. Gelen ID CustomerCars tablosunda var mi? (musteri panelinden gelen istek)
+            var customerCar = await _unitOfWork.CustomerCars.GetByIdAsync(carId);
+            if (customerCar != null)
+            {
+                // Ayni plaka + ayni musteri ile Cars tablosunda kayit var mi?
+                var carByPlate = await _unitOfWork.Cars.GetAsync(
+                    c => c.PlateNumber == customerCar.PlateNumber && c.CustomerId == customerId);
+                if (carByPlate != null)
+                    return carByPlate.Id;
+
+                // Yoksa CustomerCar verisinden yeni Car olustur
+                var brandParts = customerCar.BrandModel.Split(' ', 2);
+                var newCar = new Car
+                {
+                    CustomerId = customerId,
+                    PlateNumber = customerCar.PlateNumber,
+                    Brand = brandParts.Length > 0 ? brandParts[0] : customerCar.BrandModel,
+                    Model = brandParts.Length > 1 ? brandParts[1] : "",
+                    Year = customerCar.Year,
+                    Mileage = customerCar.Mileage,
+                    Color = customerCar.Color
+                };
+
+                await _unitOfWork.Cars.AddAsync(newCar);
+                await _unitOfWork.SaveChangesAsync();
+                return newCar.Id;
+            }
+
+            // 2. CustomerCars'ta yok -> dogrudan Cars tablosunda ara (admin panelinden gelen istek)
+            var existingCar = await _unitOfWork.Cars.GetByIdAsync(carId);
+            if (existingCar != null)
+                return existingCar.Id;
+
+            return 0;
         }
 
         // =========================
@@ -105,6 +153,34 @@ namespace CarServiceTracking.Business.Services
             dto.CarName = car != null ? $"{car.Brand} {car.Model}" : "-";
 
             return new SuccessDataResult<ServiceRequestDetailDTO>(dto);
+        }
+
+        // =========================
+        // UPDATE (Customer Edit)
+        // =========================
+        public async Task<IResult> UpdateAsync(int id, ServiceRequestUpdateDTO dto)
+        {
+            var entity = await _unitOfWork.ServiceRequests.GetByIdAsync(id);
+
+            if (entity == null)
+                return new ErrorResult("Servis talebi bulunamadı.");
+
+            if (entity.Status != ServiceRequestStatus.Pending)
+                return new ErrorResult("Sadece beklemede olan talepler düzenlenebilir.");
+
+            // CarId, CustomerCars tablosundan gelebilir - cozumle
+            var carId = await ResolveCarIdAsync(dto.CarId, entity.CustomerId);
+            if (carId == 0)
+                return new ErrorResult("Araç bulunamadı.");
+
+            entity.CarId = carId;
+            entity.ProblemDescription = dto.ProblemDescription;
+            entity.PreferredDate = dto.PreferredDate;
+            entity.UpdatedAt = DateTime.Now;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return new SuccessResult("Servis talebi güncellendi.");
         }
 
         // =========================

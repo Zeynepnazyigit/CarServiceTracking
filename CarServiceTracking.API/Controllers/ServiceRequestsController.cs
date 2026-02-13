@@ -1,4 +1,5 @@
 ﻿using CarServiceTracking.Business.Abstract;
+using CarServiceTracking.Core.DTOs.ServiceAssignmentDTOs;
 using CarServiceTracking.Core.DTOs.ServiceRequestDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,21 +12,30 @@ namespace CarServiceTracking.API.Controllers
     public class ServiceRequestsController : ControllerBase
     {
         private readonly IServiceRequestService _serviceRequestService;
+        private readonly IServiceAssignmentService _serviceAssignmentService;
 
-        public ServiceRequestsController(IServiceRequestService serviceRequestService)
+        public ServiceRequestsController(
+            IServiceRequestService serviceRequestService,
+            IServiceAssignmentService serviceAssignmentService)
         {
             _serviceRequestService = serviceRequestService;
+            _serviceAssignmentService = serviceAssignmentService;
         }
 
-        // ✅ POST: api/ServiceRequests
+        // POST: api/ServiceRequests
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ServiceRequestCreateDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // 🔥 DEMO – şimdilik sabit müşteri
-            dto.CustomerId = 1;
+            // CustomerId body'den geliyorsa kullan, gelmemişse JWT'den al
+            if (dto.CustomerId <= 0)
+            {
+                var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (int.TryParse(userIdClaim, out var userId))
+                    dto.CustomerId = userId;
+            }
 
             var result = await _serviceRequestService.CreateAsync(dto);
 
@@ -44,6 +54,21 @@ namespace CarServiceTracking.API.Controllers
 
             if (!result.Success)
                 return BadRequest(result.Message);
+
+            return Ok(result);
+        }
+
+        // PUT: api/ServiceRequests/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] ServiceRequestUpdateDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _serviceRequestService.UpdateAsync(id, dto);
+
+            if (!result.Success)
+                return BadRequest(result);
 
             return Ok(result);
         }
@@ -89,6 +114,51 @@ namespace CarServiceTracking.API.Controllers
         {
             var list = await _serviceRequestService.GetByCustomerIdAsync(customerId);
             return Ok(list);
+        }
+
+        // ======================================================
+        // Teknisyen Atama (ServiceAssignment) Endpoints
+        // ======================================================
+
+        // GET: api/ServiceRequests/{id}/assignments
+        [HttpGet("{id}/assignments")]
+        public async Task<IActionResult> GetAssignments(int id)
+        {
+            var result = await _serviceAssignmentService.GetByServiceRequestIdAsync(id);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        // POST: api/ServiceRequests/{id}/assignments
+        [HttpPost("{id}/assignments")]
+        public async Task<IActionResult> AssignMechanic(int id, [FromBody] ServiceAssignmentCreateDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            dto.ServiceRequestId = id;
+
+            var result = await _serviceAssignmentService.AssignAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        // DELETE: api/ServiceRequests/{serviceRequestId}/assignments/{assignmentId}
+        [HttpDelete("{serviceRequestId}/assignments/{assignmentId}")]
+        public async Task<IActionResult> RemoveAssignment(int serviceRequestId, int assignmentId)
+        {
+            var result = await _serviceAssignmentService.RemoveAsync(assignmentId);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
     }
 

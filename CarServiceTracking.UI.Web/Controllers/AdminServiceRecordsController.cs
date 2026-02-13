@@ -6,7 +6,7 @@ namespace CarServiceTracking.UI.Web.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "AdminServiceRequests");
         }
     }
 }

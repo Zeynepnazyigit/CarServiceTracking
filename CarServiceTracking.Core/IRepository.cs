@@ -1,4 +1,4 @@
-﻿using CarServiceTracking.Core.Entities;
+using CarServiceTracking.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,8 @@ namespace CarServiceTracking.Core
         Task<T?> GetByIdAsync(int id);
         Task<T?> GetAsync(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> predicate);
+        /// <summary>Query filter (örn. IsDeleted) uygulanmadan listeler; fatura numarası benzersizliği gibi durumlar için.</summary>
+        Task<IEnumerable<T>> GetListIncludingDeletedAsync(Expression<Func<T, bool>> predicate);
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync(T entity);
         Task<bool> DeleteAsync(int id);

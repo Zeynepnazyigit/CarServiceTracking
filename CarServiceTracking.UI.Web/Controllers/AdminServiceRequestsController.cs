@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CarServiceTracking.UI.Web.Services;
 using CarServiceTracking.UI.Web.ViewModels.ServiceRequests;
+using CarServiceTracking.UI.Web.ViewModels.ServiceAssignments;
 
 namespace CarServiceTracking.UI.Web.Controllers
 {
@@ -9,13 +10,25 @@ namespace CarServiceTracking.UI.Web.Controllers
     {
         private readonly ServiceRequestApiService _serviceRequestApiService;
         private readonly CarApiService _carApiService;
+        private readonly CustomerApiService _customerApiService;
+        private readonly PdfService _pdfService;
+        private readonly ServiceAssignmentApiService _serviceAssignmentApiService;
+        private readonly MechanicApiService _mechanicApiService;
 
         public AdminServiceRequestsController(
             ServiceRequestApiService serviceRequestApiService,
-            CarApiService carApiService)
+            CarApiService carApiService,
+            CustomerApiService customerApiService,
+            PdfService pdfService,
+            ServiceAssignmentApiService serviceAssignmentApiService,
+            MechanicApiService mechanicApiService)
         {
             _serviceRequestApiService = serviceRequestApiService;
             _carApiService = carApiService;
+            _customerApiService = customerApiService;
+            _pdfService = pdfService;
+            _serviceAssignmentApiService = serviceAssignmentApiService;
+            _mechanicApiService = mechanicApiService;
         }
 
         // GET: AdminServiceRequests
@@ -33,13 +46,58 @@ namespace CarServiceTracking.UI.Web.Controllers
             if (item == null)
                 return NotFound();
 
+            var assignments = await _serviceAssignmentApiService.GetByServiceRequestIdAsync(id);
+            ViewBag.Assignments = assignments;
+
+            var mechanics = await _mechanicApiService.GetForDropdownAsync();
+            ViewBag.Mechanics = new SelectList(mechanics, "Id", "DisplayText");
+
             return View(item);
+        }
+
+        // POST: AdminServiceRequests/AssignMechanic
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignMechanic(ServiceAssignmentCreateVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lutfen teknisyen seciniz.";
+                return RedirectToAction(nameof(Details), new { id = model.ServiceRequestId });
+            }
+
+            var (success, message) = await _serviceAssignmentApiService.AssignAsync(
+                model.ServiceRequestId, model);
+
+            if (!success)
+                TempData["ErrorMessage"] = message;
+            else
+                TempData["SuccessMessage"] = message;
+
+            return RedirectToAction(nameof(Details), new { id = model.ServiceRequestId });
+        }
+
+        // POST: AdminServiceRequests/RemoveAssignment
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveAssignment(int serviceRequestId, int assignmentId)
+        {
+            var (success, message) = await _serviceAssignmentApiService.RemoveAsync(
+                serviceRequestId, assignmentId);
+
+            if (!success)
+                TempData["ErrorMessage"] = message;
+            else
+                TempData["SuccessMessage"] = message;
+
+            return RedirectToAction(nameof(Details), new { id = serviceRequestId });
         }
 
         // GET: AdminServiceRequests/Create
         public async Task<IActionResult> Create()
         {
             await LoadCarsAsync();
+            await LoadCustomersAsync();
             return View();
         }
 
@@ -51,11 +109,14 @@ namespace CarServiceTracking.UI.Web.Controllers
             if (!ModelState.IsValid)
             {
                 await LoadCarsAsync();
+                await LoadCustomersAsync();
                 return View(model);
             }
 
-            // Şu an için sabit customerId (gelecekte login'den alınacak)
-            int customerId = 1;
+            // CustomerId formdan gelecek (model.CustomerId), yoksa session'dan al
+            int customerId = model.CustomerId > 0
+                ? model.CustomerId
+                : HttpContext.Session.GetInt32("CustomerId") ?? 1;
 
             var success = await _serviceRequestApiService.CreateAsync(model, customerId);
 
@@ -117,6 +178,20 @@ namespace CarServiceTracking.UI.Web.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
+        // GET: AdminServiceRequests/DownloadPdf/5
+        public async Task<IActionResult> DownloadPdf(int id)
+        {
+            var item = await _serviceRequestApiService.GetByIdAsync(id);
+            if (item == null)
+            {
+                TempData["ErrorMessage"] = "Servis talebi bulunamadı.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var pdfBytes = _pdfService.GenerateServiceReportPdf(item);
+            return File(pdfBytes, "application/pdf", $"ServisRaporu_{item.Id}.pdf");
+        }
+
         // POST: AdminServiceRequests/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -141,6 +216,12 @@ namespace CarServiceTracking.UI.Web.Controllers
         {
             var cars = await _carApiService.GetAllCarsAsync();
             ViewBag.Cars = new SelectList(cars, "Id", "PlateNumber");
+        }
+
+        private async Task LoadCustomersAsync()
+        {
+            var customers = await _customerApiService.GetAllAsync();
+            ViewBag.Customers = new SelectList(customers, "Id", "FullName");
         }
 
         private void LoadStatusList()

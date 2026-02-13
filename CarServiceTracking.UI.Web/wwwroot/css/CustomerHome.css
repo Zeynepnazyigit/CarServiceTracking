@@ -17,39 +17,159 @@
 }
 
 /* ============================= */
-/* SUMMARY CARDS                 */
+/* KPI CARDS (Admin tarzı)       */
 /* ============================= */
 
-.summary-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
+.kpi-card {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    background: rgba(15, 26, 47, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+    padding: 18px 18px 14px 18px;
+    min-height: 120px;
+    transition: 0.18s ease;
 }
 
-    .summary-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 24px 55px rgba(0, 0, 0, 0.33);
+        border-color: rgba(255, 255, 255, 0.12);
     }
 
-.summary-icon {
-    margin-bottom: 0.25rem;
+.kpi-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 6px;
+    width: 100%;
+    opacity: 0.95;
 }
 
-/* Icon Colors */
-.icon-brand {
-    color: var(--brand);
+.kpi-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 6px;
 }
 
-.icon-cyan {
-    color: #38bdf8;
+.kpi-num {
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1;
+    margin: 0;
+    letter-spacing: 0.2px;
+    color: rgba(255, 255, 255, 0.94);
 }
 
-.icon-green {
-    color: #22c55e;
+.kpi-title {
+    margin-top: 8px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.85);
 }
 
-.icon-orange {
-    color: #f59e0b;
+.kpi-sub {
+    margin-top: 2px;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 600;
+    font-size: 0.92rem;
 }
+
+.kpi-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+    .kpi-icon i {
+        font-size: 22px;
+        opacity: 0.95;
+        transition: all 0.3s ease;
+    }
+
+    .kpi-card:hover .kpi-icon {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .kpi-card:hover .kpi-icon i {
+        opacity: 1;
+    }
+
+    .kpi-icon::after {
+        content: "";
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        border-radius: 999px;
+        filter: blur(18px);
+        opacity: 0.45;
+        z-index: -1;
+        transition: opacity 0.3s ease;
+    }
+
+    .kpi-card:hover .kpi-icon::after {
+        opacity: 0.75;
+    }
+
+.kpi-footer {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.kpi-badge {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 600;
+}
+
+.kpi-link {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.70);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+    .kpi-link:hover {
+        color: #fff;
+    }
+
+/* Glow Effects */
+.kpi-icon.glow-primary::after { background: #3498db; }
+.kpi-icon.glow-success::after { background: #2ecc71; }
+.kpi-icon.glow-warning::after { background: #f39c12; }
+.kpi-icon.glow-danger::after  { background: #e74c3c; }
+.kpi-icon.glow-cyan::after    { background: #38bdf8; }
+.kpi-icon.glow-purple::after  { background: #a855f7; }
+
+.kpi-card:hover .kpi-icon.glow-primary i { color: #3498db; }
+.kpi-card:hover .kpi-icon.glow-success i { color: #2ecc71; }
+.kpi-card:hover .kpi-icon.glow-warning i { color: #f39c12; }
+.kpi-card:hover .kpi-icon.glow-danger i  { color: #e74c3c; }
+.kpi-card:hover .kpi-icon.glow-cyan i    { color: #38bdf8; }
+.kpi-card:hover .kpi-icon.glow-purple i  { color: #a855f7; }
+
+/* Accent Colors */
+.accent-primary { background: linear-gradient(90deg, #3498db, #2980b9); }
+.accent-success { background: linear-gradient(90deg, #2ecc71, #27ae60); }
+.accent-warning { background: linear-gradient(90deg, #f39c12, #e67e22); }
+.accent-danger  { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+.accent-cyan    { background: linear-gradient(90deg, #38bdf8, #0ea5e9); }
+.accent-purple  { background: linear-gradient(90deg, #a855f7, #7c3aed); }
 
 /* ============================= */
 /* SERVICE REQUEST TABLE         */

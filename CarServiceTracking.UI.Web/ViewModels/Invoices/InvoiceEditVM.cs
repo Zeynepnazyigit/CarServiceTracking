@@ -10,8 +10,7 @@ namespace CarServiceTracking.UI.Web.ViewModels.Invoices
         [StringLength(50, ErrorMessage = "Fatura numarası en fazla 50 karakter olabilir")]
         public string InvoiceNumber { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Servis talebi seçimi zorunludur")]
-        public int ServiceRequestId { get; set; }
+        public int? ServiceRequestId { get; set; }
 
         [Required(ErrorMessage = "Fatura tarihi zorunludur")]
         [DataType(DataType.Date)]

@@ -106,6 +106,7 @@ namespace CarServiceTracking.Business.Services
                 {
                     Role = user.Role, // "Admin" veya "Customer"
                     UserId = user.Id,
+                    CustomerId = user.CustomerId,
                     Email = user.Email
                 },
                 "Giriş başarılı"

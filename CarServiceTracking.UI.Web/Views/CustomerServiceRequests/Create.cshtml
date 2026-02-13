@@ -1,11 +1,11 @@
 @model CarServiceTracking.UI.Web.ViewModels.ServiceRequests.ServiceRequestCreateVM
-@using CarServiceTracking.UI.Web.ViewModels.Cars
+@using CarServiceTracking.UI.Web.ViewModels.CustomerCars
 
 @{
     ViewData["Title"] = "Servis Talebi Oluştur";
     Layout = "~/Views/Shared/_CustomerLayout.cshtml";
 
-    var cars = ViewBag.Cars as List<CarListVM> ?? new List<CarListVM>();
+    var cars = ViewBag.Cars as List<CustomerCarVM> ?? new List<CustomerCarVM>();
 }
 
 <div class="container py-4">
@@ -18,7 +18,14 @@
         </div>
     }
 
-    <div id="validationSummary" class="text-danger mb-3"></div>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
     <form
           method="post"
@@ -56,8 +63,7 @@
             <textarea class="form-control"
                       rows="4"
                       name="ProblemDescription"
-                      placeholder="Aracınızda yaşadığınız sorunu detaylıca yazınız...">
-            </textarea>
+                      placeholder="Aracınızda yaşadığınız sorunu detaylıca yazınız...">@Model.ProblemDescription</textarea>
 
         </div>
 

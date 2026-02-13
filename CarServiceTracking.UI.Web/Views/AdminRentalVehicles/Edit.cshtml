@@ -16,7 +16,7 @@
             <h5 class="mb-0"><i class="fas fa-car-side"></i> Araç Bilgileri - @Model.PlateNumber</h5>
         </div>
         <div class="card-body">
-            <form asp-action="Edit" method="post">
+            <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
                 <input asp-for="Id" type="hidden" />
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
@@ -94,8 +94,9 @@
                     <div class="col-md-4 mb-3">
                         <label class="form-label d-block">&nbsp;</label>
                         <div class="form-check">
-                            <input asp-for="IsAvailable" class="form-check-input" type="checkbox" />
-                            <label asp-for="IsAvailable" class="form-check-label"></label>
+                            <input type="hidden" name="IsAvailable" id="IsAvailableValue" value="@(Model.IsAvailable ? "true" : "false")" />
+                            <input type="checkbox" id="IsAvailable" class="form-check-input" @(Model.IsAvailable ? "checked" : "") />
+                            <label class="form-check-label" for="IsAvailable">Müsait (işaretli = Müsait, işaretsiz = Kirada)</label>
                         </div>
                     </div>
                 </div>
@@ -121,4 +122,16 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        (function () {
+            var form = document.querySelector('form[action*="Edit"]');
+            var check = document.getElementById('IsAvailable');
+            var hidden = document.getElementById('IsAvailableValue');
+            if (form && check && hidden) {
+                form.addEventListener('submit', function () {
+                    hidden.value = check.checked ? 'true' : 'false';
+                });
+            }
+        })();
+    </script>
 }

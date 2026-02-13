@@ -3,13 +3,14 @@ using CarServiceTracking.Core.Enums;
 namespace CarServiceTracking.Core.Entities
 {
     /// <summary>
-    /// Servis faturaları
+    /// Faturalar (Servis veya Kiralama)
     /// </summary>
     public class Invoice : BaseEntity
     {
         public string InvoiceNumber { get; set; } = string.Empty;
         public DateTime InvoiceDate { get; set; }
-        public int ServiceRequestId { get; set; }
+        public int? ServiceRequestId { get; set; }      // Servis faturasi icin
+        public int? RentalAgreementId { get; set; }      // Kiralama faturasi icin
         public int CustomerId { get; set; }
         
         // Maliyet Detayları
@@ -29,8 +30,14 @@ namespace CarServiceTracking.Core.Entities
         public string? Notes { get; set; }
 
         // Navigation Properties
-        public virtual ServiceRequest ServiceRequest { get; set; } = null!;
+        public virtual ServiceRequest? ServiceRequest { get; set; }
+        public virtual RentalAgreement? RentalAgreement { get; set; }
         public virtual Customer Customer { get; set; } = null!;
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
+        /// <summary>
+        /// Fatura servis mi kiralama mi kontrolu
+        /// </summary>
+        public bool IsRentalInvoice => RentalAgreementId.HasValue;
     }
 }

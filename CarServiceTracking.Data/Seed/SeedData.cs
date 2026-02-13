@@ -9,6 +9,7 @@ namespace CarServiceTracking.Data.Seed
         {
             SeedListItems(modelBuilder);
             SeedRentalVehicles(modelBuilder);
+            SeedParts(modelBuilder);
         }
 
         private static void SeedListItems(ModelBuilder modelBuilder)
@@ -246,5 +247,282 @@ namespace CarServiceTracking.Data.Seed
             };
 
             modelBuilder.Entity<RentalVehicle>().HasData(rentalVehicles);
-        }    }
+        }
+
+        private static void SeedParts(ModelBuilder modelBuilder)
+        {
+            var parts = new List<Part>
+            {
+                // Motor Parçaları
+                new Part
+                {
+                    Id = 1,
+                    PartCode = "MF-001",
+                    PartName = "Yağ Filtresi",
+                    Category = "Motor",
+                    Description = "Universal yağ filtresi, çoğu benzinli araçla uyumlu",
+                    UnitPrice = 150.00m,
+                    StockQuantity = 50,
+                    MinStockLevel = 10,
+                    Supplier = "Bosch Türkiye",
+                    SupplierContact = "0212 555 10 10",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+                new Part
+                {
+                    Id = 2,
+                    PartCode = "MF-002",
+                    PartName = "Hava Filtresi",
+                    Category = "Motor",
+                    Description = "Motor hava filtresi, 1.4-1.6 motor hacmi",
+                    UnitPrice = 120.00m,
+                    StockQuantity = 40,
+                    MinStockLevel = 8,
+                    Supplier = "Mann Filter",
+                    SupplierContact = "0216 444 20 20",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+                new Part
+                {
+                    Id = 3,
+                    PartCode = "MF-003",
+                    PartName = "Buji Seti (4 Adet)",
+                    Category = "Motor",
+                    Description = "İridyum buji seti, 4 silindirli motorlar için",
+                    UnitPrice = 480.00m,
+                    StockQuantity = 25,
+                    MinStockLevel = 5,
+                    Supplier = "NGK",
+                    SupplierContact = "0212 333 40 40",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+                new Part
+                {
+                    Id = 4,
+                    PartCode = "MF-004",
+                    PartName = "Triger Kayışı Seti",
+                    Category = "Motor",
+                    Description = "Triger kayışı + gergi rulmanı seti",
+                    UnitPrice = 1250.00m,
+                    StockQuantity = 12,
+                    MinStockLevel = 3,
+                    Supplier = "Gates",
+                    SupplierContact = "0216 555 30 30",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+
+                // Fren Sistemi
+                new Part
+                {
+                    Id = 5,
+                    PartCode = "FR-001",
+                    PartName = "Ön Fren Balata Seti",
+                    Category = "Fren",
+                    Description = "Ön aks fren balata takımı, seramik",
+                    UnitPrice = 350.00m,
+                    StockQuantity = 30,
+                    MinStockLevel = 6,
+                    Supplier = "Ferodo",
+                    SupplierContact = "0212 444 50 50",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+                new Part
+                {
+                    Id = 6,
+                    PartCode = "FR-002",
+                    PartName = "Arka Fren Balata Seti",
+                    Category = "Fren",
+                    Description = "Arka aks fren balata takımı",
+                    UnitPrice = 280.00m,
+                    StockQuantity = 28,
+                    MinStockLevel = 6,
+                    Supplier = "Ferodo",
+                    SupplierContact = "0212 444 50 50",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+                new Part
+                {
+                    Id = 7,
+                    PartCode = "FR-003",
+                    PartName = "Fren Diski (Ön - Çift)",
+                    Category = "Fren",
+                    Description = "Ön aks fren disk takımı, havalandırmalı",
+                    UnitPrice = 900.00m,
+                    StockQuantity = 15,
+                    MinStockLevel = 4,
+                    Supplier = "Brembo",
+                    SupplierContact = "0216 666 70 70",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+
+                // Süspansiyon
+                new Part
+                {
+                    Id = 8,
+                    PartCode = "SS-001",
+                    PartName = "Ön Amortisör (Çift)",
+                    Category = "Süspansiyon",
+                    Description = "Ön aks gaz amortisör takımı",
+                    UnitPrice = 1800.00m,
+                    StockQuantity = 8,
+                    MinStockLevel = 3,
+                    Supplier = "Monroe",
+                    SupplierContact = "0212 777 80 80",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+                new Part
+                {
+                    Id = 9,
+                    PartCode = "SS-002",
+                    PartName = "Rotil (Çift)",
+                    Category = "Süspansiyon",
+                    Description = "Ön aks rotil takımı",
+                    UnitPrice = 450.00m,
+                    StockQuantity = 20,
+                    MinStockLevel = 5,
+                    Supplier = "TRW",
+                    SupplierContact = "0216 888 90 90",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+
+                // Elektrik
+                new Part
+                {
+                    Id = 10,
+                    PartCode = "EL-001",
+                    PartName = "Akü 60Ah",
+                    Category = "Elektrik",
+                    Description = "12V 60Ah başlatma aküsü",
+                    UnitPrice = 2200.00m,
+                    StockQuantity = 10,
+                    MinStockLevel = 3,
+                    Supplier = "Mutlu Akü",
+                    SupplierContact = "0212 999 10 10",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+                new Part
+                {
+                    Id = 11,
+                    PartCode = "EL-002",
+                    PartName = "Far Ampulü H7 (Çift)",
+                    Category = "Elektrik",
+                    Description = "H7 halojen far ampulü seti",
+                    UnitPrice = 180.00m,
+                    StockQuantity = 35,
+                    MinStockLevel = 10,
+                    Supplier = "Philips",
+                    SupplierContact = "0216 111 20 20",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+
+                // Sarf Malzemeler
+                new Part
+                {
+                    Id = 12,
+                    PartCode = "SM-001",
+                    PartName = "Motor Yağı 5W-30 (4L)",
+                    Category = "Sarf Malzeme",
+                    Description = "Tam sentetik motor yağı 5W-30, 4 litre",
+                    UnitPrice = 750.00m,
+                    StockQuantity = 60,
+                    MinStockLevel = 15,
+                    Supplier = "Castrol",
+                    SupplierContact = "0212 222 30 30",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+                new Part
+                {
+                    Id = 13,
+                    PartCode = "SM-002",
+                    PartName = "Antifriz (3L)",
+                    Category = "Sarf Malzeme",
+                    Description = "Uzun ömürlü antifriz, -40°C koruma",
+                    UnitPrice = 220.00m,
+                    StockQuantity = 25,
+                    MinStockLevel = 8,
+                    Supplier = "Motul",
+                    SupplierContact = "0216 333 40 40",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+                new Part
+                {
+                    Id = 14,
+                    PartCode = "SM-003",
+                    PartName = "Fren Hidroliği DOT4 (500ml)",
+                    Category = "Sarf Malzeme",
+                    Description = "DOT4 fren hidrolik yağı",
+                    UnitPrice = 95.00m,
+                    StockQuantity = 40,
+                    MinStockLevel = 10,
+                    Supplier = "Bosch Türkiye",
+                    SupplierContact = "0212 555 10 10",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+
+                // Düşük stoklu parçalar (test için)
+                new Part
+                {
+                    Id = 15,
+                    PartCode = "KL-001",
+                    PartName = "Klima Kompresörü",
+                    Category = "Klima",
+                    Description = "Universal klima kompresörü",
+                    UnitPrice = 4500.00m,
+                    StockQuantity = 2,
+                    MinStockLevel = 3,
+                    Supplier = "Denso",
+                    SupplierContact = "0212 444 60 60",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+                new Part
+                {
+                    Id = 16,
+                    PartCode = "MF-005",
+                    PartName = "Turbo Şarj",
+                    Category = "Motor",
+                    Description = "1.5 dCi turbo şarj ünitesi",
+                    UnitPrice = 8500.00m,
+                    StockQuantity = 1,
+                    MinStockLevel = 2,
+                    Supplier = "Garrett",
+                    SupplierContact = "0216 555 70 70",
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                }
+            };
+
+            modelBuilder.Entity<Part>().HasData(parts);
+        }
+    }
 }

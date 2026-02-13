@@ -101,6 +101,9 @@
             <a asp-controller="AdminPayments" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
                 <i class="fas fa-edit"></i> Düzenle
             </a>
+            <a asp-controller="AdminPayments" asp-action="DownloadPdf" asp-route-id="@Model.Id" class="btn btn-danger">
+                <i class="fas fa-file-pdf"></i> Makbuz İndir
+            </a>
         </div>
     </div>
 </div>

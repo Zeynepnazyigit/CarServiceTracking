@@ -112,6 +112,10 @@
                                        class="btn btn-sm btn-info" title="Detay">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    <a asp-action="DownloadPdf" asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-secondary" title="PDF İndir">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </a>
                                     <a asp-action="UpdateStatus" asp-route-id="@item.Id"
                                        class="btn btn-sm btn-warning" title="Durum Güncelle">
                                         <i class="fas fa-edit"></i>

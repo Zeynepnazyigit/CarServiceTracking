@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_CustomerLayout.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/CustomerHome.css" />
+<link rel="stylesheet" href="~/css/CustomerHome.css?v=@DateTime.Now.Ticks" />
 
 <section class="py-4">
     <div class="container-fluid">
@@ -48,60 +48,96 @@
         <!-- ÖZET KARTLARI -->
         <div class="row g-3 mb-4">
 
-            <div class="col-md-3 col-6">
-                <a href="/Customer/Cars/Index" class="text-decoration-none">
-                    <div class="card summary-card text-center h-100">
-                        <div class="card-body">
-                            <div class="summary-icon icon-cyan">
-                                <i class="fa-solid fa-car fa-2x"></i>
-                            </div>
-                            <h3 class="fw-bold mt-2 mb-0">@Model.RegisteredCarCount</h3>
-                            <div class="text-soft small">Kayıtlı Araç</div>
+            <!-- Kayıtlı Araç -->
+            <div class="col-lg-3 col-md-6 col-6">
+                <div class="kpi-card">
+                    <div class="kpi-accent accent-purple"></div>
+                    <div class="kpi-top">
+                        <div>
+                            <h3 class="kpi-num">@Model.RegisteredCarCount</h3>
+                            <div class="kpi-title">Kayıtlı Araç</div>
+                            <div class="kpi-sub">Şahsi araçlarınız</div>
+                        </div>
+                        <div class="kpi-icon glow-purple">
+                            <i class="fa-solid fa-car"></i>
                         </div>
                     </div>
-                </a>
+                    <div class="kpi-footer">
+                        <span class="kpi-badge">Kayıtlı</span>
+                        <a class="kpi-link" href="/Customer/Cars/Index">
+                            Detay <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-3 col-6">
-                <a href="/Customer/ServiceRequests/Index" class="text-decoration-none">
-                    <div class="card summary-card text-center h-100">
-                        <div class="card-body">
-                            <div class="summary-icon icon-brand">
-                                <i class="fa-solid fa-screwdriver-wrench fa-2x"></i>
-                            </div>
-                            <h3 class="fw-bold mt-2 mb-0">@Model.ActiveServiceCount</h3>
-                            <div class="text-soft small">Aktif Servis</div>
+            <!-- Aktif Servis -->
+            <div class="col-lg-3 col-md-6 col-6">
+                <div class="kpi-card">
+                    <div class="kpi-accent accent-primary"></div>
+                    <div class="kpi-top">
+                        <div>
+                            <h3 class="kpi-num">@Model.ActiveServiceCount</h3>
+                            <div class="kpi-title">Aktif Servis</div>
+                            <div class="kpi-sub">Devam eden işlemler</div>
+                        </div>
+                        <div class="kpi-icon glow-primary">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
                         </div>
                     </div>
-                </a>
+                    <div class="kpi-footer">
+                        <span class="kpi-badge">İşlemde</span>
+                        <a class="kpi-link" href="/Customer/ServiceRequests/Index">
+                            Detay <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-3 col-6">
-                <a href="/Customer/Appointments/Index" class="text-decoration-none">
-                    <div class="card summary-card text-center h-100">
-                        <div class="card-body">
-                            <div class="summary-icon icon-green">
-                                <i class="fa-solid fa-calendar-check fa-2x"></i>
-                            </div>
-                            <h3 class="fw-bold mt-2 mb-0">@Model.UpcomingAppointmentCount</h3>
-                            <div class="text-soft small">Yaklaşan Randevu</div>
+            <!-- Yaklaşan Randevu -->
+            <div class="col-lg-3 col-md-6 col-6">
+                <div class="kpi-card">
+                    <div class="kpi-accent accent-success"></div>
+                    <div class="kpi-top">
+                        <div>
+                            <h3 class="kpi-num">@Model.UpcomingAppointmentCount</h3>
+                            <div class="kpi-title">Yaklaşan Randevu</div>
+                            <div class="kpi-sub">Planlanan randevular</div>
+                        </div>
+                        <div class="kpi-icon glow-success">
+                            <i class="fa-solid fa-calendar-check"></i>
                         </div>
                     </div>
-                </a>
+                    <div class="kpi-footer">
+                        <span class="kpi-badge">Planlandı</span>
+                        <a class="kpi-link" href="/Customer/Appointments/Index">
+                            Detay <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-3 col-6">
-                <a href="/Customer/Invoices/Index" class="text-decoration-none">
-                    <div class="card summary-card text-center h-100">
-                        <div class="card-body">
-                            <div class="summary-icon icon-orange">
-                                <i class="fa-solid fa-file-invoice-dollar fa-2x"></i>
-                            </div>
-                            <h3 class="fw-bold mt-2 mb-0">@Model.UnpaidInvoiceCount</h3>
-                            <div class="text-soft small">Ödenmemiş Fatura</div>
+            <!-- Ödenmemiş Fatura -->
+            <div class="col-lg-3 col-md-6 col-6">
+                <div class="kpi-card">
+                    <div class="kpi-accent accent-warning"></div>
+                    <div class="kpi-top">
+                        <div>
+                            <h3 class="kpi-num">@Model.UnpaidInvoiceCount</h3>
+                            <div class="kpi-title">Ödenmemiş Fatura</div>
+                            <div class="kpi-sub">Bekleyen ödemeler</div>
+                        </div>
+                        <div class="kpi-icon glow-warning">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
                         </div>
                     </div>
-                </a>
+                    <div class="kpi-footer">
+                        <span class="kpi-badge">Bekliyor</span>
+                        <a class="kpi-link" href="/Customer/Invoices/Index">
+                            Detay <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
 
         </div>

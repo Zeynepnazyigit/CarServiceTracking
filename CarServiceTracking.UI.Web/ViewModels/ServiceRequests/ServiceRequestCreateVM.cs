@@ -4,6 +4,9 @@ namespace CarServiceTracking.UI.Web.ViewModels.ServiceRequests
 {
     public class ServiceRequestCreateVM
     {
+        [Display(Name = "Müşteri")]
+        public int CustomerId { get; set; }
+
         [Required(ErrorMessage = "Araç seçimi zorunludur")]
         [Display(Name = "Araç")]
         public int CarId { get; set; }

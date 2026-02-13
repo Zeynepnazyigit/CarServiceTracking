@@ -6,7 +6,27 @@
 }
 
 <div class="card p-4">
-    <h3 class="fw-bold mb-3">Servis Kayıtlarım</h3>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold mb-0">Servis Kayıtlarım</h3>
+        <a href="/Customer/ServiceRequests/Create" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i> Yeni Talep
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-1"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-1"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
 
     @if (Model == null || !Model.Any())
     {
@@ -47,10 +67,28 @@
                                                 ?? item.CreatedAt.ToString("dd.MM.yyyy HH:mm"))
                         </td>
                         <td>
+                            <a href="/Customer/ServiceRequests/Details/@item.Id"
+                               class="btn btn-sm btn-outline-info me-1" title="Detay">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
                             <a href="/Customer/ServiceRequests/DownloadPdf/@item.Id"
-                               class="btn btn-sm btn-outline-danger" title="PDF İndir">
+                               class="btn btn-sm btn-outline-danger me-1" title="PDF İndir">
                                 <i class="fa-solid fa-file-pdf"></i>
                             </a>
+                            @if (item.Status == 0)
+                            {
+                                <a href="/Customer/ServiceRequests/Edit/@item.Id"
+                                   class="btn btn-sm btn-outline-warning me-1" title="Düzenle">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <form action="/Customer/ServiceRequests/Delete/@item.Id" method="post" class="d-inline"
+                                      onsubmit="return confirm('Bu servis talebini silmek istediğinize emin misiniz?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Sil">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            }
                         </td>
                     </tr>
                 }

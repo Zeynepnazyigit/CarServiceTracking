@@ -20,7 +20,7 @@
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
         </div>
     }
 
@@ -28,7 +28,7 @@
     {
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
         </div>
     }
 
@@ -83,23 +83,23 @@
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         }
-                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@agreement.Id" title="Sil">
+                                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal-@agreement.Id" title="Sil">
                                             <i class="fas fa-trash"></i>
                                         </button>
 
-                                        <!-- Delete Modal -->
+                                        <!-- Delete Modal (Bootstrap 4: data-toggle / data-target / data-dismiss) -->
                                         <div class="modal fade" id="deleteModal-@agreement.Id" tabindex="-1">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header bg-danger text-white">
                                                         <h5 class="modal-title">Sözleşme Sil</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <strong>#@agreement.AgreementNumber</strong> numaralı sözleşmeyi silmek istediğinizden emin misiniz?
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
                                                         <form asp-action="Delete" asp-route-id="@agreement.Id" method="post" class="d-inline">
                                                             @Html.AntiForgeryToken()
                                                             <button type="submit" class="btn btn-danger">Sil</button>

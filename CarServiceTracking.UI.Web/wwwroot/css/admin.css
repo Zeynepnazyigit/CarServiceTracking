@@ -98,6 +98,24 @@ a {
     color: #6b7280;
 }
 
+/* Low Stock Row - Dark tema uyumlu */
+.low-stock-row {
+    border-left: 4px solid #ffc107 !important;
+    background-color: rgba(255, 193, 7, 0.08) !important;
+}
+
+.low-stock-row td {
+    color: #fff !important;
+}
+
+/* table-warning override for dark theme */
+.table .table-warning,
+.table .table-warning td {
+    background-color: rgba(255, 193, 7, 0.08) !important;
+    color: #fff !important;
+    border-left: 4px solid #ffc107;
+}
+
 /* MOBILE */
 @media (max-width:992px) {
     .sidebar {

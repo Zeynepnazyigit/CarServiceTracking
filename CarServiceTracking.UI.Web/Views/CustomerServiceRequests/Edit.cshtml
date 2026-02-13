@@ -1,0 +1,80 @@
+@model CarServiceTracking.UI.Web.ViewModels.ServiceRequests.ServiceRequestCreateVM
+@using CarServiceTracking.UI.Web.ViewModels.CustomerCars
+
+@{
+    ViewData["Title"] = "Servis Talebi Düzenle";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+
+    var cars = ViewBag.Cars as List<CustomerCarVM> ?? new List<CustomerCarVM>();
+    var serviceRequestId = (int)ViewBag.ServiceRequestId;
+}
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-3">Servis Talebi Düzenle</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <form asp-action="Edit" asp-route-id="@serviceRequestId" method="post" class="card p-3">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <!-- ARAC SECIMI -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Araç</label>
+            <select class="form-select" name="CarId">
+                <option value="">Araç seçiniz</option>
+                @foreach (var c in cars)
+                {
+                    if (Model.CarId == c.Id)
+                    {
+                        <option value="@c.Id" selected>
+                            @c.BrandModel (@c.PlateNumber)
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="@c.Id">
+                            @c.BrandModel (@c.PlateNumber)
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+
+        <!-- PROBLEM ACIKLAMASI -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Sorun / İstek Açıklaması</label>
+            <textarea class="form-control"
+                      rows="4"
+                      name="ProblemDescription"
+                      placeholder="Aracınızda yaşadığınız sorunu detaylıca yazınız...">@Model.ProblemDescription</textarea>
+        </div>
+
+        <!-- TERCIH EDILEN TARIH -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Tercih Edilen Tarih</label>
+            <input type="datetime-local"
+                   name="PreferredDate"
+                   class="form-control"
+                   value="@(Model.PreferredDate?.ToString("yyyy-MM-ddTHH:mm"))" />
+        </div>
+
+        <!-- BUTONLAR -->
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i> Güncelle
+            </button>
+            <a href="/Customer/ServiceRequests/Index" class="btn btn-outline-secondary">
+                İptal
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
