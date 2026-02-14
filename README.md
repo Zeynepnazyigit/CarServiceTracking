@@ -26,8 +26,7 @@ CarServiceTracking, akademik bir proje olmasının ötesinde, gerçek bir işlet
 Proje, Layered Architecture (Katmanlı Mimari) modeli esas alınarak geliştirilmiştir.
 
 Kullanılan Katmanlar
-
-UI.Web (MVC)
+1️⃣ UI.Web (MVC)
 
 Kullanıcı arayüzü
 
@@ -35,7 +34,7 @@ Razor Pages & Views
 
 API ile HttpClient üzerinden iletişim
 
-API
+2️⃣ API
 
 RESTful servisler
 
@@ -43,7 +42,7 @@ JWT tabanlı kimlik doğrulama
 
 Swagger ile endpoint dokümantasyonu
 
-Business
+3️⃣ Business
 
 İş kuralları
 
@@ -51,7 +50,7 @@ Servis sınıfları
 
 Validasyon ve mapping işlemleri
 
-Core
+4️⃣ Core
 
 Entity tanımları
 
@@ -59,7 +58,7 @@ DTO yapıları
 
 Interface’ler ve enum’lar
 
-Data
+5️⃣ Data
 
 Entity Framework Core
 
@@ -67,19 +66,19 @@ Repository & Unit of Work
 
 Migration ve seed işlemleri
 
-Utilities
+6️⃣ Utilities
 
 Result Pattern
 
 Ortak yardımcı sınıflar
 
 🔄 İstek Akışı (Request Lifecycle)
-MVC UI
- → Web API Controller
-   → Business Service
-     → UnitOfWork
-       → Repository
-         → DbContext
+MVC UI 
+ → Web API Controller 
+   → Business Service 
+     → UnitOfWork 
+       → Repository 
+         → DbContext 
            → SQL Server
 
 Bu yapı sayesinde:
@@ -147,7 +146,7 @@ CarServiceTracking
 │  └─ Results
 │
 └─ CarServiceTracking.sln
-🗄️ Veritabanı Tasarımı 
+🗄️ Veritabanı Tasarımı
 
 Sistem SQL Server / LocalDB kullanmaktadır ve aşağıdaki 17 tablo üzerine kuruludur:
 
@@ -193,13 +192,15 @@ Admin
 
 Customer
 
+Yetkilendirme detayları:
+
 Kayıt olan kullanıcılar Customer rolüyle oluşturulur
 
-API tarafında JWT Bearer Token
+API tarafında JWT Bearer Token kullanılır
 
-Web UI tarafında Cookie + Session
+Web UI tarafında Cookie + Session yapısı vardır
 
-Rol bazlı sayfa ve endpoint erişim kontrolü
+Rol bazlı sayfa ve endpoint erişim kontrolü uygulanır
 
 Şifreler hashlenerek saklanır
 
@@ -213,13 +214,13 @@ SQL Server veya LocalDB
 Visual Studio 2022 / VS Code
 
 Kurulum
-git clone <repo-url>
+git clone <repository-url>
 cd CarServiceTracking
 dotnet build
 Veritabanı Oluşturma
 dotnet ef database update \
- --project CarServiceTracking.Data \
- --startup-project CarServiceTracking.API
+--project CarServiceTracking.Data \
+--startup-project CarServiceTracking.API
 Çalışan Servisler
 
 Web API → http://localhost:5130
@@ -240,6 +241,6 @@ MIT Lisansı
 
 📆 Proje Durumu
 
-Son Güncelleme: 14 Şubat 2026
+Son Güncelleme: 15 Şubat 2026
 
 Durum: Aktif Geliştirme
