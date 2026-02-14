@@ -10,22 +10,47 @@ CarServiceTracking; oto servis ve araç kiralama firmalarının servis, bakım, 
 - UI ve API katmanlarını ayrıştırarak sürdürülebilir mimari kurmak
 - Savunulabilir, ölçeklenebilir ve profesyonel bir sistem geliştirmek
 
-## 🧱 Sistem Mimarisi
-[MVC Web UI - ASP.NET Core MVC (.NET 8) | Port 5070]
-→ HttpClient
-→ [RESTful Web API - ASP.NET Core Web API (.NET 8) | Port 5130 | JWT | Swagger]
-→ Dependency Injection
-→ [Business Layer - C# Services, İş Kuralları]
-→ [Core Layer - Entities, DTOs, Enums, Abstracts]
-→ [Data Layer - EF Core, Repository, UnitOfWork]
-→ [SQL Server / LocalDB]
+🧱 Sistem Mimarisi
+
+• Sunum Katmanı  
+  MVC Web UI (ASP.NET Core MVC, .NET 8)  
+  Port: 5070  
+  UI, Web API ile HttpClient üzerinden haberleşir.
+
+• API Katmanı  
+  RESTful Web API (ASP.NET Core Web API, .NET 8)  
+  Port: 5130  
+  JWT ile kimlik doğrulama sağlanır.  
+  Swagger / OpenAPI ile endpoint’ler dokümante edilmiştir.
+
+• Business Katmanı  
+  C# Service sınıfları  
+  Tüm iş kuralları ve doğrulamalar bu katmanda yer alır.  
+  Unit of Work ile transaction yönetimi sağlanır.
+
+• Core Katmanı  
+  Entity sınıfları  
+  DTO’lar  
+  Enum’lar ve abstract/interface yapılar
+
+• Data Katmanı  
+  Entity Framework Core  
+  Generic Repository Pattern  
+  DbContext ve veri erişim implementasyonları
+
+• Veritabanı  
+  SQL Server / LocalDB
+
 
 İstek Akışı:
-MVC UI → Web API Controller → Business Service → UnitOfWork → Repository → DbContext → SQL Server
+Kullanıcı → MVC Web UI → Web API → Business Service → Unit of Work → Repository → DbContext → SQL Server
 
-Bu yapı sayesinde UI katmanı veritabanına doğrudan erişmez, tüm iş kuralları Business katmanında toplanır ve sistemin test edilebilirliği ile sürdürülebilirliği artar.
+Bu mimari sayesinde:
+- UI katmanı veritabanına doğrudan erişmez  
+- İş kuralları merkezi bir yapıda toplanır  
+- Sistem test edilebilir, sürdürülebilir ve ölçeklenebilir hale gelir
 
-## 🛠️ Teknoloji Yığını
+## 🛠️ Teknoloji Altyapısı
 - Sunum: ASP.NET Core MVC (.NET 8)
 - API: ASP.NET Core Web API (.NET 8)
 - İş Mantığı: C# Services, Unit of Work, Generic Repository
