@@ -1,140 +1,87 @@
-# 🚗 CarServiceTracking
+# 🚘 CarServiceTracking
 ## Oto Servis ve Araç Kiralama Operasyon Yönetim Platformu
 
-CarServiceTracking, oto servis ve araç kiralama firmalarının operasyonel süreçlerini uçtan uca yönetebilmesi için geliştirilmiş, katmanlı mimari prensiplerine uygun ve kurumsal ölçekte tasarlanmış bir yazılım sistemidir. Sistem; Web API ve MVC Web UI katmanlarını tamamen birbirinden ayırarak, sürdürülebilir, genişletilebilir ve gerçek dünya senaryolarına uygun bir yapı sunar. Akademik bir proje olmasının ötesinde, gerçek bir işletmede aktif olarak kullanılabilecek şekilde kurgulanmıştır.
+CarServiceTracking; oto servis ve araç kiralama firmalarının servis, bakım, randevu, envanter, finans ve kiralama süreçlerini uçtan uca yönetebilmesi amacıyla geliştirilmiş, katmanlı mimari prensiplerine uygun, kurumsal ölçekli bir yazılım projesidir. Sistem; Web API ve MVC Web UI katmanlarını tamamen birbirinden ayırarak, bakımı kolay, genişletilebilir ve gerçek dünya senaryolarına uygun profesyonel bir mimari sunar. Proje, akademik bir çalışma olmasının ötesinde gerçek bir işletmede aktif olarak kullanılabilecek şekilde tasarlanmıştır.
 
-## 🎯 Geliştirme Amacı ve Hedefler
-
-CarServiceTracking geliştirilirken aşağıdaki temel hedefler esas alınmıştır:
-- Oto servis süreçlerinin manuel takipten kurtarılması
-- Servis, randevu ve kiralama operasyonlarının dijital ortama taşınması
-- Araç, müşteri ve finansal verilerin merkezi bir yapıda toplanması
-- Sunum ve iş mantığı katmanlarının ayrıştırılması
-- Profesyonel, savunulabilir ve sürdürülebilir bir mimari ortaya koyulması
-
-Bu doğrultuda CarServiceTracking; servis, bakım ve kiralama süreçlerini tek bir platformda birleştiren bütüncül bir çözüm sunar.
+## 🎯 Projenin Ortaya Çıkış Amacı
+- Oto servis süreçlerini manuel takipten kurtarmak
+- Servis, bakım, randevu ve kiralama işlemlerini dijitalleştirmek
+- Araç, müşteri ve finans verilerini merkezi bir sistemde toplamak
+- UI ve API katmanlarını ayrıştırarak sürdürülebilir mimari kurmak
+- Savunulabilir, ölçeklenebilir ve profesyonel bir sistem geliştirmek
 
 ## 🧱 Sistem Mimarisi
-
-┌─────────────────────────────────────────────────────────────┐
-│                MVC WebUI – Port 5070                        │
-│          (ASP.NET Core MVC, Razor Views)                    │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                    HttpClient
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 RESTful WebAPI – Port 5130                  │
-│          (ASP.NET Core, Swagger, JWT Authentication)        │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                    Dependency Injection
-                         │
-        ┌────────────────┼────────────────┐
-        ▼                ▼                ▼
-   Business Layer      Core Layer        Data Layer
-   (Services)       (DTOs, Entities)   (EF Core, Repositories)
-        │                                 │
-        └─────────────────┬───────────────┘
-                          ▼
-              ┌──────────────────────────┐
-              │      SQL Server DB        │
-              │   (LocalDB / SQL Server) │
-              └──────────────────────────┘
+[MVC Web UI - ASP.NET Core MVC (.NET 8) | Port 5070]
+→ HttpClient
+→ [RESTful Web API - ASP.NET Core Web API (.NET 8) | Port 5130 | JWT | Swagger]
+→ Dependency Injection
+→ [Business Layer - C# Services, İş Kuralları]
+→ [Core Layer - Entities, DTOs, Enums, Abstracts]
+→ [Data Layer - EF Core, Repository, UnitOfWork]
+→ [SQL Server / LocalDB]
 
 İstek Akışı:
 MVC UI → Web API Controller → Business Service → UnitOfWork → Repository → DbContext → SQL Server
 
-Bu yapı sayesinde UI katmanı veritabanına doğrudan erişmez, tüm iş kuralları Business katmanında toplanır, kodun sürdürülebilirliği ve test edilebilirliği artar.
+Bu yapı sayesinde UI katmanı veritabanına doğrudan erişmez, tüm iş kuralları Business katmanında toplanır ve sistemin test edilebilirliği ile sürdürülebilirliği artar.
 
 ## 🛠️ Teknoloji Yığını
-
-Sunum: ASP.NET Core MVC (.NET 8)  
-API: ASP.NET Core Web API (.NET 8)  
-İş Mantığı: C# Services + Unit of Work + Generic Repository  
-Kimlik Doğrulama: JWT Bearer Token  
-Veri Erişim: Entity Framework Core 8.0.22  
-Veritabanı: SQL Server / LocalDB  
-Mapping: AutoMapper 12.0.1  
-Validasyon: FluentValidation 12.1.1  
-Sonuç Yapısı: IResult / IDataResult  
-Dokümantasyon: Swagger / OpenAPI  
+- Sunum: ASP.NET Core MVC (.NET 8)
+- API: ASP.NET Core Web API (.NET 8)
+- İş Mantığı: C# Services, Unit of Work, Generic Repository
+- ORM: Entity Framework Core 8.0.22
+- Veritabanı: SQL Server / LocalDB
+- Kimlik Doğrulama: JWT Bearer Token
+- Mapping: AutoMapper 12.0.1
+- Validasyon: FluentValidation 12.1.1
+- Sonuç Yapısı: IResult / IDataResult
+- Dokümantasyon: Swagger / OpenAPI
 
 ## 📁 Proje Yapısı
-
-CarServiceTracking/
-├── CarServiceTracking.UI.Web/
-│   ├── Controllers/
-│   ├── Views/
-│   ├── Services/
-│   ├── ViewModels/
-│   ├── Models/
-│   └── appsettings.json
-├── CarServiceTracking.API/
-│   ├── Controllers/
-│   ├── Middlewares/
-│   ├── Program.cs
-│   └── appsettings.json
-├── CarServiceTracking.Business/
-│   ├── Services/
-│   ├── Abstract/
-│   ├── Mapping/
-│   ├── IOC/
-│   └── BusinessServiceRegistration.cs
-├── CarServiceTracking.Core/
-│   ├── DTOs/
-│   ├── Entities/
-│   ├── Enums/
-│   └── Abstracts/
-├── CarServiceTracking.Data/
-│   ├── Contexts/
-│   ├── Repositories/
-│   ├── UnitOfWork/
-│   ├── Configurations/
-│   ├── Migrations/
-│   └── Seed/
-├── CarServiceTracking.Utilities/
-│   └── Results/
-└── CarServiceTracking.sln
+CarServiceTracking
+- UI.Web (Controllers, Views, Services, ViewModels, Models)
+- API (Controllers, Middlewares, Program.cs)
+- Business (Services, Abstract, Mapping, IOC)
+- Core (Entities, DTOs, Enums, Abstracts)
+- Data (Contexts, Repositories, UnitOfWork, Configurations, Migrations, Seed)
+- Utilities (Result Pattern)
+- CarServiceTracking.sln
 
 ## ✨ Sistem Modülleri
+Yönetimsel Modüller:
+- Dashboard
+- Araç Yönetimi
+- Müşteri Yönetimi
+- Müşteri-Araç Eşleştirme
 
-Yönetimsel Modüller: Dashboard, Araç Yönetimi, Müşteri Yönetimi, Müşteri-Araç Eşleştirme  
-Servis Süreçleri: Servis Talepleri, Servis Atamaları, Servis Kayıtları  
-Envanter ve Finans: Parça Yönetimi, Fatura İşlemleri, Ödeme Kayıtları  
-Kiralama Süreçleri: Kiralık Araç Yönetimi, Kiralama Sözleşmeleri  
-Diğer Bileşenler: Randevu Yönetimi, Mekanik Yönetimi, Şirket Ayarları  
-Kimlik ve Yetkilendirme: Admin & Customer Rolleri, JWT, Cookie + Session
+Servis Süreçleri:
+- Servis Talepleri
+- Servis Atamaları
+- Servis Kayıtları
 
-## 🚀 Kurulum ve Çalıştırma
+Envanter ve Finans:
+- Parça Yönetimi
+- Fatura İşlemleri
+- Ödeme Kayıtları
 
-Gereksinimler: .NET 8 SDK, SQL Server veya LocalDB, Visual Studio 2022 / VS Code, Git
+Kiralama Süreçleri:
+- Kiralık Araç Yönetimi
+- Kiralama Sözleşmeleri
 
-Kurulum:
-git clone <repository-url>
-cd CarServiceTracking
-dotnet build
+Diğer Bileşenler:
+- Randevu Yönetimi
+- Mekanik Yönetimi
+- Şirket Ayarları
 
-Veritabanı:
-dotnet ef database update --project CarServiceTracking.Data --startup-project CarServiceTracking.API
-
-Çalıştırma:
-WebAPI: http://localhost:5130
-Swagger: http://localhost:5130/swagger
-MVC UI: http://localhost:5070
-
-## 📊 Veritabanı Yapısı
-
-Toplam 17 tablo:
+## 🗄️ Veritabanı Tasarımı (17 Tablo)
 1. Users
 2. Customers
 3. Cars
 4. CustomerCars
 5. ServiceRequests
 6. ServiceRecords
-7. ServiceParts
-8. ServiceAssignments
+7. ServiceAssignments
+8. ServiceParts
 9. Parts
 10. ListItems
 11. Invoices
@@ -145,21 +92,38 @@ Toplam 17 tablo:
 16. RentalAgreements
 17. CompanySettings
 
-## 🧩 Business Servisleri
+## 🔐 Kimlik Doğrulama ve Yetkilendirme
+- Sistem iki rol içerir: Admin ve Customer
+- Kayıt olan kullanıcılar varsayılan olarak Customer rolündedir
+- API tarafında JWT Bearer Token kullanılır
+- Web UI tarafında Cookie + Session ile oturum yönetimi yapılır
+- Rol bazlı sayfa ve endpoint erişim kontrolü uygulanır
+- Şifreler hashlenerek saklanır
 
-CarService, CustomerService, CustomerCarService, ServiceRequestService, ServiceAssignmentService, CustomerAuthService, UserAuthService, JwtTokenService, ListItemService, PartService, InvoiceService, PaymentService, AppointmentService, MechanicService, RentalService, CompanySettingsService
+## ⚙️ Kurulum ve Çalıştırma
+Gereksinimler:
+- .NET 8 SDK
+- SQL Server veya LocalDB
+- Visual Studio 2022 / VS Code
 
-## 🔐 Demo Admin Hesabı
+Kurulum:
+git clone <repo-url>
+cd CarServiceTracking
+dotnet build
+dotnet ef database update --project CarServiceTracking.Data --startup-project CarServiceTracking.API
 
-E-posta: admin@demo.com  
-Şifre: 12345678!
+Çalışan Servisler:
+- Web API: http://localhost:5130
+- Swagger: http://localhost:5130/swagger
+- MVC UI: http://localhost:5070
 
-## 📄 Lisans
+## 🔑 Demo Admin Hesabı
+- E-posta: admin@demo.com
+- Şifre: 12345678!
 
+## 📜 Lisans
 MIT Lisansı
 
-## 📌 Proje Durumu
-
-Son Güncelleme: 15 Şubat 2026  
-Sürüm: 1.0.0  
-Durum: Aktif Geliştirme
+## 📆 Proje Durumu
+- Son Güncelleme: 15 Şubat 2026
+- Durum: Aktif Geliştirme
