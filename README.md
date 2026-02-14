@@ -10,55 +10,46 @@ CarServiceTracking; oto servis ve araç kiralama firmalarının servis, bakım, 
 - UI ve API katmanlarını ayrıştırarak sürdürülebilir mimari kurmak
 - Savunulabilir, ölçeklenebilir ve profesyonel bir sistem geliştirmek
 
-## 🧱 Sistem Mimarisi
-[SUNUM KATMANI]
-MVC Web UI (ASP.NET Core MVC, Razor Views)
+USER
+ |
+ v
+[MVC WEB UI]
+ASP.NET Core MVC
+Razor Views
 Port: 5070
-│
-│  HttpClient
-▼
-[API KATMANI]
-RESTful Web API (ASP.NET Core Web API)
+ |
+ |  HttpClient
+ v
+[WEB API]
+ASP.NET Core Web API
 JWT Authentication
 Swagger / OpenAPI
 Port: 5130
-│
-│  Dependency Injection
-▼
-[BUSINESS KATMANI]
-C# Service Sınıfları
-İş Kuralları
+ |
+ |  Dependency Injection
+ v
+[BUSINESS LAYER]
+C# Service Classes
+Business Rules
 Validation
-Unit of Work
-│
-▼
-[CORE KATMANI]
+Unit Of Work
+ |
+ v
+[CORE LAYER]
 Entities
 DTOs
 Enums
-Interface’ler
-│
-▼
-[DATA KATMANI]
+Interfaces
+ |
+ v
+[DATA ACCESS LAYER]
 Entity Framework Core
 Generic Repository
-Unit of Work
 DbContext
-│
-▼
-[VERİTABANI]
+ |
+ v
+[DATABASE]
 SQL Server / LocalDB
-
-
-İSTEK AKIŞI:
-MVC UI
-→ Web API Controller
-→ Business Service
-→ UnitOfWork
-→ Repository
-→ DbContext
-→ SQL Server
-Bu yapı sayesinde UI katmanı veritabanına doğrudan erişmez, tüm iş kuralları Business katmanında toplanır ve sistemin test edilebilirliği ile sürdürülebilirliği artar.
 
 ## 🛠️ Teknoloji Yığını
 - Sunum: ASP.NET Core MVC (.NET 8)
