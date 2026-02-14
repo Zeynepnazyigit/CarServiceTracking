@@ -11,34 +11,34 @@ CarServiceTracking; oto servis ve araç kiralama firmalarının servis, bakım, 
 - Savunulabilir, ölçeklenebilir ve profesyonel bir sistem geliştirmek
 
 ## 🧱 Sistem Mimarisi
-Sunum Katmanı  
+•Sunum Katmanı  
 MVC Web UI (ASP.NET Core MVC, .NET 8) – Port: 5070  
 UI, Web API ile HttpClient üzerinden haberleşir.
 
-API Katmanı  
+•API Katmanı  
 RESTful Web API (ASP.NET Core Web API, .NET 8) – Port: 5130  
 JWT ile kimlik doğrulama sağlanır.  
 Swagger / OpenAPI ile endpoint’ler dokümante edilmiştir.
 
-Business Katmanı  
+•Business Katmanı  
 C# Service sınıfları  
 Tüm iş kuralları ve doğrulamalar bu katmanda yer alır.  
 Unit of Work ile transaction yönetimi sağlanır.
 
-Core Katmanı  
+•Core Katmanı  
 Entity sınıfları  
 DTO’lar  
 Enum’lar ve abstract / interface yapılar
 
-Data Katmanı  
+•Data Katmanı  
 Entity Framework Core  
 Generic Repository Pattern  
 DbContext ve veri erişim implementasyonları
 
-Veritabanı  
+-Veritabanı  
 SQL Server / LocalDB
 
-İstek Akışı  
+-İstek Akışı  
 Kullanıcı → MVC Web UI → Web API → Business Service → Unit of Work → Repository → DbContext → SQL Server
 
 Bu mimari sayesinde UI katmanı veritabanına doğrudan erişmez, iş kuralları merkezi bir yapıda toplanır ve sistem test edilebilir, sürdürülebilir ve ölçeklenebilir hale gelir.
