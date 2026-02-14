@@ -1,4 +1,4 @@
-# 🚘 CarServiceTracking  
+# 🚘 CarServiceTracking 🚘  
 ## Oto Servis ve Araç Kiralama Operasyon Yönetim Platformu
 
 CarServiceTracking; oto servis ve araç kiralama firmalarının servis, bakım, randevu, envanter, finans ve kiralama süreçlerini uçtan uca yönetebilmesi amacıyla geliştirilmiş, katmanlı mimari prensiplerine uygun, kurumsal ölçekli bir yazılım projesidir. Sistem; Web API ve MVC Web UI katmanlarını tamamen birbirinden ayırarak, bakımı kolay, genişletilebilir ve gerçek dünya senaryolarına uygun profesyonel bir mimari sunar. Proje, akademik bir çalışma olmasının ötesinde gerçek bir işletmede aktif olarak kullanılabilecek şekilde tasarlanmıştır.
@@ -12,33 +12,33 @@ CarServiceTracking; oto servis ve araç kiralama firmalarının servis, bakım, 
 
 ## 🧱 Sistem Mimarisi
 •Sunum Katmanı  
-MVC Web UI (ASP.NET Core MVC, .NET 8) – Port: 5070  
-UI, Web API ile HttpClient üzerinden haberleşir.
+-MVC Web UI (ASP.NET Core MVC, .NET 8) – Port: 5070  
+-UI, Web API ile HttpClient üzerinden haberleşir.
 
 •API Katmanı  
-RESTful Web API (ASP.NET Core Web API, .NET 8) – Port: 5130  
-JWT ile kimlik doğrulama sağlanır.  
-Swagger / OpenAPI ile endpoint’ler dokümante edilmiştir.
+-RESTful Web API (ASP.NET Core Web API, .NET 8) – Port: 5130  
+-JWT ile kimlik doğrulama sağlanır.  
+-Swagger / OpenAPI ile endpoint’ler dokümante edilmiştir.
 
 •Business Katmanı  
-C# Service sınıfları  
-Tüm iş kuralları ve doğrulamalar bu katmanda yer alır.  
-Unit of Work ile transaction yönetimi sağlanır.
+-C# Service sınıfları  
+-Tüm iş kuralları ve doğrulamalar bu katmanda yer alır.  
+-Unit of Work ile transaction yönetimi sağlanır.
 
 •Core Katmanı  
-Entity sınıfları  
-DTO’lar  
-Enum’lar ve abstract / interface yapılar
+-Entity sınıfları  
+-DTO’lar  
+-Enum’lar ve abstract / interface yapılar
 
 •Data Katmanı  
-Entity Framework Core  
-Generic Repository Pattern  
-DbContext ve veri erişim implementasyonları
+-Entity Framework Core  
+-Generic Repository Pattern  
+-DbContext ve veri erişim implementasyonları
 
--Veritabanı  
+Veritabanı  
 SQL Server / LocalDB
 
--İstek Akışı  
+İstek Akışı  
 Kullanıcı → MVC Web UI → Web API → Business Service → Unit of Work → Repository → DbContext → SQL Server
 
 Bu mimari sayesinde UI katmanı veritabanına doğrudan erişmez, iş kuralları merkezi bir yapıda toplanır ve sistem test edilebilir, sürdürülebilir ve ölçeklenebilir hale gelir.
