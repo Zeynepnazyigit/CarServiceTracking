@@ -1,4 +1,4 @@
-# 🚘 CarServiceTracking
+# 🚘 CarServiceTracking  
 ## Oto Servis ve Araç Kiralama Operasyon Yönetim Platformu
 
 CarServiceTracking; oto servis ve araç kiralama firmalarının servis, bakım, randevu, envanter, finans ve kiralama süreçlerini uçtan uca yönetebilmesi amacıyla geliştirilmiş, katmanlı mimari prensiplerine uygun, kurumsal ölçekli bir yazılım projesidir. Sistem; Web API ve MVC Web UI katmanlarını tamamen birbirinden ayırarak, bakımı kolay, genişletilebilir ve gerçek dünya senaryolarına uygun profesyonel bir mimari sunar. Proje, akademik bir çalışma olmasının ötesinde gerçek bir işletmede aktif olarak kullanılabilecek şekilde tasarlanmıştır.
@@ -10,45 +10,38 @@ CarServiceTracking; oto servis ve araç kiralama firmalarının servis, bakım, 
 - UI ve API katmanlarını ayrıştırarak sürdürülebilir mimari kurmak
 - Savunulabilir, ölçeklenebilir ve profesyonel bir sistem geliştirmek
 
-🧱 Sistem Mimarisi
+## 🧱 Sistem Mimarisi
+Sunum Katmanı  
+MVC Web UI (ASP.NET Core MVC, .NET 8) – Port: 5070  
+UI, Web API ile HttpClient üzerinden haberleşir.
 
-• Sunum Katmanı  
-  MVC Web UI (ASP.NET Core MVC, .NET 8)  
-  Port: 5070  
-  UI, Web API ile HttpClient üzerinden haberleşir.
+API Katmanı  
+RESTful Web API (ASP.NET Core Web API, .NET 8) – Port: 5130  
+JWT ile kimlik doğrulama sağlanır.  
+Swagger / OpenAPI ile endpoint’ler dokümante edilmiştir.
 
-• API Katmanı  
-  RESTful Web API (ASP.NET Core Web API, .NET 8)  
-  Port: 5130  
-  JWT ile kimlik doğrulama sağlanır.  
-  Swagger / OpenAPI ile endpoint’ler dokümante edilmiştir.
+Business Katmanı  
+C# Service sınıfları  
+Tüm iş kuralları ve doğrulamalar bu katmanda yer alır.  
+Unit of Work ile transaction yönetimi sağlanır.
 
-• Business Katmanı  
-  C# Service sınıfları  
-  Tüm iş kuralları ve doğrulamalar bu katmanda yer alır.  
-  Unit of Work ile transaction yönetimi sağlanır.
+Core Katmanı  
+Entity sınıfları  
+DTO’lar  
+Enum’lar ve abstract / interface yapılar
 
-• Core Katmanı  
-  Entity sınıfları  
-  DTO’lar  
-  Enum’lar ve abstract/interface yapılar
+Data Katmanı  
+Entity Framework Core  
+Generic Repository Pattern  
+DbContext ve veri erişim implementasyonları
 
-• Data Katmanı  
-  Entity Framework Core  
-  Generic Repository Pattern  
-  DbContext ve veri erişim implementasyonları
+Veritabanı  
+SQL Server / LocalDB
 
-• Veritabanı  
-  SQL Server / LocalDB
-
-
-İstek Akışı:
+İstek Akışı  
 Kullanıcı → MVC Web UI → Web API → Business Service → Unit of Work → Repository → DbContext → SQL Server
 
-Bu mimari sayesinde:
-- UI katmanı veritabanına doğrudan erişmez  
-- İş kuralları merkezi bir yapıda toplanır  
-- Sistem test edilebilir, sürdürülebilir ve ölçeklenebilir hale gelir
+Bu mimari sayesinde UI katmanı veritabanına doğrudan erişmez, iş kuralları merkezi bir yapıda toplanır ve sistem test edilebilir, sürdürülebilir ve ölçeklenebilir hale gelir.
 
 ## 🛠️ Teknoloji Altyapısı
 - Sunum: ASP.NET Core MVC (.NET 8)
@@ -63,40 +56,40 @@ Bu mimari sayesinde:
 - Dokümantasyon: Swagger / OpenAPI
 
 ## 📁 Proje Yapısı
-CarServiceTracking
-- UI.Web (Controllers, Views, Services, ViewModels, Models)
-- API (Controllers, Middlewares, Program.cs)
-- Business (Services, Abstract, Mapping, IOC)
-- Core (Entities, DTOs, Enums, Abstracts)
-- Data (Contexts, Repositories, UnitOfWork, Configurations, Migrations, Seed)
-- Utilities (Result Pattern)
-- CarServiceTracking.sln
+CarServiceTracking  
+UI.Web (Controllers, Views, Services, ViewModels, Models)  
+API (Controllers, Middlewares, Program.cs)  
+Business (Services, Abstract, Mapping, IOC)  
+Core (Entities, DTOs, Enums, Abstracts)  
+Data (Contexts, Repositories, UnitOfWork, Configurations, Migrations, Seed)  
+Utilities (Result Pattern)  
+CarServiceTracking.sln
 
 ## ✨ Sistem Modülleri
-Yönetimsel Modüller:
-- Dashboard
-- Araç Yönetimi
-- Müşteri Yönetimi
-- Müşteri-Araç Eşleştirme
+Yönetimsel Modüller  
+Dashboard  
+Araç Yönetimi  
+Müşteri Yönetimi  
+Müşteri-Araç Eşleştirme
 
-Servis Süreçleri:
-- Servis Talepleri
-- Servis Atamaları
-- Servis Kayıtları
+Servis Süreçleri  
+Servis Talepleri  
+Servis Atamaları  
+Servis Kayıtları
 
-Envanter ve Finans:
-- Parça Yönetimi
-- Fatura İşlemleri
-- Ödeme Kayıtları
+Envanter ve Finans  
+Parça Yönetimi  
+Fatura İşlemleri  
+Ödeme Kayıtları
 
-Kiralama Süreçleri:
-- Kiralık Araç Yönetimi
-- Kiralama Sözleşmeleri
+Kiralama Süreçleri  
+Kiralık Araç Yönetimi  
+Kiralama Sözleşmeleri
 
-Diğer Bileşenler:
-- Randevu Yönetimi
-- Mekanik Yönetimi
-- Şirket Ayarları
+Diğer Bileşenler  
+Randevu Yönetimi  
+Mekanik Yönetimi  
+Şirket Ayarları
 
 ## 🗄️ Veritabanı Tasarımı (17 Tablo)
 1. Users
@@ -126,29 +119,29 @@ Diğer Bileşenler:
 - Şifreler hashlenerek saklanır
 
 ## ⚙️ Kurulum ve Çalıştırma
-Gereksinimler:
-- .NET 8 SDK
-- SQL Server veya LocalDB
-- Visual Studio 2022 / VS Code
+Gereksinimler  
+.NET 8 SDK  
+SQL Server veya LocalDB  
+Visual Studio 2022 / VS Code
 
-Kurulum:
-git clone <repo-url>
-cd CarServiceTracking
-dotnet build
+Kurulum  
+git clone <repo-url>  
+cd CarServiceTracking  
+dotnet build  
 dotnet ef database update --project CarServiceTracking.Data --startup-project CarServiceTracking.API
 
-Çalışan Servisler:
-- Web API: http://localhost:5130
-- Swagger: http://localhost:5130/swagger
-- MVC UI: http://localhost:5070
+Çalışan Servisler  
+Web API: http://localhost:5130  
+Swagger: http://localhost:5130/swagger  
+MVC UI: http://localhost:5070
 
 ## 🔑 Demo Admin Hesabı
-- E-posta: admin@demo.com
-- Şifre: 12345678!
+E-posta: admin@demo.com  
+Şifre: 12345678!
 
 ## 📜 Lisans
 MIT Lisansı
 
 ## 📆 Proje Durumu
-- Son Güncelleme: 15 Şubat 2026
-- Durum: Aktif Geliştirme
+Son Güncelleme: 15 Şubat 2026  
+Durum: Aktif Geliştirme
