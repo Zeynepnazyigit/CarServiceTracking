@@ -32,6 +32,10 @@ namespace CarServiceTracking.UI.Web.ViewModels.Invoices
 
         public string PaymentStatus { get; set; } = "Pending";
 
+        public decimal LaborCost { get; set; }
+        public decimal PartsTotal { get; set; }
+        public decimal TaxRate { get; set; }
+
         [StringLength(1000, ErrorMessage = "Notlar en fazla 1000 karakter olabilir")]
         [Display(Name = "Notlar")]
         public string? Notes { get; set; }

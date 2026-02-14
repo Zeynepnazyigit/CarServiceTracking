@@ -8,7 +8,8 @@ namespace CarServiceTracking.Business.Mapping
     {
         public PaymentProfile()
         {
-            CreateMap<Payment, PaymentListDTO>();
+            CreateMap<Payment, PaymentListDTO>()
+                .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(src => src.TransactionId ?? src.Reference));
             CreateMap<Payment, PaymentDetailDTO>();
             CreateMap<PaymentCreateDTO, Payment>();
             CreateMap<PaymentUpdateDTO, Payment>();

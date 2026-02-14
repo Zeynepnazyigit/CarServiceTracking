@@ -7,11 +7,13 @@ namespace CarServiceTracking.UI.Web.Controllers
     public class AdminPaymentsController : AdminBaseController
     {
         private readonly PaymentApiService _paymentApiService;
+        private readonly InvoiceApiService _invoiceApiService;
         private readonly PdfService _pdfService;
 
-        public AdminPaymentsController(PaymentApiService paymentApiService, PdfService pdfService)
+        public AdminPaymentsController(PaymentApiService paymentApiService, InvoiceApiService invoiceApiService, PdfService pdfService)
         {
             _paymentApiService = paymentApiService;
+            _invoiceApiService = invoiceApiService;
             _pdfService = pdfService;
         }
 
@@ -44,8 +46,9 @@ namespace CarServiceTracking.UI.Web.Controllers
         }
 
         // GET: AdminPayments/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await PopulateInvoicesViewBag();
             return View();
         }
 
@@ -56,6 +59,7 @@ namespace CarServiceTracking.UI.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                await PopulateInvoicesViewBag();
                 return View(model);
             }
 
@@ -64,11 +68,18 @@ namespace CarServiceTracking.UI.Web.Controllers
             if (!success)
             {
                 ModelState.AddModelError("", message);
+                await PopulateInvoicesViewBag();
                 return View(model);
             }
 
             TempData["SuccessMessage"] = "Ödeme başarıyla kaydedildi.";
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task PopulateInvoicesViewBag()
+        {
+            var invoices = await _invoiceApiService.GetAllAsync();
+            ViewBag.Invoices = invoices.Where(i => i.RemainingAmount > 0).OrderByDescending(i => i.InvoiceDate).ToList();
         }
 
         // GET: AdminPayments/Edit/5

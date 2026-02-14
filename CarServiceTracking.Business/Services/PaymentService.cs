@@ -31,6 +31,9 @@ namespace CarServiceTracking.Business.Services
                 var invoice = await _unitOfWork.Invoices.GetByIdAsync(payment.InvoiceId);
                 dto.InvoiceNumber = invoice?.InvoiceNumber ?? "Bilinmiyor";
 
+                var customer = invoice != null ? await _unitOfWork.Customers.GetByIdAsync(invoice.CustomerId) : null;
+                dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
+
                 paymentDtos.Add(dto);
             }
 
@@ -48,6 +51,9 @@ namespace CarServiceTracking.Business.Services
 
                 var invoice = await _unitOfWork.Invoices.GetByIdAsync(payment.InvoiceId);
                 dto.InvoiceNumber = invoice?.InvoiceNumber ?? "Bilinmiyor";
+
+                var customer = invoice != null ? await _unitOfWork.Customers.GetByIdAsync(invoice.CustomerId) : null;
+                dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
 
                 paymentDtos.Add(dto);
             }
@@ -88,6 +94,9 @@ namespace CarServiceTracking.Business.Services
                 var invoice = await _unitOfWork.Invoices.GetByIdAsync(payment.InvoiceId);
                 dto.InvoiceNumber = invoice?.InvoiceNumber ?? "Bilinmiyor";
 
+                var customer = invoice != null ? await _unitOfWork.Customers.GetByIdAsync(invoice.CustomerId) : null;
+                dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
+
                 paymentDtos.Add(dto);
             }
 
@@ -112,11 +121,14 @@ namespace CarServiceTracking.Business.Services
 
             var paymentDtos = new List<PaymentListDTO>();
 
+            var customer = await _unitOfWork.Customers.GetByIdAsync(customerId);
+
             foreach (var payment in payments.OrderByDescending(x => x.PaymentDate))
             {
                 var dto = _mapper.Map<PaymentListDTO>(payment);
                 var invoice = invoices.FirstOrDefault(inv => inv.Id == payment.InvoiceId);
                 dto.InvoiceNumber = invoice?.InvoiceNumber ?? "Bilinmiyor";
+                dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
                 paymentDtos.Add(dto);
             }
 

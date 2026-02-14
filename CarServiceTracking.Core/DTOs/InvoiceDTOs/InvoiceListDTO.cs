@@ -11,6 +11,7 @@ namespace CarServiceTracking.Core.DTOs.InvoiceDTOs
         public string CustomerName { get; set; } = string.Empty;
         public string? RentalInfo { get; set; }          // Kiralama faturasi icin arac bilgisi
         public DateTime InvoiceDate { get; set; }
+        public DateTime? DueDate { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal PaidAmount { get; set; }
         public decimal RemainingAmount { get; set; }

@@ -30,9 +30,13 @@
 
                     <div class="col-md-6 mb-3">
                         <label asp-for="RentalVehicleId" class="form-label"></label>
-                        <select asp-for="RentalVehicleId" class="form-select" asp-items="ViewBag.RentalVehicles">
+                        <select asp-for="RentalVehicleId" class="form-select" asp-items="ViewBag.RentalVehicles" id="vehicleSelect">
                             <option value="">-- Araç Seçiniz --</option>
                         </select>
+                        @if (ViewBag.HasRentalVehicles != true)
+                        {
+                            <small class="text-warning">Müsait kiralık araç bulunamadı. Önce "Kiralık Araçlar" bölümünden araç ekleyin ve müsait olarak işaretleyin.</small>
+                        }
                         <span asp-validation-for="RentalVehicleId" class="text-danger"></span>
                     </div>
                 </div>
@@ -105,4 +109,19 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        (function() {
+            var rates = @Html.Raw(ViewBag.VehicleDailyRates ?? "{}");
+            var vehicleSelect = document.getElementById('vehicleSelect');
+            var dailyRateInput = document.querySelector('input[name="DailyRate"]');
+            if (vehicleSelect && dailyRateInput) {
+                vehicleSelect.addEventListener('change', function() {
+                    var id = parseInt(this.value, 10);
+                    if (id && rates[id] !== undefined) {
+                        dailyRateInput.value = rates[id];
+                    }
+                });
+            }
+        })();
+    </script>
 }

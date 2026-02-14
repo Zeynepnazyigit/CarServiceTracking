@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using System.Net.Http.Headers;
+using CarServiceTracking.UI.Web.Enums;
 using CarServiceTracking.UI.Web.Models.ApiModels;
 using CarServiceTracking.UI.Web.Models.ApiModels.InvoiceApiModels;
 using CarServiceTracking.UI.Web.ViewModels.Invoices;
@@ -41,8 +42,10 @@ namespace CarServiceTracking.UI.Web.Services
                 Id = dto.Id,
                 InvoiceNumber = dto.InvoiceNumber,
                 ServiceRequestId = dto.ServiceRequestId,
+                RentalAgreementId = dto.RentalAgreementId,
                 ServiceRequestInfo = dto.CustomerName,
                 InvoiceDate = dto.InvoiceDate,
+                DueDate = dto.DueDate ?? dto.InvoiceDate,
                 TotalAmount = dto.TotalAmount,
                 PaidAmount = dto.PaidAmount,
                 RemainingAmount = dto.RemainingAmount,
@@ -69,6 +72,7 @@ namespace CarServiceTracking.UI.Web.Services
                 ServiceRequestInfo = dto.CustomerName,
                 RentalInfo = dto.RentalInfo,
                 InvoiceDate = dto.InvoiceDate,
+                DueDate = dto.DueDate ?? dto.InvoiceDate,
                 TotalAmount = dto.TotalAmount,
                 PaidAmount = dto.PaidAmount,
                 RemainingAmount = dto.RemainingAmount,
@@ -97,8 +101,10 @@ namespace CarServiceTracking.UI.Web.Services
                 Id = dto.Id,
                 InvoiceNumber = dto.InvoiceNumber,
                 ServiceRequestId = dto.ServiceRequestId,
+                RentalAgreementId = dto.RentalAgreementId,
                 ServiceRequestInfo = dto.CustomerName,
                 InvoiceDate = dto.InvoiceDate,
+                DueDate = dto.DueDate ?? dto.InvoiceDate,
                 TotalAmount = dto.TotalAmount,
                 PaidAmount = dto.PaidAmount,
                 RemainingAmount = dto.RemainingAmount,
@@ -114,16 +120,22 @@ namespace CarServiceTracking.UI.Web.Services
             if (response == null || !response.Success || response.Data == null)
                 return null;
 
+            var dto = response.Data;
             return new InvoiceEditVM
             {
-                Id = response.Data.Id,
-                InvoiceNumber = response.Data.InvoiceNumber,
-                ServiceRequestId = response.Data.ServiceRequestId,
-                InvoiceDate = response.Data.InvoiceDate,
-                TotalAmount = response.Data.GrandTotal,
-                PaidAmount = response.Data.PaidAmount,
-                RemainingAmount = response.Data.RemainingAmount,
-                Notes = response.Data.Notes
+                Id = dto.Id,
+                InvoiceNumber = dto.InvoiceNumber,
+                ServiceRequestId = dto.ServiceRequestId,
+                InvoiceDate = dto.InvoiceDate,
+                DueDate = dto.DueDate ?? dto.InvoiceDate,
+                TotalAmount = dto.GrandTotal,
+                PaidAmount = dto.PaidAmount,
+                RemainingAmount = dto.RemainingAmount,
+                PaymentStatus = dto.PaymentStatus.ToString(),
+                LaborCost = dto.LaborCost,
+                PartsTotal = dto.PartsTotal,
+                TaxRate = dto.TaxRate,
+                Notes = dto.Notes
             };
         }
 
@@ -147,6 +159,7 @@ namespace CarServiceTracking.UI.Web.Services
                 DueDate = dto.DueDate,
                 LaborCost = dto.LaborCost,
                 PartsTotal = dto.PartsTotal,
+                IsRentalInvoice = dto.RentalAgreementId.HasValue,
                 SubTotal = dto.SubTotal,
                 TaxRate = dto.TaxRate,
                 TaxAmount = dto.TaxAmount,
@@ -169,6 +182,11 @@ namespace CarServiceTracking.UI.Web.Services
             var dto = new InvoiceUpdateApiModel
             {
                 Id = vm.Id,
+                DueDate = vm.DueDate,
+                LaborCost = vm.LaborCost,
+                PartsTotal = vm.PartsTotal,
+                TaxRate = vm.TaxRate,
+                PaymentStatus = ParsePaymentStatus(vm.PaymentStatus),
                 Notes = vm.Notes
             };
 
@@ -214,6 +232,19 @@ namespace CarServiceTracking.UI.Web.Services
         /// <summary>
         /// API hata gövdesindeki (JSON) message alanını okur; katmanlı yapıda tutarlı hata gösterimi için.
         /// </summary>
+        private static PaymentStatus ParsePaymentStatus(string? s)
+        {
+            if (string.IsNullOrEmpty(s)) return PaymentStatus.Pending;
+            return s.ToLowerInvariant() switch
+            {
+                "partial" or "partiallypaid" => PaymentStatus.Partial,
+                "paid" => PaymentStatus.Paid,
+                "overdue" => PaymentStatus.Overdue,
+                "cancelled" => PaymentStatus.Cancelled,
+                _ => PaymentStatus.Pending
+            };
+        }
+
         private static string? TryGetErrorMessageFromJson(string? json)
         {
             if (string.IsNullOrWhiteSpace(json)) return null;

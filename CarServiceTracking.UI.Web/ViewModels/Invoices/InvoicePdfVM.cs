@@ -19,5 +19,10 @@ namespace CarServiceTracking.UI.Web.ViewModels.Invoices
         public decimal RemainingAmount { get; set; }
         public string PaymentStatus { get; set; } = string.Empty;
         public string? Notes { get; set; }
+
+        /// <summary>
+        /// Kiralama faturası mı? (true ise etiketler "Kiralama Ücreti" / "Depozito" olur)
+        /// </summary>
+        public bool IsRentalInvoice { get; set; }
     }
 }

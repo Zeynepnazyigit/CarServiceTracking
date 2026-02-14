@@ -1,4 +1,4 @@
-﻿using CarServiceTracking.UI.Web.Services;
+using CarServiceTracking.UI.Web.Services;
 using CarServiceTracking.UI.Web.Infrastructure;
 using CarServiceTracking.UI.Web.Middlewares;
 using System.Globalization;
@@ -82,6 +82,7 @@ builder.Services.AddScoped<PaymentApiService>();
 builder.Services.AddScoped<RentalApiService>();
 builder.Services.AddScoped<ServiceAssignmentApiService>();
 builder.Services.AddScoped<PdfService>();
+builder.Services.AddScoped<SettingsApiService>();
 
 var app = builder.Build();
 

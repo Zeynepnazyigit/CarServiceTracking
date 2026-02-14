@@ -1,4 +1,4 @@
-﻿using CarServiceTracking.Core.Entities;
+using CarServiceTracking.Core.Entities;
 using System;
 using System.Threading.Tasks;
 
@@ -25,6 +25,7 @@ namespace CarServiceTracking.Core.Abstracts
         IRepository<ServiceAssignment> ServiceAssignments { get; }
         IRepository<RentalVehicle> RentalVehicles { get; }
         IRepository<RentalAgreement> RentalAgreements { get; }
+        IRepository<CompanySettings> CompanySettings { get; }
         
         // Specialized Repositories
         ICarRepository CarRepository { get; }

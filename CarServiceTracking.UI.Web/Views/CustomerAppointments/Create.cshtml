@@ -40,11 +40,11 @@
                             <div class="row">
                                 <!-- ARAÇ SEÇİMİ -->
                                 <div class="col-md-6 mb-3">
-                                    <label asp-for="CarId" class="form-label">
+                                    <label asp-for="CustomerCarId" class="form-label">
                                         <i class="fa-solid fa-car text-primary me-1"></i>
                                         Araç Seçin <span class="text-danger">*</span>
                                     </label>
-                                    <select asp-for="CarId" class="form-select">
+                                    <select asp-for="CustomerCarId" class="form-select">
                                         <option value="">-- Araç Seçiniz --</option>
                                         @if (ViewBag.Cars != null)
                                         {
@@ -54,7 +54,7 @@
                                             }
                                         }
                                     </select>
-                                    <span asp-validation-for="CarId" class="text-danger small"></span>
+                                    <span asp-validation-for="CustomerCarId" class="text-danger small"></span>
                                     @if (ViewBag.Cars == null || ((IEnumerable<dynamic>)ViewBag.Cars).Count() == 0)
                                     {
                                         <small class="text-warning">

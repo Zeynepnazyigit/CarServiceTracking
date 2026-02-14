@@ -1,4 +1,4 @@
-﻿using CarServiceTracking.Core;
+using CarServiceTracking.Core;
 using CarServiceTracking.Core.Abstracts;
 using CarServiceTracking.Core.Entities;
 using CarServiceTracking.Data.Contexts;
@@ -33,6 +33,7 @@ namespace CarServiceTracking.Data.UnitOfWork
         private IRepository<ServiceAssignment>? _serviceAssignments;
         private IRepository<RentalVehicle>? _rentalVehicles;
         private IRepository<RentalAgreement>? _rentalAgreements;
+        private IRepository<CompanySettings>? _companySettings;
 
         // Specialized Repositories
         private ICarRepository? _carRepository;
@@ -91,6 +92,9 @@ namespace CarServiceTracking.Data.UnitOfWork
 
         public IRepository<RentalAgreement> RentalAgreements
             => _rentalAgreements ??= new Repository<RentalAgreement>(_context);
+
+        public IRepository<CompanySettings> CompanySettings
+            => _companySettings ??= new Repository<CompanySettings>(_context);
 
         // Specialized Repositories
         public ICarRepository CarRepository

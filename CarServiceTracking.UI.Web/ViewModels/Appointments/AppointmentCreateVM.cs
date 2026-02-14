@@ -7,8 +7,10 @@ namespace CarServiceTracking.UI.Web.ViewModels.Appointments
         [Required(ErrorMessage = "Müşteri seçimi zorunludur")]
         public int CustomerId { get; set; }
 
-        [Required(ErrorMessage = "Araç seçimi zorunludur")]
-        public int CarId { get; set; }
+        /// <summary>Admin panelden: Car.Id</summary>
+        public int? CarId { get; set; }
+        /// <summary>Müşteri panelinden: CustomerCar.Id (şahsi araç)</summary>
+        public int? CustomerCarId { get; set; }
 
         [Required(ErrorMessage = "Randevu tarihi zorunludur")]
         [DataType(DataType.DateTime)]

@@ -8,7 +8,8 @@ namespace CarServiceTracking.Core.Entities
     public class Appointment : BaseEntity
     {
         public int CustomerId { get; set; }
-        public int CarId { get; set; }
+        public int? CarId { get; set; }
+        public int? CustomerCarId { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string TimeSlot { get; set; } = string.Empty; // "09:00-10:00"
         public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
@@ -22,6 +23,7 @@ namespace CarServiceTracking.Core.Entities
 
         // Navigation Properties
         public virtual Customer Customer { get; set; } = null!;
-        public virtual Car Car { get; set; } = null!;
+        public virtual Car? Car { get; set; }
+        public virtual CustomerCar? CustomerCar { get; set; }
     }
 }

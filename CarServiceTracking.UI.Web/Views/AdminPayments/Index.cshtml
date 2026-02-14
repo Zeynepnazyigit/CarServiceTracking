@@ -58,7 +58,7 @@
                     {
                         <tr>
                             <td><strong>@payment.InvoiceNumber</strong></td>
-                            <td><i class="fas fa-user"></i> @payment.CustomerName</td>
+                            <td><i class="fas fa-user"></i> @(string.IsNullOrEmpty(payment.CustomerName) ? "Bilinmiyor" : payment.CustomerName)</td>
                             <td>@payment.PaymentDate.ToString("dd.MM.yyyy HH:mm")</td>
                             <td class="text-right"><strong class="text-success">@payment.Amount.ToString("C2")</strong></td>
                             <td>
@@ -72,6 +72,9 @@
                                         break;
                                     case "BankTransfer":
                                         <span class="badge badge-info"><i class="fas fa-university"></i> Banka Transferi</span>
+                                        break;
+                                    case "DebitCard":
+                                        <span class="badge badge-secondary"><i class="fas fa-credit-card"></i> Banka Kartı</span>
                                         break;
                                     case "Check":
                                         <span class="badge badge-warning"><i class="fas fa-money-check"></i> Çek</span>

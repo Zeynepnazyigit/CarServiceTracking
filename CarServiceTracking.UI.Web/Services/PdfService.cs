@@ -80,8 +80,8 @@ namespace CarServiceTracking.UI.Web.Services
                                     h.Cell().Background(Colors.Blue.Darken2).Padding(8).AlignRight().Text("Tutar").FontColor(Colors.White).Bold();
                                 });
 
-                                AddTableRow(table, "İşçilik Ücreti", invoice.LaborCost, false);
-                                AddTableRow(table, "Parça Toplamı", invoice.PartsTotal, false);
+                                AddTableRow(table, invoice.IsRentalInvoice ? "Kiralama Ücreti" : "İşçilik Ücreti", invoice.LaborCost, false);
+                                AddTableRow(table, invoice.IsRentalInvoice ? "Depozito" : "Parça Toplamı", invoice.PartsTotal, false);
                                 AddTableRow(table, "Ara Toplam", invoice.SubTotal, false);
                                 AddTableRow(table, $"KDV (%{invoice.TaxRate:0})", invoice.TaxAmount, false);
                                 AddTableRow(table, "GENEL TOPLAM", invoice.GrandTotal, true);

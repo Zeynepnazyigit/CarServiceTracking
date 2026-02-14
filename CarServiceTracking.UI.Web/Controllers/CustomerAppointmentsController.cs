@@ -35,11 +35,11 @@ namespace CarServiceTracking.UI.Web.Controllers
         [Route("Index")]
         public async Task<IActionResult> Index()
         {
-            var userId = GetCurrentUserId();
-            if (userId == null)
+            var customerId = GetCurrentCustomerId();
+            if (customerId == null)
                 return RedirectToLogin();
 
-            var appointments = await _appointmentApiService.GetByCustomerIdAsync(userId.Value);
+            var appointments = await _appointmentApiService.GetByCustomerIdAsync(customerId.Value);
             return View(appointments);
         }
 
@@ -75,16 +75,16 @@ namespace CarServiceTracking.UI.Web.Controllers
         [Route("Create")]
         public async Task<IActionResult> Create()
         {
-            var userId = GetCurrentUserId();
-            if (userId == null)
+            var customerId = GetCurrentCustomerId();
+            if (customerId == null)
                 return RedirectToLogin();
 
-            // Müşterinin araçlarını dropdown için getir
-            await LoadCustomerCarsToViewBag(userId.Value);
+            // Müşterinin araçlarını dropdown için getir (CustomerId ile - araçlar müşteriye bağlı)
+            await LoadCustomerCarsToViewBag(customerId.Value);
 
             var model = new AppointmentCreateVM
             {
-                CustomerId = userId.Value,
+                CustomerId = customerId.Value,
                 AppointmentDate = DateTime.Today.AddDays(1) // Yarın varsayılan
             };
 
@@ -99,16 +99,16 @@ namespace CarServiceTracking.UI.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AppointmentCreateVM model)
         {
-            var userId = GetCurrentUserId();
-            if (userId == null)
+            var customerId = GetCurrentCustomerId();
+            if (customerId == null)
                 return RedirectToLogin();
 
-            // CustomerId'yi session'dan al (güvenlik için)
-            model.CustomerId = userId.Value;
+            // CustomerId'yi session'dan al (güvenlik için - araçlar müşteriye bağlı)
+            model.CustomerId = customerId.Value;
 
             if (!ModelState.IsValid)
             {
-                await LoadCustomerCarsToViewBag(userId.Value);
+                await LoadCustomerCarsToViewBag(customerId.Value);
                 return View(model);
             }
 
@@ -117,7 +117,7 @@ namespace CarServiceTracking.UI.Web.Controllers
             if (!success)
             {
                 ModelState.AddModelError(string.Empty, message);
-                await LoadCustomerCarsToViewBag(userId.Value);
+                await LoadCustomerCarsToViewBag(customerId.Value);
                 return View(model);
             }
 
@@ -166,6 +166,18 @@ namespace CarServiceTracking.UI.Web.Controllers
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             return (userId == null || userId <= 0) ? null : userId;
+        }
+
+        /// <summary>
+        /// Mevcut müşteri ID'sini session'dan alır (araçlar müşteriye bağlı).
+        /// CustomerId yoksa UserId fallback (bazı kurulumlarda aynı olabilir).
+        /// </summary>
+        private int? GetCurrentCustomerId()
+        {
+            var customerId = HttpContext.Session.GetInt32("CustomerId");
+            if (customerId != null && customerId > 0)
+                return customerId;
+            return HttpContext.Session.GetInt32("UserId");
         }
 
         /// <summary>

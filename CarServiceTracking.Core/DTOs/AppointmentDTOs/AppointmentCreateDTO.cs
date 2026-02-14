@@ -7,8 +7,10 @@ namespace CarServiceTracking.Core.DTOs.AppointmentDTOs
         [Required(ErrorMessage = "Müşteri seçimi zorunludur.")]
         public int CustomerId { get; set; }
 
-        [Required(ErrorMessage = "Araç seçimi zorunludur.")]
-        public int CarId { get; set; }
+        /// <summary>Admin panelden: Car tablosu ID</summary>
+        public int? CarId { get; set; }
+        /// <summary>Müşteri panelinden: CustomerCar (şahsi araç) ID</summary>
+        public int? CustomerCarId { get; set; }
 
         [Required(ErrorMessage = "Randevu tarihi zorunludur.")]
         public DateTime AppointmentDate { get; set; }

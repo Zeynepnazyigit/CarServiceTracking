@@ -25,5 +25,7 @@ namespace CarServiceTracking.UI.Web.Models.ApiModels.InvoiceApiModels
         public PaymentStatus PaymentStatus { get; set; }
         public string? Notes { get; set; }
         public DateTime CreatedDate { get; set; }
+
+        public bool IsRentalInvoice => RentalAgreementId.HasValue;
     }
 }

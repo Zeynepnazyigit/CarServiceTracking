@@ -63,7 +63,13 @@
                     {
                         var isOverdue = invoice.DueDate < DateTime.Now && invoice.PaymentStatus != "Paid";
                         <tr class="@(isOverdue ? "table-danger" : "")">
-                            <td><strong>@invoice.InvoiceNumber</strong></td>
+                            <td>
+                                <strong>@invoice.InvoiceNumber</strong>
+                                @if (invoice.IsRentalInvoice)
+                                {
+                                    <span class="badge badge-secondary badge-sm ml-1" title="Kiralama Faturası">Kiralama</span>
+                                }
+                            </td>
                             <td><i class="fas fa-user"></i> @invoice.ServiceRequestInfo</td>
                             <td>@invoice.InvoiceDate.ToString("dd.MM.yyyy")</td>
                             <td>@invoice.DueDate.ToString("dd.MM.yyyy")</td>
@@ -80,23 +86,31 @@
                                 }
                             </td>
                             <td>
-                                @switch (invoice.PaymentStatus)
+                                @if (isOverdue)
                                 {
-                                    case "Pending":
-                                        <span class="badge badge-warning">Bekliyor</span>
-                                        break;
-                                    case "PartiallyPaid":
-                                        <span class="badge badge-info">Kısmi Ödendi</span>
-                                        break;
-                                    case "Paid":
-                                        <span class="badge badge-success">Ödendi</span>
-                                        break;
-                                    case "Overdue":
-                                        <span class="badge badge-danger">Vadesi Geçti</span>
-                                        break;
-                                    default:
-                                        <span class="badge badge-light">@invoice.PaymentStatus</span>
-                                        break;
+                                    <span class="badge badge-danger">Vadesi Geçti</span>
+                                }
+                                else
+                                {
+                                    @switch (invoice.PaymentStatus)
+                                    {
+                                        case "Pending":
+                                            <span class="badge badge-warning">Bekliyor</span>
+                                            break;
+                                        case "PartiallyPaid":
+                                        case "Partial":
+                                            <span class="badge badge-info">Kısmi Ödendi</span>
+                                            break;
+                                        case "Paid":
+                                            <span class="badge badge-success">Ödendi</span>
+                                            break;
+                                        case "Overdue":
+                                            <span class="badge badge-danger">Vadesi Geçti</span>
+                                            break;
+                                        default:
+                                            <span class="badge badge-light">@invoice.PaymentStatus</span>
+                                            break;
+                                    }
                                 }
                             </td>
                             <td class="text-center">

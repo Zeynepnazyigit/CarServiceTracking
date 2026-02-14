@@ -1,3 +1,4 @@
+@model CarServiceTracking.UI.Web.ViewModels.Admin.CompanySettingsVM
 @{
     ViewData["Title"] = "Sistem Ayarları";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -15,147 +16,154 @@
 
 <section class="content">
     <div class="container-fluid">
-        <div class="row">
-            <!-- Genel Ayarlar -->
-            <div class="col-lg-6">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Genel Ayarlar</h3>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                @TempData["Error"]
+            </div>
+        }
+
+        <form asp-action="Index" method="post" asp-antiforgery="true" data-val="false">
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+            {
+                <div asp-validation-summary="All" class="alert alert-danger"></div>
+            }
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row">
+                <!-- Genel Ayarlar -->
+                <div class="col-lg-6">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Genel Ayarlar</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="CompanyName">Firma Adı</label>
+                                <input asp-for="CompanyName" class="form-control" />
+                                <span asp-validation-for="CompanyName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email">E-posta</label>
+                                <input asp-for="Email" type="email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Phone">Telefon</label>
+                                <input asp-for="Phone" class="form-control" />
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Address">Adres</label>
+                                <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Kaydet
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Firma Adı</label>
-                            <input type="text" class="form-control" value="CarServiceTracking" />
+                </div>
+
+                <!-- Sistem Tercihleri -->
+                <div class="col-lg-6">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Sistem Tercihleri</h3>
                         </div>
-                        <div class="form-group">
-                            <label>E-posta</label>
-                            <input type="email" class="form-control" value="info@carservice.com" />
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="DefaultLanguage">Varsayılan Dil</label>
+                                <select asp-for="DefaultLanguage" class="form-control">
+                                    <option value="tr-TR">Türkçe</option>
+                                    <option value="en-US">English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Currency">Para Birimi</label>
+                                <select asp-for="Currency" class="form-control">
+                                    <option value="TRY">TRY (₺)</option>
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="DateFormat">Tarih Formatı</label>
+                                <select asp-for="DateFormat" class="form-control">
+                                    <option value="dd/MM/yyyy">DD/MM/YYYY</option>
+                                    <option value="MM/dd/yyyy">MM/DD/YYYY</option>
+                                    <option value="yyyy-MM-dd">YYYY-MM-DD</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input asp-for="EmailNotifications" type="checkbox" class="custom-control-input" id="emailNotifications" />
+                                    <label class="custom-control-label" for="emailNotifications">E-posta Bildirimleri</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input asp-for="SmsNotifications" type="checkbox" class="custom-control-input" id="smsNotifications" />
+                                    <label class="custom-control-label" for="smsNotifications">SMS Bildirimleri</label>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Telefon</label>
-                            <input type="text" class="form-control" value="+90 (312) 123 45 67" />
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-info">
+                                <i class="fas fa-save"></i> Kaydet
+                            </button>
                         </div>
-                        <div class="form-group">
-                            <label>Adres</label>
-                            <textarea class="form-control" rows="3">Çankaya, Ankara</textarea>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Kaydet
-                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Sistem Ayarları -->
-            <div class="col-lg-6">
-                <div class="card card-info">
-                    <div class="card-header">
-                        <h3 class="card-title">Sistem Tercihleri</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Varsayılan Dil</label>
-                            <select class="form-control">
-                                <option selected>Türkçe</option>
-                                <option>English</option>
-                            </select>
+            <div class="row">
+                <!-- Güvenlik -->
+                <div class="col-lg-6">
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h3 class="card-title">Güvenlik Ayarları</h3>
                         </div>
-                        <div class="form-group">
-                            <label>Para Birimi</label>
-                            <select class="form-control">
-                                <option selected>TRY (₺)</option>
-                                <option>USD ($)</option>
-                                <option>EUR (€)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Tarih Formatı</label>
-                            <select class="form-control">
-                                <option selected>DD/MM/YYYY</option>
-                                <option>MM/DD/YYYY</option>
-                                <option>YYYY-MM-DD</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="emailNotifications" checked>
-                                <label class="custom-control-label" for="emailNotifications">E-posta Bildirimleri</label>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="SessionTimeoutMinutes">Oturum Süresi (dakika)</label>
+                                <input asp-for="SessionTimeoutMinutes" type="number" min="5" max="1440" class="form-control" />
+                                <span asp-validation-for="SessionTimeoutMinutes" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="MinPasswordLength">Minimum Şifre Uzunluğu</label>
+                                <input asp-for="MinPasswordLength" type="number" min="6" max="32" class="form-control" />
+                                <span asp-validation-for="MinPasswordLength" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input asp-for="TwoFactorAuth" type="checkbox" class="custom-control-input" id="twoFactorAuth" />
+                                    <label class="custom-control-label" for="twoFactorAuth">İki Faktörlü Doğrulama</label>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="smsNotifications">
-                                <label class="custom-control-label" for="smsNotifications">SMS Bildirimleri</label>
-                            </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-shield-alt"></i> Kaydet
+                            </button>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-info">
-                            <i class="fas fa-save"></i> Kaydet
-                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row">
-            <!-- Yedekleme -->
-            <div class="col-lg-6">
-                <div class="card card-warning">
-                    <div class="card-header">
-                        <h3 class="card-title">Veritabanı Yedekleme</h3>
-                    </div>
-                    <div class="card-body">
-                        <p>Son yedekleme: <strong>02/02/2026 03:00</strong></p>
-                        <div class="form-group">
-                            <label>Otomatik Yedekleme</label>
-                            <select class="form-control">
-                                <option>Kapalı</option>
-                                <option selected>Günlük</option>
-                                <option>Haftalık</option>
-                                <option>Aylık</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-warning">
-                            <i class="fas fa-download"></i> Şimdi Yedekle
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Güvenlik -->
-            <div class="col-lg-6">
-                <div class="card card-danger">
-                    <div class="card-header">
-                        <h3 class="card-title">Güvenlik Ayarları</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Oturum Süresi (dakika)</label>
-                            <input type="number" class="form-control" value="30" />
-                        </div>
-                        <div class="form-group">
-                            <label>Minimum Şifre Uzunluğu</label>
-                            <input type="number" class="form-control" value="6" />
-                        </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="twoFactorAuth">
-                                <label class="custom-control-label" for="twoFactorAuth">İki Faktörlü Doğrulama</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-danger">
-                            <i class="fas fa-shield-alt"></i> Kaydet
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 </section>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

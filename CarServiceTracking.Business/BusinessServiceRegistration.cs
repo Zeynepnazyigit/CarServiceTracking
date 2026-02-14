@@ -1,4 +1,4 @@
-﻿using CarServiceTracking.Business.Abstract;
+using CarServiceTracking.Business.Abstract;
 using CarServiceTracking.Business.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,6 +42,7 @@ namespace CarServiceTracking.Business
             services.AddScoped<IMechanicService, MechanicService>();
             services.AddScoped<IServiceAssignmentService, ServiceAssignmentService>();
             services.AddScoped<IRentalService, RentalService>();
+            services.AddScoped<ICompanySettingsService, CompanySettingsService>();
 
             return services;
         }

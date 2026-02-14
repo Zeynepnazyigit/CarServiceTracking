@@ -19,8 +19,20 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label asp-for="InvoiceId" class="font-weight-bold">Fatura ID</label>
-                        <input asp-for="InvoiceId" class="form-control" type="number" placeholder="Fatura ID giriniz" />
+                        <label asp-for="InvoiceId" class="font-weight-bold">Fatura Seçin</label>
+                        <select asp-for="InvoiceId" class="form-control" id="invoiceSelect">
+                            <option value="">-- Fatura seçiniz --</option>
+                            @foreach (var inv in (ViewBag.Invoices as IEnumerable<CarServiceTracking.UI.Web.ViewModels.Invoices.InvoiceListVM>) ?? Enumerable.Empty<CarServiceTracking.UI.Web.ViewModels.Invoices.InvoiceListVM>())
+                            {
+                                <option value="@inv.Id" data-remaining="@inv.RemainingAmount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)">
+                                    @inv.InvoiceNumber - @inv.ServiceRequestInfo - Kalan: @inv.RemainingAmount.ToString("C2")
+                                </option>
+                            }
+                        </select>
+                        @if ((ViewBag.Invoices as IEnumerable<object>)?.Any() == false)
+                        {
+                            <small class="text-muted">Ödenmemiş fatura bulunamadı. Tüm faturalar ödenmiş olabilir.</small>
+                        }
                         <span asp-validation-for="InvoiceId" class="text-danger"></span>
                     </div>
                 </div>
@@ -48,6 +60,7 @@
                             <option value="">-- Ödeme Yöntemi Seçiniz --</option>
                             <option value="Cash">Nakit</option>
                             <option value="CreditCard">Kredi Kartı</option>
+                            <option value="DebitCard">Banka Kartı</option>
                             <option value="BankTransfer">Banka Transferi</option>
                             <option value="Check">Çek</option>
                         </select>
@@ -82,4 +95,12 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('invoiceSelect').addEventListener('change', function() {
+            var option = this.options[this.selectedIndex];
+            if (option.value && option.dataset.remaining) {
+                document.querySelector('input[name="Amount"]').value = option.dataset.remaining;
+            }
+        });
+    </script>
 }

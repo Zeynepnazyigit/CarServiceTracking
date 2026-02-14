@@ -31,8 +31,7 @@ namespace CarServiceTracking.Business.Services
                 var customer = await _unitOfWork.Customers.GetByIdAsync(appointment.CustomerId);
                 dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
 
-                var car = await _unitOfWork.Cars.GetByIdAsync(appointment.CarId);
-                dto.CarInfo = car?.DisplayName ?? "Bilinmiyor";
+                dto.CarInfo = await GetCarInfoAsync(appointment);
 
                 appointmentDtos.Add(dto);
             }
@@ -52,8 +51,7 @@ namespace CarServiceTracking.Business.Services
                 var customer = await _unitOfWork.Customers.GetByIdAsync(appointment.CustomerId);
                 dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
 
-                var car = await _unitOfWork.Cars.GetByIdAsync(appointment.CarId);
-                dto.CarInfo = car?.DisplayName ?? "Bilinmiyor";
+                dto.CarInfo = await GetCarInfoAsync(appointment);
 
                 appointmentDtos.Add(dto);
             }
@@ -73,8 +71,7 @@ namespace CarServiceTracking.Business.Services
                 var customer = await _unitOfWork.Customers.GetByIdAsync(appointment.CustomerId);
                 dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
 
-                var car = await _unitOfWork.Cars.GetByIdAsync(appointment.CarId);
-                dto.CarInfo = car?.DisplayName ?? "Bilinmiyor";
+                dto.CarInfo = await GetCarInfoAsync(appointment);
 
                 appointmentDtos.Add(dto);
             }
@@ -94,8 +91,7 @@ namespace CarServiceTracking.Business.Services
                 var customer = await _unitOfWork.Customers.GetByIdAsync(appointment.CustomerId);
                 dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
 
-                var car = await _unitOfWork.Cars.GetByIdAsync(appointment.CarId);
-                dto.CarInfo = car?.DisplayName ?? "Bilinmiyor";
+                dto.CarInfo = await GetCarInfoAsync(appointment);
 
                 appointmentDtos.Add(dto);
             }
@@ -116,16 +112,30 @@ namespace CarServiceTracking.Business.Services
             dto.CustomerName = customer?.FullName ?? "Bilinmiyor";
             dto.CustomerPhone = customer?.Phone ?? "Bilinmiyor";
 
-            var car = await _unitOfWork.Cars.GetByIdAsync(appointment.CarId);
-            dto.CarInfo = car?.DisplayName ?? "Bilinmiyor";
-
+            dto.CarInfo = await GetCarInfoAsync(appointment);
             return new SuccessDataResult<AppointmentDetailDTO>(dto, "Randevu başarıyla getirildi.");
         }
 
         public async Task<IDataResult<AppointmentDetailDTO>> CreateAsync(AppointmentCreateDTO dto)
         {
+            var hasCar = dto.CarId.HasValue && dto.CarId.Value > 0;
+            var hasCustomerCar = dto.CustomerCarId.HasValue && dto.CustomerCarId.Value > 0;
+            if (!hasCar && !hasCustomerCar)
+                return new ErrorDataResult<AppointmentDetailDTO>("Araç veya şahsi araç seçimi zorunludur.");
+
             var appointment = _mapper.Map<Appointment>(dto);
             appointment.Status = AppointmentStatus.Pending;
+
+            if (hasCustomerCar)
+            {
+                appointment.CustomerCarId = dto.CustomerCarId;
+                appointment.CarId = null;
+            }
+            else
+            {
+                appointment.CarId = dto.CarId!.Value;
+                appointment.CustomerCarId = null;
+            }
 
             var createdAppointment = await _unitOfWork.Appointments.AddAsync(appointment);
             await _unitOfWork.SaveChangesAsync();
@@ -195,6 +205,21 @@ namespace CarServiceTracking.Business.Services
             await _unitOfWork.SaveChangesAsync();
 
             return new SuccessResult("Randevu iptal edildi.");
+        }
+
+        private async Task<string> GetCarInfoAsync(Appointment appointment)
+        {
+            if (appointment.CustomerCarId.HasValue)
+            {
+                var cc = await _unitOfWork.CustomerCars.GetByIdAsync(appointment.CustomerCarId.Value);
+                return cc != null ? $"{cc.BrandModel} - {cc.PlateNumber}" : "Bilinmiyor";
+            }
+            if (appointment.CarId.HasValue)
+            {
+                var car = await _unitOfWork.Cars.GetByIdAsync(appointment.CarId.Value);
+                return car?.DisplayName ?? "Bilinmiyor";
+            }
+            return "Bilinmiyor";
         }
     }
 }

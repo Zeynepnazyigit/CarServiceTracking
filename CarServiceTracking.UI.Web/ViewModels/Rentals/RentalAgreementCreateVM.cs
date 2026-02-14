@@ -4,14 +4,17 @@ namespace CarServiceTracking.UI.Web.ViewModels.Rentals
 {
     public class RentalAgreementCreateVM
     {
-        [Required(ErrorMessage = "Sözleşme numarası zorunludur")]
-        [StringLength(50)]
+        /// <summary>
+        /// Backend tarafından otomatik üretilir, formda gönderilmez.
+        /// </summary>
         public string AgreementNumber { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Müşteri seçimi zorunludur")]
+        [Range(1, int.MaxValue, ErrorMessage = "Müşteri seçiniz")]
         public int CustomerId { get; set; }
 
         [Required(ErrorMessage = "Araç seçimi zorunludur")]
+        [Range(1, int.MaxValue, ErrorMessage = "Araç seçiniz")]
         public int RentalVehicleId { get; set; }
 
         [Required(ErrorMessage = "Başlangıç tarihi zorunludur")]
@@ -30,8 +33,9 @@ namespace CarServiceTracking.UI.Web.ViewModels.Rentals
         [Range(0.01, 999999.99)]
         public decimal DailyRate { get; set; }
 
-        [Required(ErrorMessage = "Toplam tutar zorunludur")]
-        [Range(0.01, 999999.99)]
+        /// <summary>
+        /// Backend tarafından hesaplanır, formda zorunlu değil.
+        /// </summary>
         public decimal TotalAmount { get; set; }
 
         [Range(0, 999999.99)]

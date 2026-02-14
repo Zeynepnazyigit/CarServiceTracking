@@ -1,4 +1,4 @@
-﻿using CarServiceTracking.Core.Entities;
+using CarServiceTracking.Core.Entities;
 using CarServiceTracking.Data.Seed;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -30,6 +30,7 @@ namespace CarServiceTracking.Data.Contexts
         public DbSet<ServiceAssignment> ServiceAssignments { get; set; }
         public DbSet<RentalVehicle> RentalVehicles { get; set; }
         public DbSet<RentalAgreement> RentalAgreements { get; set; }
+        public DbSet<CompanySettings> CompanySettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

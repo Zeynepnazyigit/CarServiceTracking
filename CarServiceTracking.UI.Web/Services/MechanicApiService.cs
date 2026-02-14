@@ -112,6 +112,8 @@ namespace CarServiceTracking.UI.Web.Services
                 Specialization = response.Data.Specialization ?? string.Empty,
                 PhoneNumber = response.Data.Phone,
                 Email = response.Data.Email,
+                HourlyRate = response.Data.HourlyRate,
+                HireDate = response.Data.CreatedDate,
                 IsActive = response.Data.IsAvailable
             };
         }
@@ -126,7 +128,7 @@ namespace CarServiceTracking.UI.Web.Services
                 Specialization = vm.Specialization,
                 Phone = vm.PhoneNumber,
                 Email = vm.Email ?? string.Empty,
-                HourlyRate = 0, // Default, VM'de yok
+                HourlyRate = vm.HourlyRate,
                 IsAvailable = vm.IsActive
             };
 
@@ -134,7 +136,7 @@ namespace CarServiceTracking.UI.Web.Services
             var result = await response.Content.ReadFromJsonAsync<ApiResponse<MechanicDetailApiModel>>();
             if (result != null && result.Success)
                 return (true, result.Message);
-            return (false, result?.Message ?? "Mekaniker oluşturulamadı");
+            return (false, result?.Message ?? "Teknisyen oluşturulamadı");
         }
 
         public async Task<(bool Success, string Message)> UpdateAsync(MechanicEditVM vm)
@@ -147,6 +149,7 @@ namespace CarServiceTracking.UI.Web.Services
                 Specialization = vm.Specialization,
                 Phone = vm.PhoneNumber,
                 Email = vm.Email ?? string.Empty,
+                HourlyRate = vm.HourlyRate,
                 IsAvailable = vm.IsActive
             };
 
@@ -154,7 +157,7 @@ namespace CarServiceTracking.UI.Web.Services
             var result = await response.Content.ReadFromJsonAsync<ApiResponse<MechanicDetailApiModel>>();
             if (result != null && result.Success)
                 return (true, result.Message);
-            return (false, result?.Message ?? "Mekaniker güncellenemedi");
+            return (false, result?.Message ?? "Teknisyen güncellenemedi");
         }
 
         public async Task<(bool Success, string Message)> DeleteAsync(int id)
@@ -163,7 +166,7 @@ namespace CarServiceTracking.UI.Web.Services
             var result = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
             if (result != null && result.Success)
                 return (true, result.Message);
-            return (false, result?.Message ?? "Mekaniker silinemedi");
+            return (false, result?.Message ?? "Teknisyen silinemedi");
         }
     }
 }

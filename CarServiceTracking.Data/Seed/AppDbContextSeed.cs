@@ -42,6 +42,9 @@ namespace CarServiceTracking.Data.Seed
             // Payments seed et
             await SeedPaymentsAsync(context);
 
+            // CompanySettings seed et
+            await SeedCompanySettingsAsync(context);
+
             // Değişiklikleri kaydet
             await context.SaveChangesAsync();
         }
@@ -643,6 +646,29 @@ namespace CarServiceTracking.Data.Seed
             }
 
             await context.Set<Payment>().AddRangeAsync(payments);
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedCompanySettingsAsync(AppDbContext context)
+        {
+            if (await context.Set<CompanySettings>().AnyAsync())
+                return;
+
+            await context.Set<CompanySettings>().AddAsync(new CompanySettings
+            {
+                CompanyName = "CarServiceTracking",
+                Email = "info@carservice.com",
+                Phone = "+90 (312) 123 45 67",
+                Address = "Çankaya, Ankara",
+                DefaultLanguage = "tr-TR",
+                Currency = "TRY",
+                DateFormat = "dd/MM/yyyy",
+                EmailNotifications = true,
+                SmsNotifications = false,
+                SessionTimeoutMinutes = 30,
+                MinPasswordLength = 6,
+                TwoFactorAuth = false
+            });
             await context.SaveChangesAsync();
         }
     }

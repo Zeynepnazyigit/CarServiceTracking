@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace CarServiceTracking.UI.Web.Models.ApiModels
 {
@@ -7,6 +7,15 @@ namespace CarServiceTracking.UI.Web.Models.ApiModels
         [JsonPropertyName("data")]
         public T? Data { get; set; }
 
+        [JsonPropertyName("success")]
+        public bool Success { get; set; }
+
+        [JsonPropertyName("message")]
+        public string? Message { get; set; }
+    }
+
+    public class ApiResponse
+    {
         [JsonPropertyName("success")]
         public bool Success { get; set; }
 

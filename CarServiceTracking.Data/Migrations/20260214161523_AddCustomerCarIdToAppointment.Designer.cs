@@ -4,6 +4,7 @@ using CarServiceTracking.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarServiceTracking.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260214161523_AddCustomerCarIdToAppointment")]
+    partial class AddCustomerCarIdToAppointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -209,81 +212,6 @@ namespace CarServiceTracking.Data.Migrations
                     b.HasIndex("TransmissionTypeId");
 
                     b.ToTable("Cars", (string)null);
-                });
-
-            modelBuilder.Entity("CarServiceTracking.Core.Entities.CompanySettings", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("DateFormat")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("DefaultLanguage")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("EmailNotifications")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MinPasswordLength")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("SessionTimeoutMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("SmsNotifications")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("TwoFactorAuth")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CompanySettings", (string)null);
                 });
 
             modelBuilder.Entity("CarServiceTracking.Core.Entities.Customer", b =>
@@ -636,7 +564,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6455),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2822),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "CarType",
@@ -646,7 +574,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6457),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2830),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "CarType",
@@ -656,7 +584,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6459),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2836),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "CarType",
@@ -666,7 +594,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6461),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2842),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "CarType",
@@ -676,7 +604,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6462),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2848),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "CarType",
@@ -686,7 +614,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6464),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2854),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "CarType",
@@ -696,7 +624,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6465),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2860),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "CarType",
@@ -706,7 +634,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6467),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2866),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "CarType",
@@ -716,7 +644,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6476),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2909),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "FuelType",
@@ -726,7 +654,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6478),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2915),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "FuelType",
@@ -736,7 +664,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6480),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2921),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "FuelType",
@@ -746,7 +674,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 14,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6481),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2928),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "FuelType",
@@ -756,7 +684,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 15,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6483),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2933),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "FuelType",
@@ -766,7 +694,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 16,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6484),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2939),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "FuelType",
@@ -776,7 +704,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 21,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6488),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2974),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "TransmissionType",
@@ -786,7 +714,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 22,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6489),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(2998),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "TransmissionType",
@@ -796,7 +724,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 23,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6491),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3003),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "TransmissionType",
@@ -806,7 +734,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 24,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6492),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3009),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "TransmissionType",
@@ -816,7 +744,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 25,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6493),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3015),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "TransmissionType",
@@ -826,7 +754,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 31,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6497),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3025),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "CustomerType",
@@ -836,7 +764,7 @@ namespace CarServiceTracking.Data.Migrations
                         new
                         {
                             Id = 32,
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6498),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3030),
                             IsActive = true,
                             IsDeleted = false,
                             ListType = "CustomerType",
@@ -1014,7 +942,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 1,
                             Category = "Motor",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6649),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3649),
                             Description = "Universal yağ filtresi, çoğu benzinli araçla uyumlu",
                             IsActive = true,
                             IsDeleted = false,
@@ -1030,7 +958,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 2,
                             Category = "Motor",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6653),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3664),
                             Description = "Motor hava filtresi, 1.4-1.6 motor hacmi",
                             IsActive = true,
                             IsDeleted = false,
@@ -1046,7 +974,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 3,
                             Category = "Motor",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6656),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3674),
                             Description = "İridyum buji seti, 4 silindirli motorlar için",
                             IsActive = true,
                             IsDeleted = false,
@@ -1062,7 +990,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 4,
                             Category = "Motor",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6658),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3683),
                             Description = "Triger kayışı + gergi rulmanı seti",
                             IsActive = true,
                             IsDeleted = false,
@@ -1078,7 +1006,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 5,
                             Category = "Fren",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6660),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3691),
                             Description = "Ön aks fren balata takımı, seramik",
                             IsActive = true,
                             IsDeleted = false,
@@ -1094,7 +1022,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 6,
                             Category = "Fren",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6663),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3702),
                             Description = "Arka aks fren balata takımı",
                             IsActive = true,
                             IsDeleted = false,
@@ -1110,7 +1038,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 7,
                             Category = "Fren",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6666),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3711),
                             Description = "Ön aks fren disk takımı, havalandırmalı",
                             IsActive = true,
                             IsDeleted = false,
@@ -1126,7 +1054,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 8,
                             Category = "Süspansiyon",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6668),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3719),
                             Description = "Ön aks gaz amortisör takımı",
                             IsActive = true,
                             IsDeleted = false,
@@ -1142,7 +1070,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 9,
                             Category = "Süspansiyon",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6670),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3728),
                             Description = "Ön aks rotil takımı",
                             IsActive = true,
                             IsDeleted = false,
@@ -1158,7 +1086,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 10,
                             Category = "Elektrik",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6673),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3738),
                             Description = "12V 60Ah başlatma aküsü",
                             IsActive = true,
                             IsDeleted = false,
@@ -1174,7 +1102,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 11,
                             Category = "Elektrik",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6675),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3746),
                             Description = "H7 halojen far ampulü seti",
                             IsActive = true,
                             IsDeleted = false,
@@ -1190,7 +1118,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 12,
                             Category = "Sarf Malzeme",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6678),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3754),
                             Description = "Tam sentetik motor yağı 5W-30, 4 litre",
                             IsActive = true,
                             IsDeleted = false,
@@ -1206,7 +1134,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 13,
                             Category = "Sarf Malzeme",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6680),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3762),
                             Description = "Uzun ömürlü antifriz, -40°C koruma",
                             IsActive = true,
                             IsDeleted = false,
@@ -1222,7 +1150,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 14,
                             Category = "Sarf Malzeme",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6682),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3770),
                             Description = "DOT4 fren hidrolik yağı",
                             IsActive = true,
                             IsDeleted = false,
@@ -1238,7 +1166,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 15,
                             Category = "Klima",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6684),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3778),
                             Description = "Universal klima kompresörü",
                             IsActive = true,
                             IsDeleted = false,
@@ -1254,7 +1182,7 @@ namespace CarServiceTracking.Data.Migrations
                         {
                             Id = 16,
                             Category = "Motor",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6686),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3786),
                             Description = "1.5 dCi turbo şarj ünitesi",
                             IsActive = true,
                             IsDeleted = false,
@@ -1563,7 +1491,7 @@ namespace CarServiceTracking.Data.Migrations
                             Id = 1,
                             Brand = "Toyota",
                             Color = "Beyaz",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6591),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3325),
                             DailyRate = 750.00m,
                             FuelType = "Benzin",
                             ImageUrl = "https://www.arabazzi.com/images/yuklemeler/corolla-14079.jpg",
@@ -1582,7 +1510,7 @@ namespace CarServiceTracking.Data.Migrations
                             Id = 2,
                             Brand = "Volkswagen",
                             Color = "Siyah",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6595),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3340),
                             DailyRate = 900.00m,
                             FuelType = "Dizel",
                             ImageUrl = "https://www.arabazzi.com/images/model_gorsel/passat223.jpg",
@@ -1601,7 +1529,7 @@ namespace CarServiceTracking.Data.Migrations
                             Id = 3,
                             Brand = "Renault",
                             Color = "Kırmızı",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6598),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3350),
                             DailyRate = 650.00m,
                             FuelType = "Benzin",
                             ImageUrl = "https://www.arabazzi.com/images/yuklemeler/renault-megane-sedan2340.jpg",
@@ -1620,7 +1548,7 @@ namespace CarServiceTracking.Data.Migrations
                             Id = 4,
                             Brand = "BMW",
                             Color = "Gri",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6601),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3360),
                             DailyRate = 1500.00m,
                             FuelType = "Benzin",
                             ImageUrl = "https://www.arabazzi.com/images/model_gorsel/3-serisi22.jpg",
@@ -1639,7 +1567,7 @@ namespace CarServiceTracking.Data.Migrations
                             Id = 5,
                             Brand = "Ford",
                             Color = "Mavi",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6603),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3369),
                             DailyRate = 550.00m,
                             FuelType = "Dizel",
                             ImageUrl = "https://www.arabazzi.com/images/model_gorsel/focus-2019244.jpg",
@@ -1658,7 +1586,7 @@ namespace CarServiceTracking.Data.Migrations
                             Id = 6,
                             Brand = "Mercedes-Benz",
                             Color = "Beyaz",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6606),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3382),
                             DailyRate = 1800.00m,
                             FuelType = "Benzin",
                             ImageUrl = "https://www.arabazzi.com/images/model_gorsel/c-serisi123.jpg",
@@ -1677,7 +1605,7 @@ namespace CarServiceTracking.Data.Migrations
                             Id = 7,
                             Brand = "Hyundai",
                             Color = "Yeşil",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6609),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3391),
                             DailyRate = 1100.00m,
                             FuelType = "Hibrit",
                             ImageUrl = "https://www.arabazzi.com/images/yuklemeler/hyundai-tucson-nasil8975.jpg",
@@ -1696,7 +1624,7 @@ namespace CarServiceTracking.Data.Migrations
                             Id = 8,
                             Brand = "Audi",
                             Color = "Lacivert",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6612),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3401),
                             DailyRate = 1400.00m,
                             FuelType = "Dizel",
                             ImageUrl = "https://www.arabazzi.com/images/model_gorsel/a48.jpg",
@@ -1715,7 +1643,7 @@ namespace CarServiceTracking.Data.Migrations
                             Id = 9,
                             Brand = "Fiat",
                             Color = "Gümüş",
-                            CreatedDate = new DateTime(2026, 2, 14, 21, 26, 2, 31, DateTimeKind.Local).AddTicks(6614),
+                            CreatedDate = new DateTime(2026, 2, 14, 19, 15, 22, 709, DateTimeKind.Local).AddTicks(3485),
                             DailyRate = 450.00m,
                             FuelType = "LPG",
                             ImageUrl = "https://www.arabazzi.com/images/model_gorsel/egea-sedan62.jpg",

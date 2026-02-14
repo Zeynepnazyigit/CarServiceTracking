@@ -87,13 +87,24 @@ namespace CarServiceTracking.UI.Web.Controllers
             if (agreement == null)
                 return NotFound();
 
+            await LoadDropdownsAsync();
+
             var model = new RentalAgreementEditVM
             {
                 Id = agreement.Id,
+                AgreementNumber = agreement.AgreementNumber,
+                CustomerId = agreement.CustomerId,
+                RentalVehicleId = agreement.RentalVehicleId,
+                CustomerName = agreement.CustomerName,
+                VehicleInfo = agreement.VehicleInfo,
+                StartDate = agreement.StartDate,
                 EndDate = agreement.EndDate,
+                StartMileage = agreement.StartMileage,
+                EndMileage = agreement.EndMileage,
+                DailyRate = agreement.DailyRate,
+                TotalAmount = agreement.TotalAmount,
                 DepositAmount = agreement.DepositAmount,
                 Status = agreement.Status,
-                EndMileage = agreement.EndMileage,
                 Notes = agreement.Notes
             };
 
@@ -110,6 +121,7 @@ namespace CarServiceTracking.UI.Web.Controllers
 
             if (!ModelState.IsValid)
             {
+                await LoadDropdownsAsync();
                 return View(model);
             }
 
@@ -118,6 +130,7 @@ namespace CarServiceTracking.UI.Web.Controllers
             if (!success)
             {
                 ModelState.AddModelError("", message);
+                await LoadDropdownsAsync();
                 return View(model);
             }
 
@@ -169,7 +182,9 @@ namespace CarServiceTracking.UI.Web.Controllers
             ViewBag.Customers = new SelectList(customers, "Id", "FullName");
 
             var vehicles = await _rentalApiService.GetVehiclesForDropdownAsync();
-            ViewBag.Vehicles = new SelectList(vehicles, "Id", "DisplayName");
+            ViewBag.RentalVehicles = new SelectList(vehicles, "Id", "DisplayText");
+            ViewBag.HasRentalVehicles = vehicles.Any();
+            ViewBag.VehicleDailyRates = System.Text.Json.JsonSerializer.Serialize(vehicles.ToDictionary(v => v.Id, v => v.DailyRate));
         }
     }
 }

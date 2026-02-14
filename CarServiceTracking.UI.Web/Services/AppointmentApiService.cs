@@ -78,11 +78,13 @@ namespace CarServiceTracking.UI.Web.Services
 
         public async Task<List<AppointmentListVM>> GetByCustomerIdAsync(int customerId)
         {
-            var response = await _client.GetFromJsonAsync<ApiResponse<List<AppointmentListApiModel>>>($"api/Appointments/customer/{customerId}");
-            if (response == null || !response.Success || response.Data == null)
-                return new List<AppointmentListVM>();
+            try
+            {
+                var response = await _client.GetFromJsonAsync<ApiResponse<List<AppointmentListApiModel>>>($"api/Appointments/customer/{customerId}");
+                if (response == null || !response.Success || response.Data == null)
+                    return new List<AppointmentListVM>();
 
-            return response.Data.Select(dto => new AppointmentListVM
+                return response.Data.Select(dto => new AppointmentListVM
             {
                 Id = dto.Id,
                 CustomerId = dto.CustomerId,
@@ -94,6 +96,12 @@ namespace CarServiceTracking.UI.Web.Services
                 Status = dto.Status.ToString(),
                 Notes = null
             }).ToList();
+            }
+            catch (HttpRequestException)
+            {
+                // API 500 veya network hatası - boş liste dön, sayfa çökmesin
+                return new List<AppointmentListVM>();
+            }
         }
 
         public async Task<AppointmentEditVM?> GetByIdAsync(int id)
@@ -127,6 +135,7 @@ namespace CarServiceTracking.UI.Web.Services
             {
                 CustomerId = vm.CustomerId,
                 CarId = vm.CarId,
+                CustomerCarId = vm.CustomerCarId,
                 AppointmentDate = vm.AppointmentDate,
                 TimeSlot = vm.TimeSlot,
                 ServiceType = vm.RequestedService,

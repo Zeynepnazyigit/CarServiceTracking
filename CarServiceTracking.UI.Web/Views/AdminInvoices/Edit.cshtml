@@ -15,6 +15,15 @@
         <form asp-controller="AdminInvoices" asp-action="Edit" asp-route-id="@Model.Id" method="post">
             @Html.AntiForgeryToken()
             @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.InvoiceNumber)
+            @Html.HiddenFor(m => m.InvoiceDate)
+            @Html.HiddenFor(m => m.TotalAmount)
+            @Html.HiddenFor(m => m.PaidAmount)
+            @Html.HiddenFor(m => m.RemainingAmount)
+            @Html.HiddenFor(m => m.LaborCost)
+            @Html.HiddenFor(m => m.PartsTotal)
+            @Html.HiddenFor(m => m.TaxRate)
+            @Html.HiddenFor(m => m.PaymentStatus)
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">

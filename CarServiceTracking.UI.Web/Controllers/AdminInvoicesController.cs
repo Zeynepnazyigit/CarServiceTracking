@@ -99,13 +99,7 @@ namespace CarServiceTracking.UI.Web.Controllers
             if (invoice == null)
                 return NotFound();
 
-            var model = new InvoiceEditVM
-            {
-                Id = invoice.Id,
-                Notes = invoice.Notes
-            };
-
-            return View(model);
+            return View(invoice);
         }
 
         // =========================
