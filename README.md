@@ -118,6 +118,36 @@ CarServiceTracking
 - Rol bazlı sayfa ve endpoint erişim kontrolü uygulanır
 - Şifreler hashlenerek saklanır
 
+
+  ## 🔐 Güvenlik (Security)
+
+- Oturum Yönetimi  
+  Session tabanlı oturum yapısı kullanılır. Kullanıcı bilgileri, rol, JWT token ve müşteri bilgileri Session içerisinde tutulur. Oturum süresi 8 saat (timeout) olarak yapılandırılmıştır.
+
+- Şifre Güvenliği  
+  Kullanıcı şifreleri BCrypt algoritması ile hashlenerek saklanır. Giriş sırasında hash doğrulaması yapılır, düz metin şifre hiçbir katmanda tutulmaz.
+
+- API Kimlik Doğrulama  
+  Web API katmanında JWT Bearer Token kullanılır. Tüm korumalı endpoint’ler Authorization header üzerinden doğrulanır.
+
+- Web UI – API İletişimi  
+  JWT token, Web UI tarafında Session içerisinde saklanır. API çağrılarında token otomatik olarak Bearer Authorization header’ına eklenir.
+
+- Yetkilendirme (Authorization)  
+  Sistem iki rol içerir: Admin ve Customer. /Admin ve /Customer yolları ayrı middleware’ler ile korunur. Kullanıcı rolüne göre erişim kontrolü sağlanır.
+
+- Controller Bazlı Güvenlik  
+  API tarafında [Authorize] ve [AllowAnonymous] attribute’ları kullanılır. Web UI tarafında AdminBaseController ve CustomerBaseController üzerinden rol bazlı koruma uygulanır.
+
+- CSRF Koruması  
+  Login ve form işlemlerinde ValidateAntiForgeryToken kullanılarak CSRF saldırılarına karşı koruma sağlanır.
+
+- Cookie Güvenliği  
+  Cookie ayarları HttpOnly olarak yapılandırılmıştır. IsEssential flag’i ile zorunlu çerez yönetimi sağlanır.
+
+- Hata Yönetimi  
+  Hem Web API hem de Web UI katmanlarında merkezi exception middleware’leri kullanılır. Tüm beklenmeyen hatalar tek merkezden yakalanır ve kontrollü response döndürülür.
+
 ## ⚙️ Kurulum ve Çalıştırma
 -Gereksinimler  
 .NET 8 SDK  
