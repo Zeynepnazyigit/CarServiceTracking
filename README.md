@@ -57,39 +57,39 @@ Bu mimari sayesinde UI katmanı veritabanına doğrudan erişmez, iş kuralları
 
 ## 📁 Proje Yapısı
 CarServiceTracking  
-UI.Web (Controllers, Views, Services, ViewModels, Models)  
-API (Controllers, Middlewares, Program.cs)  
-Business (Services, Abstract, Mapping, IOC)  
-Core (Entities, DTOs, Enums, Abstracts)  
-Data (Contexts, Repositories, UnitOfWork, Configurations, Migrations, Seed)  
-Utilities (Result Pattern)  
-CarServiceTracking.sln
+-UI.Web (Controllers, Views, Services, ViewModels, Models)  
+-API (Controllers, Middlewares, Program.cs)  
+-Business (Services, Abstract, Mapping, IOC)  
+-Core (Entities, DTOs, Enums, Abstracts)  
+-Data (Contexts, Repositories, UnitOfWork, Configurations, Migrations, Seed)  
+-Utilities (Result Pattern)  
+-CarServiceTracking.sln
 
 ## ✨ Sistem Modülleri
-Yönetimsel Modüller  
-Dashboard  
-Araç Yönetimi  
-Müşteri Yönetimi  
-Müşteri-Araç Eşleştirme
+•Yönetimsel Modüller  
+•Dashboard  
+•Araç Yönetimi  
+•Müşteri Yönetimi  
+•Müşteri-Araç Eşleştirme
 
-Servis Süreçleri  
-Servis Talepleri  
-Servis Atamaları  
-Servis Kayıtları
+•Servis Süreçleri  
+•Servis Talepleri  
+•Servis Atamaları  
+•Servis Kayıtları
 
-Envanter ve Finans  
-Parça Yönetimi  
-Fatura İşlemleri  
-Ödeme Kayıtları
+•Envanter ve Finans  
+•Parça Yönetimi  
+•Fatura İşlemleri  
+•Ödeme Kayıtları
 
-Kiralama Süreçleri  
-Kiralık Araç Yönetimi  
-Kiralama Sözleşmeleri
+•Kiralama Süreçleri  
+•Kiralık Araç Yönetimi  
+•Kiralama Sözleşmeleri
 
-Diğer Bileşenler  
-Randevu Yönetimi  
-Mekanik Yönetimi  
-Şirket Ayarları
+•Diğer Bileşenler  
+•Randevu Yönetimi  
+•Mekanik Yönetimi  
+•Şirket Ayarları
 
 ## 🗄️ Veritabanı Tasarımı (17 Tablo)
 1. Users
@@ -119,18 +119,18 @@ Mekanik Yönetimi
 - Şifreler hashlenerek saklanır
 
 ## ⚙️ Kurulum ve Çalıştırma
-Gereksinimler  
+-Gereksinimler  
 .NET 8 SDK  
 SQL Server veya LocalDB  
 Visual Studio 2022 / VS Code
 
-Kurulum  
+-Kurulum  
 git clone <repo-url>  
 cd CarServiceTracking  
 dotnet build  
 dotnet ef database update --project CarServiceTracking.Data --startup-project CarServiceTracking.API
 
-Çalışan Servisler  
+-Çalışan Servisler  
 Web API: http://localhost:5130  
 Swagger: http://localhost:5130/swagger  
 MVC UI: http://localhost:5070
