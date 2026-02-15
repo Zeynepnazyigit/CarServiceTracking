@@ -10,18 +10,16 @@ namespace CarServiceTracking.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "DepositRefunded",
-                table: "RentalAgreements",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "DepositRefundedDate",
-                table: "RentalAgreements",
-                type: "datetime2",
-                nullable: true);
+            migrationBuilder.Sql(@"
+IF COL_LENGTH('dbo.RentalAgreements', 'DepositRefunded') IS NULL
+BEGIN
+    ALTER TABLE dbo.RentalAgreements ADD DepositRefunded bit NOT NULL DEFAULT 0;
+END
+IF COL_LENGTH('dbo.RentalAgreements', 'DepositRefundedDate') IS NULL
+BEGIN
+    ALTER TABLE dbo.RentalAgreements ADD DepositRefundedDate datetime2 NULL;
+END
+");
         }
 
         /// <inheritdoc />

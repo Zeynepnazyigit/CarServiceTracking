@@ -12,6 +12,9 @@ namespace CarServiceTracking.Data.Seed
             // Migrate veritabanını
             await context.Database.MigrateAsync();
 
+            // RentalAgreements: DepositRefunded kolonları yoksa eklenir
+            await EnsureRentalAgreementDepositColumnsAsync(context);
+
             // ListItems seed et
             await SeedListItemsAsync(context);
 
@@ -47,6 +50,21 @@ namespace CarServiceTracking.Data.Seed
 
             // Değişiklikleri kaydet
             await context.SaveChangesAsync();
+        }
+
+        private static async Task EnsureRentalAgreementDepositColumnsAsync(AppDbContext context)
+        {
+            const string sql = @"
+IF COL_LENGTH('dbo.RentalAgreements', 'DepositRefunded') IS NULL
+BEGIN
+    ALTER TABLE dbo.RentalAgreements ADD DepositRefunded bit NOT NULL DEFAULT 0;
+END
+IF COL_LENGTH('dbo.RentalAgreements', 'DepositRefundedDate') IS NULL
+BEGIN
+    ALTER TABLE dbo.RentalAgreements ADD DepositRefundedDate datetime2 NULL;
+END
+";
+            await context.Database.ExecuteSqlRawAsync(sql);
         }
 
         private static async Task SeedListItemsAsync(AppDbContext context)
